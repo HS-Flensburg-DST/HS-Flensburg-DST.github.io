@@ -1,5 +1,7 @@
-Deklarative Software-Technologien
-=================================
+---
+layout: post
+title: "Inhaltsverzeichnis"
+---
 
 1. [Vorwort](preface.html)
 
