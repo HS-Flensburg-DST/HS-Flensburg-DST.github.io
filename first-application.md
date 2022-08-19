@@ -1,5 +1,7 @@
-Eine Erste Anwendung
-====================
+---
+layout: post
+title: "Eine Erste Anwendung"
+---
 
 In diesem Kapitel werden wir eine erste Frontend-Anwendung mit Elm
 entwickeln.

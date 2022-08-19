@@ -1,5 +1,7 @@
-Polymorphismus
-==============
+---
+layout: post
+title: "Polymorphismus"
+---
 
 In diesem Kapitel wird das Konzept des parametrischen Polymorphismus
 vorgestellt. Dieses Konzept wird in anderen Programmiersprachen wie Java

@@ -1,5 +1,7 @@
-Abonnement
-==========
+---
+layout: post
+title: "Abonnement"
+---
 
 In diesem Kapitel wollen wir uns die Funktionsweise der `subscriptions`
 anschauen. Wie der Name schon sagt, handelt es sich dabei um ein
@@ -361,7 +363,7 @@ wir später kennenlernen werden, müssen Daten im JSON-Format in einen
 stärker strukturierten Elm-Datentyp umgewandelt werden. Um diese Aufgabe
 umzusetzen, werden in Elm `Decoder` verwendet.
 
-<img src="images/parse-error.png" style="width:8cm" alt="image" />
+![You shall not parse, syntax error on line 1](/assets/images/parse-error.png){:style="display:block; margin-left:auto; margin-right:auto; width:400px"}
 
 Ein `Decoder` ist eine Elm-spezifische Variante des allgemeineren
 Konzeptes eines Parser-Kombinators. Parser-Kombinatoren sind eine

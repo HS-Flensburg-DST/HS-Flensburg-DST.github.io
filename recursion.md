@@ -1,5 +1,7 @@
-Funktionen höherer Ordnung
-==========================
+---
+layout: post
+title: "Funktionen höherer Ordnung"
+---
 
 In diesem Kapitel wollen wir uns intensiver mit dem Thema Rekursion
 auseinandersetzen. Wie wir bereits gesehen haben, kann man mit Hilfe von
@@ -408,8 +410,8 @@ cartL 4 2.23
 "Summe (" ++ items 4 ++ "): " ++ String.fromFloat 2.23
 ```
 
-Partielle Applikation
----------------------
+Partielle Applikationen
+-----------------------
 
 Mit der ge*curry*ten Definition von Funktionen gehen zwei wichtige
 Konzepte einher. Das erste Konzept wird partielle Applikation oder

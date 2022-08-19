@@ -1,5 +1,7 @@
-Datentypen
-==========
+---
+layout: post
+title: "Datentypen"
+---
 
 In diesem Kapitel wollen wir die Grundlagen für die Definition von
 Datentypen in Elm einführen. Wir haben bereits eine Reihe von Datentypen

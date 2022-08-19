@@ -1,5 +1,7 @@
-Abstraktionen
-=============
+---
+layout: post
+title: "Abstraktionen"
+---
 
 Wir haben in verschiedenen Kontexten immer wieder die gleichen
 Funktionen kennengelernt. In diesem Kapitel wollen wir uns ein wenig den
@@ -9,7 +11,7 @@ objektorientierten Sprachen. Das heißt, man identifiziert Funktionen,
 die man für verschiedene Datenstrukturen definieren kann und beschreibt,
 welche Eigenschaften diese Funktionen haben sollten.
 
-![You say "pattern" and nobody panics, you say "monad" and everybody is losing their mind](/images/monads-and-patterns.jpg){:style="display:block; margin-left:auto; margin-right:auto"}
+![You say "pattern" and nobody panics, you say "monad" and everybody is losing their mind](/assets/images/monads-and-patterns.jpg){:style="display:block; margin-left:auto; margin-right:auto"}
 
 
 Funktoren
@@ -194,7 +196,7 @@ dieser Stelle noch eine dieser Abstraktionen anschauen, die Monade heißt
 und vergleichsweise legendär auch außerhalb der funktionalen
 Programmierung ist.
 
-![Monads, monad everywhere](/images/monads-everywhere.png){:style="display:block; margin-left:auto; margin-right:auto"}
+![Monads, monad everywhere](/assets/images/monads-everywhere.png){:style="display:block; margin-left:auto; margin-right:auto"}
 
 Es gibt einige Funktionen, die sich mit Hilfe eines applikativen
 Funktors nicht ausdrücken lassen. Wir betrachten dazu das Beispiel

@@ -1,5 +1,7 @@
-Weitere Themen
-==============
+---
+layout: post
+title: "Weitere Themen"
+---
 
 In diesem Kapitel wollen wir uns noch ein paar abschließende Themen
 anschauen, die bei der Programmierung mit Elm relevant sein können.

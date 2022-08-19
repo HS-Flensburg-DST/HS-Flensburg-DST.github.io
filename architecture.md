@@ -1,5 +1,7 @@
-Modellierung der Elm-Architektur
-================================
+---
+layout: post
+title: "Modellierung der Elm-Architektur"
+---
 
 Nachdem wir uns ein paar Grundlagen erarbeitet haben, wollen wir ein
 paar Aspekte der Implementierung der Elm-Architektur näher betrachten.

@@ -1,5 +1,7 @@
-Kommandos
-=========
+---
+layout: post
+title: "Kommandos"
+---
 
 In diesem Kapitel wollen wir uns anschauen, wie man den Datentyp `Cmd`
 nutzt, den wir bisher ignoriert haben. Wir haben zuvor bereits gelernt,
