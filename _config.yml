@@ -1,13 +1,12 @@
 title: Deklarative Software-Technologien
-author: Jan Christiansen
-email: jan.christiansen@hs-flensburg.de
+author:
+  name: Jan Christiansen
+  email: jan.christiansen@hs-flensburg.de
 description: >
   Hochschule Flensburg / Fachbereich 3 Information und Kommunikation / Angewandte Informatik
 
-minima:
-  date_format: "%d. %b %Y"
-
-theme: minima
+markdown: kramdown
+remote_theme: jekyll/minima
 header_pages:
   - index.md
   - preface.md
