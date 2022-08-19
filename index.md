@@ -3,7 +3,7 @@ layout: post
 title: "Inhaltsverzeichnis"
 ---
 
-1. [Vorwort](preface.html)
+1. [Vorwort](preface.md)
 
 2. [Grundlagen](basics.md)
 
@@ -37,20 +37,20 @@ title: "Inhaltsverzeichnis"
 
         4. Listen
 
-3. Eine Erste Anwendung
+3. [Eine Erste Anwendung](first-application.md)
 
-4. Datentypen
+4. [Datentypen](data-types.md)
 
-5. Polymorphismus
+5. [Polymorphismus](polymorphism.md)
 
-6. Funktionen höherer Ordnung
+6. [Funktionen höherer Ordnung](recursion.md)
 
-7. Modellierung der Elm-Architektur
+7. [Modellierung der Elm-Architektur](architecture.md)
 
-8. Abonnement
+8. [Abonnements](subscriptions.md)
 
-9. Kommandos
+9. [Kommandos](commands.md)
 
-10. Abstraktionen
+10. [Abstraktionen](abstractions.md)
 
-11. Weitere Themen
+11. [Weitere Themen](final-topics.md)
