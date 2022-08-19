@@ -1,5 +1,7 @@
-Vorwort
-=======
+---
+layout: post
+title: "Vorwort"
+---
 
 In dieser Vorlesung wollen wir uns deklarative Technologien der
 Softwareentwicklung anschauen. Deklarativ bedeutet dabei, dass man die
@@ -93,3 +95,11 @@ Zu guter Letzt sei hier noch erwähnt, dass Elm in JavaScript übersetzt
 wird. Wir können aus einer Elm-Anwendung entweder eine HTML-Seite
 inklusive JavaScript-Code erzeugen oder JavaScript-Code, den wir dann in
 eine bestehende Seite einbinden können.
+
+<div style="display:table;width:100%">
+    <ul style="display:table-row;list-style:none">
+        <li style="display:table-cell;width:33%;text-align:left"></li>
+        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li style="display:table-cell;width:33%;text-align:right"><a href="basics.html">weiter</a></li>
+    </ul>
+</div>

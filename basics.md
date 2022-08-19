@@ -759,3 +759,11 @@ nicht etwa sein Argument.
 
 [1] Peter J. Landin (<https://en.wikipedia.org/wiki/Peter_Landin>) war
 einer der Begründer der funktionalen Programmierung.
+
+<div style="display:table;width:100%">
+    <ul style="display:table-row;list-style:none">
+        <li style="display:table-cell;width:33%;text-align:left"><a href="preface.html">zurück</a></li>
+        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li style="display:table-cell;width:33%;text-align:right"><a href="???.html">weiter</a></li>
+    </ul>
+</div>
