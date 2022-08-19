@@ -1,13 +1,12 @@
-Grundlagen
-==========
+---
+layout: post
+title: "Grundlagen"
+---
 
 In diesem Kapitel führen wir die Grundlagen der Programmiersprache Elm
 ein. Am Ende des Kapitels werden wir in der Lage sein, einfache
-Funktionen in Elm zu programmieren. Wir schaffen damit die Grundlagen,
-um anschließend in
-<a href="#sec:architecture-basics" data-reference-type="autoref"
-data-reference="sec:architecture-basics">[sec:architecture-basics]</a>
-zu lernen, wie wir eine einfache Elm–Frontend-Anwendung programmieren.
+Funktionen in Elm zu programmieren.
+Wir schaffen damit die Grundlagen, um anschließend im Abschnitt [Eine Erste Anwendung](first-application.md) zu lernen, wie wir eine einfache Elm–Frontend-Anwendung programmieren.
 
 Projekt-Setup
 -------------
@@ -291,15 +290,15 @@ der Operator ∘ linksassoziativ ist, gilt
 falls er rechts-assoziativ ist, gilt
 *x* ∘ *y* ∘ *z* = *x* ∘ (*y*∘*z*).
 
-Funktionsdefinition
--------------------
+Funktionsdefinitionen
+---------------------
 
 In diesem Abschnitt wollen wir uns anschauen, wie man in Elm einfache
 Funktionen definieren kann. Funktionen sind in einer funktionalen
 Sprache das Gegenstück zu (statischen) Methoden in einer
 objektorientierten Sprache.
 
-### Konditional
+### Konditionale
 
 Elm stellt einen `if`-Ausdruck der Form `if b then e1 else e2` zur
 Verfügung. Im Unterschied zu einer `if`-Anweisung wie er in
@@ -332,7 +331,7 @@ vom Typ `String` liefert. Der Parameter der Funktion `items` heißt
 `quantity` und die Funktion prüft, ob dieser Parameter gleich `0` ist,
 gleich `1` ist oder einen sonstigen Wert hat.
 
-### Fallunterscheidung
+### Fallunterscheidungen
 
 In Elm können Funktionen mittels `case`-Ausdruck (Fallunterscheidung)
 definiert werden. Ein `case`-Ausdruck ist ähnlich zu einem `switch case`
