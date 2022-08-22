@@ -26,24 +26,29 @@ Das Modul `Html` stellt Funktionen zur Verfügung, um Html-Seiten zu
 erzeugen. Die Bedeutung des Typs `Html msg`, der in der Konstante `main`
 verwendet wird, werden wir uns später anschauen. Die Funktion `text` ist
 im Modul `Html` definiert und nimmt einen `String` und liefert einen
-Text-Knoten. Unter
+HTML-Text-Knoten. Unter
 <https://package.elm-lang.org/packages/elm/html/latest/> findet sich
 eine Beschreibung des Moduls `Html`. Wenn wir eine Definition aus dem
 Modul `Html` verwenden wollen, müssen wir es in der Liste hinter
-`exposing` aufführen. Im obigen Beispiel importieren wir den Typ `Html`
-und die Funktion `text` aus dem Modul `Html`. Bei einem Datentyp kann
-man angeben, ob man nur den Typ oder auch die Konstruktoren importieren
+`exposing` aufführen.
+Das heißt, statt wie zuvor `exposing (..)` zu nutzen, um alle Definitionen aus einem Modul zu importieren, listen wir hier importierte Definitionen explizit auf.
+Im obigen Beispiel importieren wir den Typ `Html` und die Funktion `text` aus dem Modul `Html`.
+Bei einem Datentyp kann man angeben, ob man nur den Typ oder auch die Konstruktoren importieren
 möchte. Wenn wir so wie oben nur den Namen des Typs angeben, importieren
 wir nur den Typ, dürfen die Konstruktoren aber nicht verwenden. Im Fall
 von `Html` importieren wir nur den Typ, da wir die Konstruktoren dieses
 Typs nie explizit verwenden. Wenn wir auch die Konstruktoren von `Html`
 verwenden möchten, müssen wir in der Liste nach `exposing` die Angabe
 `Html(..)` machen. Auf diese Weise importieren wir auch die
-Konstruktoren. Die gleichen Angaben, die wir beim Importieren eines
+Konstruktoren.
+
+Die gleichen Angaben, die wir beim Importieren eines
 Moduls machen, können wir auch verwenden, um Definitionen aus einem
 Modul zu exportieren. Dazu wird die `exposing`-Anweisung genutzt, die
 hinter dem Namen des Moduls steht. Hier exportiert das Modul
 `HelloWorld` zum Beispiel nur die Funktion `main`.
+Das Hauptmodul einer Frontendanwendung muss nur die Funktion `main` expotieren.
+Diese Funktion stellt den Einstiegspunkt dar, wenn die Anwendung ausgeführt wird.
 
 Wenn wir ein Modul importieren, können wir eine Definition immer auch
 qualifiziert verwenden, das heißt, wir können zum Beispiel `Html.text`
@@ -52,6 +57,8 @@ Eigentlich ist es guter Stil, Definitionen qualifiziert zu verwenden, um
 explizit anzugeben, wo die Definition herkommt. Im Fall des Moduls
 `Html` verzichtet man aber häufig darauf, um Programme übersichtlich zu
 halten.
+Bei den Funktionen aus dem Modul `Html` ist im Kontext einer Frontend-Anwendung bereits aus dem Namen eindeutig, um welche Funktion es sich handelt.
+Daher importiert man in Elm-Anwendungen das Modul `Html` häufig mittels `Html exposing (..)`.
 
 Unter <https://package.elm-lang.org/packages/elm/core/latest/> finden
 sich Module, die der Elm-Compiler direkt mitbringt. Diese Module werden
@@ -75,6 +82,7 @@ import Platform.Sub as Sub exposing ( Sub )
 
 Das heißt zum Beispiel, dass alle Definitionen aus dem Modul `Basics`
 direkt zur Verfügung stehen und wir sie unqualifiziert verwenden können.
+Im Modul `Basics` sind ganz grundlegende Definitionen aufgeführt, wie der Datentyp `Int` und Operatoren wie `+`.
 Aus dem Modul `String` wird nur der Typ `String` importiert. Das heißt,
 den Typ `String` können wir unqualifiziert verwenden. Wenn wir
 allerdings eine andere Definition aus dem Modul `String` verwenden
@@ -87,11 +95,15 @@ unqualifiziert nutzen und einfach `Nothing` schreiben. Das gleiche gilt
 für das Modul `Result`, auch hier werden der Typ `Result` und die
 Konstruktoren von `Result` unqualifiziert importiert.
 
+Bei einer Elm-Anwendung ist es guter Stil, Funktionen qualifiziert zu nutzen, also zum Beispiel `String.fromInt` und nicht nur `fromInt`.
+Wenn ein Modul einen Datentyp mit identischem Namen zur Verfügung stellt, sollte man den Datentyp (samt Konstruktoren) aber unqualifiziert nutzen.
+Das heißt, man sollte nicht `String.String` schreiben, um den Typ `String` zu verwenden, sondern nur `String`.
+
 Um unsere Anwendung zu testen, können wir den Befehl `elm reactor`
 verwenden, der einen lokalen Webserver startet. Unter der Adresse
 `localhost:8000` erhalten wir eine Auswahl aller Dateien, die sich in
-dem entsprechenden Verzeichnis befinden. Wenn wir unser
-`HelloWorld`-Beispiel auswählen, erhalten wir die entsprechende
+dem entsprechenden Verzeichnis befinden. Wenn wir die Datei auswählen, die unser
+`HelloWorld`-Beispiel enthält, erhalten wir die entsprechende
 HTML-Seite. Wenn wir die Seite im Browser neu laden, wird der Elm-Code
 neu in JavaScript-Code übersetzt und wir erhalten die aktualisierte
 Version der Anwendung.
@@ -109,28 +121,37 @@ main =
 
 Die Funktion `div` nimmt zwei Argumente. Das erste Argument ist eine
 Liste von Attributen, die das div-Element erhalten soll. Das zweite
-Argument ist eine Liste von Kind-Elementen. Wir könnten in der Liste der
-Kind-Elemente also auch wieder ein div-Element verwenden.
+Argument ist eine Liste von HTML-Kind-Elementen. Wir könnten in der Liste der
+Kind-Elemente also zum Beispiel auch wieder ein div-Element verwenden.
 
 Um die Funktionsweise von Attributen zu illustrieren, geben wir unserem
 div-Element einmal einen CSS-Stil. Die Funktion `style` kommt aus dem
 Modul `Html.Attributes` und nimmt zwei Strings, nämlich den Namen des
 Stils und den entsprechenden Wert, den der Stil haben soll.
+Analog zum Modul `Html` importieren wir alle Definitionen aus dem Modul `Html.Attributes` unqualifiziert wie folgt.
+
+```elm
+import Html.Attributes exposing (..)
+```
+
+Das Module exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
 
 ``` elm
-colorful : List (Attribute msg)
-colorful =
+mainContentStyle : List (Attribute msg)
+mainContentStyle =
     [ style "background-color" "red", style "height" "90px" ]
 
 
 main : Html msg
 main =
-    div colorful [ text "Hallo Welt", text (String.fromInt 23) ]
+    div mainContentStyle [ text "Hallo Welt", text (String.fromInt 23) ]
 ```
 
-Man sollte die Stil-Definitionen in Konstanten auslagern. Dadurch hat
-man ähnlich wie in CSS die Möglichkeit, Kombinationen von Stilen unter
-einem semantischen Namen zusammenzufassen.
+Statt eine CSS-Datei zu nutzen, kann man in Elm sehr gut _Inline_-Stile verwenden.
+Da diese Stile in Elm selbst definiert werden und nicht in einer externen Datei, kann man die Sprachkonstrukte von Elm zur Strukturierung der Stile nutzen.
+So sollte man die Stil-Definitionen zum Beispiel in Konstanten auslagern.
+Das heißt, statt die Stile direkt als Liste an die HTML-Kombinatoren wie `div` zu übergeben, definiert man eine Konstante wie `mainContentStyle` und gibt ihr einen beschreibenden Namen.
+Dadurch hat man ähnlich wie in CSS die Möglichkeit, Kombinationen von Stilen unter einem semantischen Namen zusammenzufassen und wiederzuverwenden.
 
 Als weiteres Beispiel für die Verwendung von Attributen, wollen wir
 einen Link definieren.
@@ -150,6 +171,10 @@ main =
 In diesem Beispiel kombinieren wir eine Konstante, die den Stil aller
 Links definiert mit einem Attribut, das für die Logik der Anwendung
 zuständig ist.
+Die Funktion `href` nimmt einen `String` und konstruiert das gleichnamige HTML-Attribut.
+Der Operator `::` hängt das Element `href "https://hs-flensburg.de"` vorne an die Liste `linkStyle`.
+Man sollte die Attribute, die zur visuellen Gestaltung der Elemente gehören von den Attributen trennen, die zur Logik der Web-Anwendung gehören.
+Wir könnten ansonsten eine Konstante wie `linkStyle` nicht für alle Links der Web-Anwendung nutzen.
 
 Elm-Architektur
 ---------------
@@ -197,6 +222,9 @@ view : Model -> Html Msg
 view model = ...
 
 
+-- Main
+
+
 main : Program () Model Msg
 main =
     Browser.sandbox { init = init, view = view, update = update }
@@ -219,10 +247,10 @@ Unterschied zur *HalloWelt*-Anwendung ist der Typ der Konstante `view`
 nun `Html Msg` und nicht mehr `Html msg`. Wir verweisen im `Html`-Typ
 also auf den Typ der Nachrichten, die wir an die Anwendung schicken
 können.
+Was das kleingeschriebene `msg` bedeutet, werden wir im Kapitel [Polymorphismus](polymorphism.md) erfahren.
 
 Wir wollen uns einmal ein sehr einfaches Beispiel für eine Anwendung
-ansehen. Wir implementieren einen einfachen Zähler, den der\*die
-Nutzer\*in hoch- und runterzählen kann.
+ansehen. Wir implementieren einen einfachen Zähler, den Nutzer\*innen hoch- und runterzählen können.
 
 ``` elm
 module Counter exposing (main)
@@ -265,17 +293,14 @@ main =
     Browser.sandbox { init = init, view = view, update = update }
 ```
 
-Da wir einen Zähler implementieren wollen, ist unser Zustand ein `Int`.
-Initial ist unser Zustand `0`. Um die Nachrichten darzustellen, die
-ein\*e Nutzer\*in auswählen kann, definieren wir einen Aufzählungstyp.
+Da wir einen Zähler implementieren wollen, ist unser Zustand vom Typ `Int`.
+Initial hat unser Zustand den Wert `0`. Um die Nachrichten darzustellen, die Nutzer\*innen auswählen können, definieren wir einen Aufzählungstyp.
 Die Funktion `update` verarbeitet einen Zustand und eine Nachricht und
 liefert einen neuen Zustand. Die Funktion `view` liefert zu einem
 Zustand die HTML-Seite, die den Zustand repräsentiert.
 
-Unserer Anwendung fehlt ein wichtiger Teil, nämlich die Möglichkeit,
-dass der\*die Nutzer\*in mit der Anwendung interagiert. Zu diesem Zweck
-müssen wir nur zwei Knöpfe zu unserer Seite hinzufügen, die die
-Nachrichten `Increase` und `Decrease` an die Anwendung schicken.
+Unserer Anwendung fehlt ein wichtiger Teil, nämlich die Möglichkeit, dass Nutzer\*innen mit der Anwendung interagieren.
+Zu diesem Zweck müssen wir nur zwei Knöpfe zu unserer Seite hinzufügen, die die Nachrichten `Increase` und `Decrease` an die Anwendung schicken.
 
 ``` elm
 view : Model -> Html Msg
@@ -290,11 +315,9 @@ view model =
 Die Funktion `button` kommt aus dem Modul `Html` und erzeugt einen Knopf
 in der HTML-Struktur. Das Modul `Html.Events` stellt die Funktion
 `onClick` zur Verfügung. Wir übergeben der Funktion die Nachricht, die
-wir bei einem Klick an die Anwendung schicken wollen. Verwendet der\*die
-Nutzer\*in den Knopf zum Erhöhen des Zählers, wird die Funktion `update`
-mit der Nachricht `Increase` und dem aktuellen Zustand aufgerufen. Nach
-der Aktualisierung wird die Funktion `view` aufgerufen und die
-entsprechende HTML-Seite angezeigt.
+wir bei einem Klick an die Anwendung schicken wollen.
+Verwenden Nutzer\*innen diesen Knopf zum Erhöhen des Zählers, wird die Funktion `update` mit der Nachricht `Increase` und dem aktuellen Zustand aufgerufen.
+Nach der Aktualisierung wird die Funktion `view` aufgerufen und die entsprechende HTML-Seite angezeigt.
 
 In diesem einfachen Beispiel können wir bereits den deklarativen Ansatz
 der Elm-Architektur erkennen. Die Funktion `view` beschreibt, wie ein
@@ -303,26 +326,14 @@ nur, was dargestellt werden soll, aber nicht wie die konkrete
 Darstellung durchgeführt wird. Im Kontrast dazu, würde eine sehr
 klassische JavaScript-Anwendung beschreiben, wie die HTML-Struktur
 geändert wird. Der entsprechende HTML-Knoten wird aus der HTML-Struktur
-herausgesucht und den Zähler durch den veränderten Wert ersetzt.
+herausgesucht und der Zähler durch den veränderten Wert ersetzt.
 
-<a href="#elm-runtime" data-reference-type="ref"
-data-reference="elm-runtime">[elm-runtime]</a> illustriert noch einmal,
-wie die Elm-Anwendung kommuniziert, wenn sie mittels `Browser.sandbox`
-gestartet wurde.
+Die Abbildung <a href="#sequence-diagram">Kommunikation einer Elm-Anwendung</a> illustriert noch einmal, wie die Komponenten der Elm-Architektur miteinander iteragieren, wenn eine Anwendung mittels `Browser.sandbox` gestartet wurde.
 
-=\[draw=none,minimum width=5cm,font=\];
-
-C`Model`B
-
-B`Model`E`Html`
-
-B`Html`A
-
-A`Msg`B`Html`
-
-B`Msg`, `Model`D`Model`
-
-B`Model`E`Html`
+<figure id="sequence-diagram">
+  <img src="/assets/graphics/sequence-diagram.svg" alt="my alt text"/>
+  <figcaption>Kommunikation einer Elm-Anwendung</figcaption>
+</figure>
 
 Debugging
 ---------
@@ -361,7 +372,7 @@ hat. Wenn wir auf den Knopf für das Verringern des Zählers drücken,
 erhalten wir keine Ausgabe, da der Aufruf von `Debug.log` nur ausgeführt
 wird, wenn die Nachricht `Increase` lautet.
 
-<div style="display:table;width:100%">
+<div style="display:table;width:100%;margin-bottom:15px">
     <ul style="display:table-row;list-style:none">
         <li style="display:table-cell;width:33%;text-align:left"><a href="basics.html">zurück</a></li>
         <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>

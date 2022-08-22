@@ -1,0 +1,27 @@
+\documentclass[tikz,convert={outfile=\jobname.svg}]{standalone}
+
+\usepackage[underline=false]{pgf-umlsd}
+
+\begin{document}
+\begin{sequencediagram}
+  \tikzstyle{inststyle}=[draw=none,minimum width=5cm,font=\sffamily];
+
+  \newthread{A}{UI}
+  \newthread{B}{Elm-Runtime}
+  \newinst{C}{\texttt{init}}
+  \newinst{D}{\texttt{update}}
+  \newinst{E}{\texttt{view}}
+  \begin{messcall}{C}{\texttt{Model}}{B}{}
+  \end{messcall}
+  \begin{call}{B}{\texttt{Model}}{E}{\texttt{Html}}
+  \end{call}
+  \begin{messcall}{B}{\texttt{Html}}{A}{}
+  \end{messcall}
+  \begin{call}{A}{\texttt{Msg}}{B}{\texttt{Html}}
+  \begin{call}{B}{\texttt{Msg}, \texttt{Model}}{D}{\texttt{Model}}
+  \end{call}
+  \begin{call}{B}{\texttt{Model}}{E}{\texttt{Html}}
+  \end{call}
+  \end{call}
+\end{sequencediagram}
+\end{document}
