@@ -11,7 +11,7 @@ custom_css: toc
 
 - 2.1. [Projekt-Setup](basics.md#projekt-setup)
 
-- 2.2. [Sprach-Grundlagen](basics.md#sprach-grundlagen)
+- 2.2. [Sprachgrundlagen](basics.md#sprachgrundlagen)
 
 - 2.3. [Grunddatentypen](basics.md#grunddatentypen)
 
