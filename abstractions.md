@@ -11,7 +11,7 @@ objektorientierten Sprachen. Das heißt, man identifiziert Funktionen,
 die man für verschiedene Datenstrukturen definieren kann und beschreibt,
 welche Eigenschaften diese Funktionen haben sollten.
 
-![You say "pattern" and nobody panics, you say "monad" and everybody is losing their mind](/assets/images/monads-and-patterns.jpg){:style="display:block; margin-left:auto; margin-right:auto"}
+![You say "pattern" and nobody panics, you say "monad" and everybody is losing their mind](./assets/images/monads-and-patterns.jpg){:style="display:block; margin-left:auto; margin-right:auto"}
 
 
 Funktoren
@@ -196,7 +196,7 @@ dieser Stelle noch eine dieser Abstraktionen anschauen, die Monade heißt
 und vergleichsweise legendär auch außerhalb der funktionalen
 Programmierung ist.
 
-![Monads, monad everywhere](/assets/images/monads-everywhere.png){:style="display:block; margin-left:auto; margin-right:auto"}
+![Monads, monad everywhere](./assets/images/monads-everywhere.png){:style="display:block; margin-left:auto; margin-right:auto"}
 
 Es gibt einige Funktionen, die sich mit Hilfe eines applikativen
 Funktors nicht ausdrücken lassen. Wir betrachten dazu das Beispiel
@@ -347,7 +347,7 @@ Die [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia) bietet
 noch weitere Informationen zu Abstraktionen in der funktionalen
 Programmierung.
 
-<div style="display:table;width:100%">
+<div style="display:table;width:100%;margin-bottom:15px">
     <ul style="display:table-row;list-style:none">
         <li style="display:table-cell;width:33%;text-align:left"><a href="commandos.html">zurück</a></li>
         <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>

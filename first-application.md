@@ -331,7 +331,7 @@ herausgesucht und der Zähler durch den veränderten Wert ersetzt.
 Die Abbildung <a href="#sequence-diagram">Kommunikation einer Elm-Anwendung</a> illustriert noch einmal, wie die Komponenten der Elm-Architektur miteinander iteragieren, wenn eine Anwendung mittels `Browser.sandbox` gestartet wurde.
 
 <figure id="sequence-diagram">
-  <img src="/assets/graphics/sequence-diagram.svg" alt="my alt text"/>
+  <img src="./assets/graphics/sequence-diagram.svg" alt="my alt text"/>
   <figcaption>Kommunikation einer Elm-Anwendung</figcaption>
 </figure>
 
