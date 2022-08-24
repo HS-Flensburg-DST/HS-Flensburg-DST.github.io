@@ -1,3 +1,22 @@
 h3 {
     border-bottom: 2px dotted #CCC;
 }
+
+.post-title {
+    display: inline-block;
+}
+
+.support {
+    font-size: 12px;
+}
+
+.logo {
+    float: right;
+    width: 150px;
+}
+
+.logo::after {
+    content: "";
+    clear: both;
+    display: table;
+}
