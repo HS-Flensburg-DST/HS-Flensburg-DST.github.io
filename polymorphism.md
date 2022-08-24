@@ -487,10 +487,10 @@ den konkreten Typ `Maybe String` ersetzt.
 
 [1] <https://de.wikipedia.org/wiki/Syntaktischer_Zucker>
 
-<div style="display:table;width:100%">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="polymorphism.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="recursion.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="data-types.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="recursion.html">weiter</a></li>
     </ul>
 </div>

@@ -331,7 +331,7 @@ herausgesucht und der Zähler durch den veränderten Wert ersetzt.
 Die Abbildung <a href="#sequence-diagram">Kommunikation einer Elm-Anwendung</a> illustriert noch einmal, wie die Komponenten der Elm-Architektur miteinander iteragieren, wenn eine Anwendung mittels `Browser.sandbox` gestartet wurde.
 
 <figure id="sequence-diagram">
-  <img src="./assets/graphics/sequence-diagram.svg" alt="my alt text"/>
+  <img src="./assets/graphics/sequence-diagram.svg" alt="Sequenzdiagramm der Kommunikation einer Elm-Anwendung"/>
   <figcaption>Kommunikation einer Elm-Anwendung</figcaption>
 </figure>
 
@@ -372,10 +372,10 @@ hat. Wenn wir auf den Knopf für das Verringern des Zählers drücken,
 erhalten wir keine Ausgabe, da der Aufruf von `Debug.log` nur ausgeführt
 wird, wenn die Nachricht `Increase` lautet.
 
-<div style="display:table;width:100%;margin-bottom:15px">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="basics.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="data-types.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="basics.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="data-types.html">weiter</a></li>
     </ul>
 </div>

@@ -300,7 +300,7 @@ der Operator ∘ linksassoziativ ist, gilt
 falls er rechts-assoziativ ist, gilt
 *x* ∘ *y* ∘ *z* = *x* ∘ (*y*∘*z*).
 Das heißt, im Unterschied zur Bindungsstärke wird die Assoziativität genutzt, um auszudrücken, wie ein Ausdruck geklammert ist, wenn er mehrfach den gleichen Operator enthält.
-In Kapitel [Funktionen höherer Ordnung](recursion.md) werden wir sehen, dass für einige Konzepte der Programmiersprache Elm, die Assoziativität eine entscheidende Rolle spielt.
+Im Kapitel [Funktionen höherer Ordnung](recursion.md) werden wir sehen, dass für einige Konzepte der Programmiersprache Elm, die Assoziativität eine entscheidende Rolle spielt.
 
 Funktionsdefinitionen
 ---------------------
@@ -777,7 +777,7 @@ Diese Variante ist relativ unflexibel, da wir nicht mehr auf den gesamten Record
 Wenn wir für einen Record ein Typsynonym einführen, gibt es eine Kurzschreibweise, um einen Record zu erstellen.
 Um einen Wert vom Typ `User` zu erstellen, können wir zum Beispiel auch `User "John" "Doe" 20` schreiben.
 Dabei gibt die Reihenfolge der Felder in der Definition des Records an, in welcher
-Reihenfolge die Argumente übergeben werden. Wir werden in Kapitel [Funktionen höherer Ordnung](recursion.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
+Reihenfolge die Argumente übergeben werden. Wir werden im Kapitel [Funktionen höherer Ordnung](recursion.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
 Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann.
 
 ### Listen
@@ -808,10 +808,10 @@ nicht etwa sein Argument.
 
 [^1]: Peter J. Landin (<https://en.wikipedia.org/wiki/Peter_Landin>) war einer der Begründer der funktionalen Programmierung.
 
-<div style="display:table;width:100%;margin-bottom:15px">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="preface.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="first-application.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="preface.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="first-application.html">weiter</a></li>
     </ul>
 </div>

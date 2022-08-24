@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Abonnement"
+title: "Abonnements"
 ---
 
 In diesem Kapitel wollen wir uns die Funktionsweise der `subscriptions`
@@ -631,10 +631,10 @@ HTML-Struktur dar.
 lässt sich überprüfen, welchen Wert dieses Feld beim Druck einer
 bestimmten Taste annimmt.
 
-<div style="display:table;width:100%">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="architecture.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="commands.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="architecture.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="commands.html">weiter</a></li>
     </ul>
 </div>

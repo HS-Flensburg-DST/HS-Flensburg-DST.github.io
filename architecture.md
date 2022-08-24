@@ -155,10 +155,10 @@ kann. Das heißt, mit Hilfe des statischen Typsystems sorgen wir dafür,
 dass klar ist, welche Nachrichten unsere `update`-Funktion verarbeiten
 können muss.
 
-<div style="display:table;width:100%">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="recursion.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="subscriptions.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="recursion.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="subscriptions.html">weiter</a></li>
     </ul>
 </div>

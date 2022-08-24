@@ -168,7 +168,7 @@ das Modul `Random` die Funktion
 `map : (a -> b) -> Generator a -> Generator b` zur Verfügung. Mit Hilfe
 dieser Funktion können wir die Ergebnisse eines `Generator` abändern.
 Nehmen wir an, wir benötigen einen Zufallsgenerator, der Zahlen liefert
-an Stelle des Datentyps `Side`. In diesem Fall können wir wie folgt
+anstelle des Datentyps `Side`. In diesem Fall können wir wie folgt
 einen Generator definieren.
 
 ``` elm
@@ -433,10 +433,10 @@ gedacht.
 
 [1] <https://github.com/public-apis/public-apis>
 
-<div style="display:table;width:100%">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="subscriptions.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="abstractions.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="subscriptions.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="abstractions.html">weiter</a></li>
     </ul>
 </div>

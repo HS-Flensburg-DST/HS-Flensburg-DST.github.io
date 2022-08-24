@@ -96,10 +96,10 @@ wird. Wir können aus einer Elm-Anwendung entweder eine HTML-Seite
 inklusive JavaScript-Code erzeugen oder JavaScript-Code, den wir dann in
 eine bestehende Seite einbinden können.
 
-<div style="display:table;width:100%">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="basics.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="basics.html">weiter</a></li>
     </ul>
 </div>

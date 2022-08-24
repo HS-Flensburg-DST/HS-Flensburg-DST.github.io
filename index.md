@@ -1,6 +1,6 @@
 ---
-layout: post
-title: "Inhaltsverzeichnis"
+layout: toc
+title: Inhaltsverzeichnis
 custom_css: toc
 ---
 

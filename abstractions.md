@@ -347,10 +347,10 @@ Die [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia) bietet
 noch weitere Informationen zu Abstraktionen in der funktionalen
 Programmierung.
 
-<div style="display:table;width:100%;margin-bottom:15px">
-    <ul style="display:table-row;list-style:none">
-        <li style="display:table-cell;width:33%;text-align:left"><a href="commandos.html">zurück</a></li>
-        <li style="display:table-cell;width:33%;text-align:center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li style="display:table-cell;width:33%;text-align:right"><a href="final-topics.html">weiter</a></li>
+<div class="nav">
+    <ul class="nav-row">
+        <li class="nav-item nav-left"><a href="commands.html">zurück</a></li>
+        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
+        <li class="nav-item nav-right"><a href="final-topics.html">weiter</a></li>
     </ul>
 </div>
