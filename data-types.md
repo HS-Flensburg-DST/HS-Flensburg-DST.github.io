@@ -397,20 +397,23 @@ Auf diese Weise wird die leere Liste in der Liste `list1` durch die Liste `list2
 
 Die Abbildung <a href="#sequence-diagram">Kommunikation einer Elm-Anwendung</a> illustriert noch einmal, wie die Komponenten der Elm-Architektur miteinander iteragieren, wenn eine Anwendung mittels `Browser.sandbox` gestartet wurde.
 
-<figure id="sequence-diagram">
+Wir wollen an dieser Stelle auch ganz kurz das Speichermodell und die Laufzeit von Funktionen in Elm diskutieren.
+Das Aufrufen eines Konstruktors so wie _Pattern Matching_ sind konstante Operationen.
+Das heißt, die Laufzeit der Funktion `append` ist linear in der Länge der ersten Liste.
+Wenn wir einen Konstruktor verwenden, wird im Heap eine entsprechende Struktur angelegt.
+In der Funktion `append` wird zum Beispiel die Liste `list1` neu erstellt, da wird in der Regel für `Cons` den Konstruktor jeweils neu erstellen.
+Wenn die Funktion `append` am Ende von `list1` angekommen ist, wird die Liste `list2` aber einfach zurückgegeben, wie sie ist.
+Dadurch entsteht nach einem Aufruf von `append` im Speicher die Struktur, die in <a href="#memory">Abbildung ?</a> zu sehen ist.
+Das heißt, das Eregebnis des Aufrufs `append list1 list2` hat die `Cons`-Zellen mit den Werten `1`, `2` und `3` neu erstellt.
+Diese existieren jetzt doppelt im Speicher.
+Die Liste `list` wird aber nicht dupliziert, sondern die Variable `list2` und das Ergebnis von `append list1 list2` verweisen beide auf die gleiche Struktur im Speicher.
+
+<figure id="memory">
   <img src="./assets/graphics/memory.svg" alt="Darstellung der Speicherstruktur der Listen nach einem Aufruf von append"/>
-  <figcaption>Speicherstruktur nach dem Aufruf <code class="language-plaintext highlighter-rouge">append list1 list2</code></figcaption>
+  <figcaption>Abbildung ?: Speicherstruktur nach dem Aufruf <code class="language-plaintext highlighter-rouge">append list1 list2</code></figcaption>
 </figure>
 
-Wir wollen an dieser Stelle auch ganz kurz das Speichermodell und die
-Laufzeit von Funktionen in Elm diskutieren. Das Aufrufen eines
-Konstruktors so wie _Pattern Matching_ sind konstante Operationen. Das
-heißt, die Laufzeit der Funktion `append` ist linear in der Länge der
-ersten Liste.
-
-Als weiteres Beispiel eines rekursiven Datentyps wollen wir uns eine
-Baumstruktur anschauen. Der folgende Datentyp stellt zum Beispiel einen
-binären Baum mit ganzen Zahlen in den Knoten dar.
+Als weiteres Beispiel eines rekursiven Datentyps wollen wir uns eine Baumstruktur anschauen. Der folgende Datentyp stellt zum Beispiel einen binären Baum mit ganzen Zahlen in den Knoten dar.
 
 ``` elm
 type IntTree
@@ -421,8 +424,8 @@ type IntTree
 Die folgende Definition gibt einen Wert dieses Typs an.
 
 ``` elm
-tree : IntTree
-tree =
+exampleTree : IntTree
+exampleTree =
     Node (Node Empty 3 (Node Empty 5 Empty)) 8 Empty
 ```
 
@@ -437,17 +440,14 @@ find n tree =
             False
 
         Node leftree int righttree ->
-            n == int |\mintinline{elm}{ find n leftree }| find n righttree
+            n == int || find n lefttree || find n righttree
 ```
 
-Im Unterschied zur Programmiersprache Haskell ist Elm eine strikte
-Sprache, nutzt also *call-by-name* als Auswertungsstrategie. Das heißt,
-bei Definitionen wie `find` müssen wir beachten, dass rekursive auch
-durchgeführt werden, wenn ihr Ergebnis ggf. gar nicht benötigt wird. In
-Elm, wie in vielen anderen Sprachen, sind die logischen Operatoren
-@`\mintinline{elm}{@ und }&&` als Kurzschlussoperatoren definiert. Das
-heißt, der rekursive Aufruf `find n lefttree` wird nur durchgeführt,
-falls die Bedingung `n == int` nicht erfüllt ist.
+Im Unterschied zur Programmiersprache Haskell ist Elm eine strikte Sprache, nutzt also **call-by-value** als Auswertungsstrategie.
+Das heißt, bei Definitionen wie `find` müssen wir beachten, dass rekursive Aufrufe auch durchgeführt werden, wenn ihr Ergebnis ggf. gar nicht benötigt wird.
+Der Ausdruck `n == int || find n lefttree` müsste zum Beispiel beide Argumente von `||` auswerten, auch wenn der gesuchte Eintrag bereits gefunden wurde, also `n == int` als Ergegbnis `True` liefert. 
+In Elm -- wie in vielen anderen Programmiersprachen -- sind die logischen Operatoren `||` und `&&` daher als Kurzschlussoperatoren definiert.
+Das heißt, der rekursive Aufruf `find n lefttree` wird nur durchgeführt, falls die Bedingung `n == int` nicht erfüllt ist.
 
 <div class="nav">
     <ul class="nav-row">
