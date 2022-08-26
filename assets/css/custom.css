@@ -1,3 +1,18 @@
+.site-title {
+    line-height: 1.15;
+    letter-spacing: 0;
+}
+
+.site-subtitle {
+    display: block;
+    font-size: 16px;
+}
+
+header .wrapper {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 figcaption {
     text-align: center;
 }
