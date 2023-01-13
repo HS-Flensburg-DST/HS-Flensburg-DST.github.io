@@ -376,6 +376,6 @@ wird, wenn die Nachricht `Increase` lautet.
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="basics.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="data-types.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="style.html">weiter</a></li>
     </ul>
 </div>
