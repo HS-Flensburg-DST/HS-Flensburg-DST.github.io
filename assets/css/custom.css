@@ -1,3 +1,5 @@
+/* Add subtitle to the header title */
+
 .site-title {
     line-height: 1.15;
     letter-spacing: 0;
@@ -13,9 +15,103 @@ header .wrapper {
     padding-bottom: 5px;
 }
 
+/* Fixed position side bar */
+
+.sidebar {
+    position: fixed;
+    top: 100px;
+    right: 0;
+    width: 20%;
+}
+
+.sidebar-content {
+    width: 200px;
+}
+
+@media screen and (max-width: 1260px) {
+
+    .sidebar {
+        position: static;
+        float: left;
+        width: 100%;
+    }
+
+    .sidebar-content {
+        width: 100%;
+    }
+}
+
+.sidebar h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.logo {
+    float: left;
+    width: 200px;
+}
+
+@media screen and (max-width: 1260px) {
+
+    .logo {
+        margin-right: 50px;
+    }
+}
+
+.logo .support {
+    font-size: 12px;
+}
+
+.author-card {
+    float: left;
+    width: 200px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    margin-bottom: 50px;
+}
+
+.author-card-text {
+    padding: 10px;
+}
+
+.author-card p.author {
+    font-size: 10px;
+    color: rgb(130, 130, 130);
+    margin-bottom: 0;
+}
+
+.author-card p.title {
+    font-size: 10px;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 1260px) {
+
+    .author-card {
+        margin-right: 50px;
+    }
+}
+
+.offer {
+    float: left;
+    width: 200px;
+    margin-bottom: 35px;
+}
+
+@media screen and (max-width: 1260px) {
+
+    .offer {
+        width: 490px;
+    }
+}
+
+/* Make figure captions centered */
+
 figcaption {
     text-align: center;
 }
+
+/* Style navigation at the bottom */
 
 .nav {
     display: table;
@@ -45,8 +141,34 @@ figcaption {
     text-align: right;
 }
 
+/* Make images centered */
+
 img.centered {
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+/* Info boxes */
+.info {
+    border-radius: 3px;
+    border: 2px solid;
+    border-color: #6699C6;
+}
+
+.info-title {
+    position: relative;
+    padding: 5px 5px 5px 5px;
+    /* background-color: #EFF5F9; */
+    background-color: #6699C6;
+    color: white;
+}
+
+.info-title::before {
+    content: '\2139';
+}
+
+.info-content {
+    margin-left: 25px;
+    margin-right: 25px;
 }

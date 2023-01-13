@@ -1,5 +1,11 @@
-h3 {
+/* Add dotted line below chapter names */
+
+article h3 {
     border-bottom: 2px dotted #CCC;
+}
+
+ul {
+    list-style-type: none;
 }
 
 .post-title {
@@ -19,4 +25,8 @@ h3 {
     content: "";
     clear: both;
     display: table;
+}
+
+ul {
+    list-style-type: none;
 }
