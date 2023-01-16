@@ -198,7 +198,9 @@ import Browser
 import Html exposing (Html)
 
 
+
 -- Model
+
 
 type alias Model = ...
 
@@ -207,7 +209,9 @@ init : Model
 init = ...
 
 
+
 -- Update
+
 
 type alias Msg = ...
 
@@ -216,13 +220,17 @@ update : Msg -> Model -> Model
 update msg model = ...
 
 
+
 -- View
+
 
 view : Model -> Html Msg
 view model = ...
 
 
+
 -- Main
+
 
 main : Program () Model Msg
 main =
@@ -258,7 +266,9 @@ import Browser
 import Html exposing (Html, text)
 
 
+
 -- Model
+
 
 type alias Model =
     Int
@@ -269,7 +279,9 @@ init =
     0
 
 
+
 -- Update
+
 
 type Msg
     = Increase
@@ -286,14 +298,18 @@ update msg model =
             model - 1
 
 
+
 -- View
+
 
 view : Model -> Html Msg
 view model =
     text (String.fromInt model)
 
 
+
 -- Main
+
 
 main : Program () Model Msg
 main =
