@@ -79,11 +79,15 @@ Später werden wir bei einem Import immer genau angeben, welche Definitionen wir
 
 <!-- <p style="position:absolute;top:1500px;left:20px">Test</p> -->
 
+<!-- <div class="info">
+    <p class="info-title">REPL</p>
+    <p class="info-content">Die REPL</p>
+</div> -->
+
 Sprachgrundlagen
 -----------------
 
-Der folgende Ausschnitt demonstriert, wie man in Elm Kommentare
-schreibt.
+Der folgende Ausschnitt demonstriert, wie man in Elm Kommentare schreibt.
 
 ``` elm
 -- This is a line comment
@@ -150,6 +154,8 @@ c2 =
     ' '
 
 
+{-| Here we define a String
+-}
 s : String
 s =
     "Hello World!"
@@ -157,6 +163,12 @@ s =
 
 Das heißt, im Unterschied zu JavaScript unterscheidet Elm zwischen dem
 Typ `Int` und dem Typ `Float`.
+
+Wenn ein Kommentar zu einer Definition geschrieben werden soll, muss ein sogenannter Doc-Kommentar verwendet werden.
+Diese Art von Kommentar wird einer Definition zugeordnet.
+Bei den Kommentaren, die wir bisher kennengelernt haben, wird durch `elm-format` eine Leerzeile zwischen Kommentar und Definition hinzugefügt.
+Da ein Doc-Kommentar sich auf eine Definition bezieht, fügt `elm-format` zwischen den Kommentar und die Definition `s` keine Leerzeile ein.
+
 
 ### Arithmetische Ausdrücke
 
