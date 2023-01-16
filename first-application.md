@@ -224,7 +224,6 @@ view model = ...
 
 -- Main
 
-
 main : Program () Model Msg
 main =
     Browser.sandbox { init = init, view = view, update = update }
@@ -259,6 +258,8 @@ import Browser
 import Html exposing (Html, text)
 
 
+-- Model
+
 type alias Model =
     Int
 
@@ -267,6 +268,8 @@ init : Model
 init =
     0
 
+
+-- Update
 
 type Msg
     = Increase
@@ -283,10 +286,14 @@ update msg model =
             model - 1
 
 
+-- View
+
 view : Model -> Html Msg
 view model =
     text (String.fromInt model)
 
+
+-- Main
 
 main : Program () Model Msg
 main =
@@ -295,9 +302,13 @@ main =
 
 Da wir einen Zähler implementieren wollen, ist unser Zustand vom Typ `Int`.
 Initial hat unser Zustand den Wert `0`. Um die Nachrichten darzustellen, die Nutzer\*innen auswählen können, definieren wir einen Aufzählungstyp.
-Die Funktion `update` verarbeitet einen Zustand und eine Nachricht und
-liefert einen neuen Zustand. Die Funktion `view` liefert zu einem
-Zustand die HTML-Seite, die den Zustand repräsentiert.
+Die Funktion `update` verarbeitet einen Zustand und eine Nachricht und liefert einen neuen Zustand.
+Die Funktion `view` liefert zu einem Zustand die HTML-Seite, die den Zustand repräsentiert.
+
+Es ist ein sehr probates Mittel, ein Elm-Modul mithilfe von Kommentaren zu Strukturen.
+Wir werden uns später Gedanken darüber machen, wie man eine Elm-Anwendung in mehrere Module zerlegt.
+Innerhalb eines Moduls kann man aber sehr gut Kommentare nutzen, um Gruppen von Funktionen zu bilden.
+Dieses Konzept ist nicht auf die Elm-Architektur beschränkt, sondern lässt sich ganz allgemein anwenden, um Leser*innen Orientierung in einer Datei zu bieten.
 
 Unserer Anwendung fehlt ein wichtiger Teil, nämlich die Möglichkeit, dass Nutzer\*innen mit der Anwendung interagieren.
 Zu diesem Zweck müssen wir nur zwei Knöpfe zu unserer Seite hinzufügen, die die Nachrichten `Increase` und `Decrease` an die Anwendung schicken.
