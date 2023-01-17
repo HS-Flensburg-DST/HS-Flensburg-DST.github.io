@@ -100,61 +100,94 @@ möchten. Wir müssen der Funktion dann noch ein funktionales Argument
 übergeben, das die aktuelle Zeit im Posix-Format erhält und daraus eine
 Nachricht unseres Nachrichtentyps macht.
 
-Wir wollen nur die vergangenen Sekunden in unserer Uhr anzeigen, daher
-verwenden wir die folgenden Datentypen für unser Modell und die
-Nachrichten an die Anwendung.
+Wir wollen nur die vergangenen Sekunden in unserer Uhr anzeigen, daher definieren wir uns einen Datentyp für Sekunden.
+
+```elm
+type Seconds
+    = Seconds Int
+```
+
+Auf den ersten Blick erzeugt dieser Datentyp einen unnötigen zusätzlichen _Overhead_.
+Zuerst einmal verbessert dieser Datentyp aber den dokumentativen Charakter unseres Codes.
+Statt einen `Int` an Funktionen zu übergeben, welche die Sekunden weiterverarbeiten, übergeben wir jetzt den Typ `Seconds`, der uns die Semantik des Argumentes signalisiert.
+Außerdem werden wir sehen, dass wir auf diese Weise einen Datentyp identifizieren können, den wir zur Strukturierung unserer Anwendung nutzen können.
+
+Wir definieren den Datentyp `Seconds` daher in einem eigenen Modul mit dem Namen `Seconds` und importieren das Modul mittels `import Seconds exposing (Seconds)` im Hauptmodul und verwenden die folgenden Datentypen in unserem Hauptmodul.
 
 ``` elm
 type alias Model =
-    Int
+    Seconds
 
 
 type Msg =
     Tick
 ```
 
-Mit Hilfe der Funktion `time` definieren wir die folgende
-`main`-Funktion. Die Implementierungen der Funktionen `init`, `view` und
-`update` werden wir im Folgenden diskutieren. Um die Definitionen zu
-vereinfachen, nutzen wir hier mehrere Lambda-Ausdrücke.
+Mit Hilfe der Funktion `Time.every` definieren wir die folgende `main`-Funktion.
+Die Implementierungen der Funktionen `init`, `view` und `update` werden wir im Folgenden diskutieren.
+Um die Definitionen zu vereinfachen, nutzen wir hier mehrere Lambda-Ausdrücke.
 
 ``` elm
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \_ -> ( 0, Cmd.none )
+        { init = \_ -> ( Seconds.zero, Cmd.none )
         , subscriptions = \_ -> Time.every 1000 (\_ -> Tick)
         , view = view
         , update = \msg model -> ( update msg model, Cmd.none )
         }
 ```
 
-Unser initiales Modell setzt den Sekundenwert zu Anfang auf null. Die
-Funktion `update` zählt lediglich unseren Sekundenzähler hoch.
+Unser initiales Modell setzt den Sekundenwert zu Anfang auf null.
+Die Funktion `update` soll unseren Sekundenzähler hochzählen.
+Daher definieren wie dir Konstante `zero` und die Funktion `inc` im Modul `Seconds`
+Die Funktion `inc` rechnet den Wert der Sekunden jeweils modulo `60`, damit immer nur valide Sekundenwerte entstehen, also Werte zwischen `0` und `59`.
+
+```elm
+module Seconds exposing (Seconds, inc, zero)
+
+
+type Seconds
+    = Seconds Int
+
+
+zero : Seconds
+zero =
+    Seconds 0
+
+
+inc : Seconds -> Seconds
+inc (Seconds seconds) =
+    Seconds (modBy 60 (seconds + 1))
+```
+
+Der Modulkopf des Moduls `Seconds` exportiert zwar den Typ `Seconds` aber nicht seine Konstruktoren.
+Auf diese Weise garantieren wir, dass Werte vom Typ `Seconds` nur mithilfe der Konstante `zero` und der Funktion `inc` erzeugt werden.
+Wir erreichen dadurch eine Datenkapselung (_information hiding_), wie sie auch aus anderen Programmiersprachen bekannt ist.
+Das heißt, wir stellen den Nutzer*innen eine feste Schnittstelle zur Arbeit mit `Seconds` zur Verfügung und verhindern, dass auf die interne Darstellung zugegriffen wird.
+
+Durch diese Abstraktion können wir die Implementierung später auch einfach ersetzen.
+Zum Beispiel können wir die Uhr später relativ einfach auf eine Anzeige mit Minuten **und** Sekunden umstellen, indem wir den Datentyp `Seconds` durch einen Datentyp ersetzen, der beide Informationen hält.
+
+Wir nutzen die Funktion `inc` nun wie folgt in unserer Uhr.
 
 ``` elm
 update : Msg -> Model -> Model
-update msg model =
+update msg seconds =
     case msg of
         Tick ->
-            modBy 60 (model + 1)
+            Seconds.inc seconds
 ```
 
-Im Grunde könnten wir hier auch auf das Pattern Matching verzichten, da
-wir wissen, dass die einzigen Nachricht, die wir erhalten können, die
-Nachricht `Tick` ist. Durch das Pattern Matching gewährleisten wir aber,
-dass der Elm-Compiler sich über ein fehlendes *Pattern* beschwert, falls
-wir einen weiteren Konstruktor zum Typ `Msg` hinzufügen. Ohne das
-*Pattern Matching* würde die Anwendung sich einfach weiter verhalten wie
-zuvor und bei einer großen Anwendung ist ein Fehler dieser Art eventuell
-schwer zu finden. Da wir nur eine Sekundenanzeige umsetzen wollen,
-rechnen wir den Sekundenzähler noch modulo 60.
+Im Grunde könnten wir hier auch auf das Pattern Matching verzichten, da wir wissen, dass die einzige Nachricht, die wir erhalten können, die Nachricht `Tick` ist.
+Durch das Pattern Matching gewährleisten wir aber, dass der Elm-Compiler sich über ein fehlendes *Pattern* beschwert, falls wir einen weiteren Konstruktor zum Typ `Msg` hinzufügen.
+Ohne das *Pattern Matching* auf `Tick` würde die Anwendung weiterhin kompilieren, wenn wir einen weiteren Konstruktor zu `Msg` hinzufügen.
+Die Anwendung würde sich aber für diese neue Nachricht genau so verhalten wie für die Nachricht `Tick`, was ggf. nicht das gewünschte Verhalten ist.
 
 Als nächstes wollen wir die Uhr zeichnen. Dazu definieren wie uns
 zunächst eine Hilfsfunktion. Diese Funktion werden wir später nutzen, um
-den Wert des SVG-Attributes `transform` zu setzen. Dabei geben wird
-einen Winkel in Grad und einem Punkt an und rotieren dann ein Objekt um
-den Winkel um den angegebenen Punkt.
+den Wert des SVG-Attributes `transform` zu setzen.
+Dabei geben wird einen Winkel in Grad und einem Punkt an und rotieren dann ein Objekt um den Winkel und um den angegebenen Punkt.
 
 ``` elm
 type alias Point =
@@ -172,16 +205,15 @@ rotate angle point =
         ++ ")"
 ```
 
-Nun implementieren wir eine Funktion, die die aktuelle Sekundenzahl in
-Form einer Uhr anzeigt.
+Nun implementieren wir eine Funktion, die die aktuelle Sekundenzahl in Form einer Uhr anzeigt.
 
 ``` elm
 view : Model -> Html msg
-view model =
-    clock model
+view seconds =
+    clock seconds
 
 
-clock : Int -> Html msg
+clock : Seconds -> Html msg
 clock seconds =
     let
         center =
@@ -210,7 +242,7 @@ clockBack center radius =
         []
 
 
-clockHand : Point -> Float -> Int -> Svg msg
+clockHand : Point -> Float -> Seconds -> Svg msg
 clockHand center radius seconds =
     line
         [ x1 (String.fromFloat center.x)
@@ -219,9 +251,17 @@ clockHand center radius seconds =
         , y2 (String.fromFloat (center.y - radius))
         , stroke "#2c2f88"
         , strokeWidth "2"
-        , transform (rotate  (360 * toFloat seconds / 60) center)
+        , transform (rotate (Seconds.toDegree seconds) center)
         ]
         []
+```
+
+Die Funktion `toDegree` ist wie folgt im Modul `Seconds` definiert und rechnet eine Sekundenzahl in einen Winkel einer Uhr um.
+
+```elm
+toDegree : Seconds -> Float
+toDegree (Seconds seconds) =
+    360 * toFloat seconds / 60
 ```
 
 Um zu illustrieren, wie man Abonnements zeitweise aussetzt, wollen wir
@@ -232,11 +272,10 @@ unseren Datentyp `Msg`.
 ``` elm
 type Msg
     = Tick
-    | Start
-    | Stop
+    | StartStop
 ```
 
-Außerdem fügen wir drei Knöpfe zu unserer Anwendung hinzu.
+Außerdem fügen wir einen Knopf zu unserer Anwendung hinzu, um die Uhr zu starten bzw. zu stoppen.
 
 ``` elm
 clock : Int -> Html Msg
@@ -256,18 +295,17 @@ clock seconds =
             [ clockBack center radius
             , clockHand center radius seconds
             ]
-        , button [ onClick Start ] [ text "Start" ]
-        , button [ onClick Stop ] [ text "Stop" ]
+        , button [ onClick StartStop ] [ text "Start/Stopp" ]
         ]
 ```
 
-Da unsere Uhr nun auch pausiert sein kann, müssen wir diese Information
-in unserem Zustand modellieren.
+Da unsere Uhr nun auch pausiert sein kann, müssen wir diese Information in unserem Zustand modellieren.
+Wir nutzen den folgenden Datentyp, um zu gewährleisten, dass wir immer überprüfen müssen, ob die Uhr läuft oder nicht, bevor wir auf die Sekunden zugreifen können.
 
 ``` elm
 type Model
-    = Running Int
-    | Paused Int
+    = Running Seconds
+    | Paused Seconds
 ```
 
 Als nächstes adaptieren wir die Funktion `update` wie folgt.
@@ -279,26 +317,18 @@ update msg model =
         Tick ->
             case model of
                 Running seconds ->
-                    Running (modBy 60 (seconds + 1))
+                    Running (Seconds.inc seconds)
 
                 Paused _ ->
                     model
 
-        Stop ->
+        StartStop ->
             case model of
                 Running seconds ->
                     Paused seconds
 
-                Paused _ ->
-                    model
-
-        Start ->
-            case model of
                 Paused seconds ->
                     Running seconds
-
-                Running _ ->
-                    model
 ```
 
 Um an die aktuellen Sekunden heranzukommen, müssen wir unsere Funktion
@@ -315,14 +345,12 @@ view model =
             clock seconds
 ```
 
-Wenn wir die `Subscription` nur ignorieren, kann es sein, dass die Uhr
-bis zu eine Sekunde benötigt, um nach einen Kopfdruck tatsächlich zu
-starten. Außerdem sollten wir die `Subscription` beenden, wenn wir sie
-gar nicht benötigen. Das Feld `subscriptions` des Programms ist eine
-Funktion, die ein Modell als Argument erhält und eine `Subscription`
-liefert. Die Funktion `Sub.none` liefert analog zu `Cmd.none` keine
-`Subscription`. Wir können wie folgt die `Subscription` beenden, wenn
-die Uhr im Zustand `Paused` ist.
+Unsere Implementierung ignoriert die Nachrichten, die von der `subscription` an die Anwendung geschickt werden, wenn wir im Zustand `Paused` sind.
+Die Reaktionszeit der Uhr hängt dadurch davon ab, zu welchem Zeitpunkt des aktuellen Intervals wir die Uhr wieder starten.
+Außerdem sollten wir die `Subscription` beenden, wenn wir sie gar nicht benötigen.
+Das Feld `subscriptions` des Programms ist eine Funktion, die ein Modell als Argument erhält und eine `Subscription` liefert.
+Die Konstante `Sub.none` liefert analog zu `Cmd.none` keine `Subscription`.
+Wir können dadurch wie folgt die `Subscription` beenden, wenn die Uhr im Zustand `Paused` ist.
 
 ``` elm
 subscriptions : Model -> Sub Msg
@@ -345,15 +373,10 @@ main =
         }
 ```
 
-Zum Abschluss soll hier noch die Funktion
-`batch : List (Sub msg) -> Sub msg` vorgestellt werden. Diese Funktion
-kann genutzt werden, um eine Liste von Abonnements zu einem Abonement
-zusammenzufassen. Auf diese Weise können wir in einer Anwendung über
-mehrere Ereignisse informiert werden. Im folgenden Abschnitt werden wir
-zum Beispiel lernen, wie man sich über Tastendrücke informieren lassen
-kann. Mit Hilfe der Funktion `batch` kann man dann zum Beispiel in einem
-festgelegten Interval oder wenn eine Taste gedrückt wird, informiert
-werden.
+Zum Abschluss soll hier noch die Funktion `batch : List (Sub msg) -> Sub msg` vorgestellt werden.
+Diese Funktion kann genutzt werden, um eine Liste von Abonnements zu einem Abonement zusammenzufassen. Auf diese Weise können wir in einer Anwendung über mehrere Ereignisse informiert werden.
+Im folgenden Abschnitt werden wir zum Beispiel lernen, wie man sich über Tastendrücke informieren lassen kann.
+Mit Hilfe der Funktion `batch` kann man dann zum Beispiel informiert werden, wenn ein Interval vergangen ist oder wenn eine Taste gedrückt wurde.
 
 Decoder
 -------
@@ -363,7 +386,7 @@ wir später kennenlernen werden, müssen Daten im JSON-Format in einen
 stärker strukturierten Elm-Datentyp umgewandelt werden. Um diese Aufgabe
 umzusetzen, werden in Elm `Decoder` verwendet.
 
-![You shall not parse, syntax error on line 1](/assets/images/parse-error.png){:style="display:block; margin-left:auto; margin-right:auto; width:400px"}
+![You shall not parse, syntax error on line 1](/assets/images/parse-error.png){: width:400px" .centered}
 
 Ein `Decoder` ist eine Elm-spezifische Variante des allgemeineren
 Konzeptes eines Parser-Kombinators. Parser-Kombinatoren sind eine
