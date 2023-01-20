@@ -149,6 +149,7 @@ c1 : Char
 c1 =
     'a'
 
+
 c2 : Char
 c2 =
     ' '
@@ -275,6 +276,9 @@ Daher klammern wir den Ausdruck `b1 && True` und übergeben so das Ergebnis dies
 
 Neben den booleschen Operatoren gibt es die üblichen Vergleichsoperatoren `==` und `/=`, so wie `<`,
 `<=`, `>` und `>=`.
+Die Funktion `==` führt immer einen Wert-Vergleich und keinen Referenz-Vergleich durch.
+Das heißt, die Funktion `==` überprüft, ob die beiden Argumente die gleiche Struktur haben.
+Das Konzept eines Referenz-Vergleichs existiert ist einer funktionale Sprache wie Elm nicht.
 
 ``` elm
 ex11 =
@@ -286,21 +290,42 @@ ex12 =
 
 
 ex13 =
-    (5 > 3) && ('p' <= 'q')
+    5 > 3 && 'p' <= 'q'
 
 
 ex14 =
     "Elm" > "C++"
 ```
 
-Um einen Ausdruck der Form `3 + 4 * 8` nicht klammern zu müssen,
-definiert Elm für Operatoren Präzedenzen (Bindungsstärken). Die
-Präzedenz eines Operators liegt zwischen `0` und `9`. Der Operator `+`
-hat zum Beispiel die Präzedenz 6 und `*` hat die Präzedenz 7.
+Um einen Ausdruck der Form `3 + 4 * 8` nicht klammern zu müssen, definiert Elm für Operatoren Präzedenzen (Bindungsstärken).
+Die Präzedenz eines Operators liegt zwischen `0` und `9`.
+Der Operator `+` hat zum Beispiel die Präzedenz 6 und `*` hat die Präzedenz 7.
 Da die Präzedenz von `*` also höher ist als die Präzedenz von `+` bindet `*` stärker als `+` und der Ausdruck `3 + 4 * 8` steht für den Ausdruck `3 + (4 * 8)`.
-Die Präzedenz einer Funktion ist 10, das heißt, eine Funktionsanwendung bindet immer stärker als
-jeder Infixoperator. Der Ausdruck `not True || False` steht daher zum
-Beispiel für `(not True) || False` und nicht etwa für `not (True || False)`.
+
+Wie auch in anderen Programmiersprachen üblich binden die relationalen Operatoren, wie `<`, `<=`, `>`, `>=` und `==` stärker als die logischen Operatoren `&&` und `||`.
+Daher steht der Ausdruck `5 > 3 && 'p' <= 'q'` ohne Klammern für den Ausdruck `(5 > 3) && ('p' <= 'q')`.
+
+Wenn Code mit Operatoren mehrzeilig ist, formatiert `elm-format` den Code so, dass die Operatoren am Beginn der jeweiligen Zeile stehen.
+Das Beispiel `ex13` formatiert `elm-format` zum Beispiel wie folgt.
+
+```elm
+ex13 =
+    5
+        > 3
+        && 'p'
+        <= 'q'
+```
+
+Wenn ein Ausdruck mit Operatoren so lang ist, dass er in mehrere Zeile geschrieben werden sollte, können wir explizit Klammern setzen, um eine etwas lesbarere Formatierung zu erhalten.
+
+```elm
+ex13 =
+    (5 > 3)
+        && ('p' <= 'q')
+```
+
+Die Präzedenz einer Funktion ist 10, das heißt, eine Funktionsanwendung bindet immer stärker als jeder Infixoperator.
+Der Ausdruck `not True || False` steht daher zum Beispiel für `(not True) || False` und nicht etwa für `not (True || False)`.
 Wir werden später noch weitere Beispiele für diese Regel sehen.
 
 Neben der Bindungsstärke wird bei Operatoren noch definiert, ob diese
@@ -400,22 +425,19 @@ items quantity =
 ```
 
 Die Fälle in einem `case`-Ausdruck werden von oben nach unten geprüft.
-Wenn wir zum Beispiel den Anwendung `items 0` auswerten, so passt die erste
-Regel und wir erhalten `"Kein Gegenstand"` als Ergebnis. Geben wir
-dagegen `items 3` ein, so passen die ersten beiden Regeln nicht. Die
-dritte Regel ist eine *Default*-Regel, die immer passt und daher nur als
-letzte Regel genutzt werden darf. Das heißt, wenn wir den Anwendung
-`items 3` auswerten, wird anschließend der Ausdruck
-`String.fromInt 3 ++ " Gegenstände"` ausgewertet. Die Auswertung dieses
-Ausdrucks liefert schließlich `"3 Gegenstände"` als Ergebnis.
+Wenn wir zum Beispiel den Anwendung `items 0` auswerten, so passt die erste Regel und wir erhalten `"Kein Gegenstand"` als Ergebnis.
+Geben wir dagegen `items 3` ein, so passen die ersten beiden Regeln nicht.
+Die dritte Regel ist eine *Default*-Regel, die immer passt und daher nur als letzte Regel genutzt werden darf.
+Das heißt, wenn wir den Anwendung `items 3` auswerten, wird anschließend der Ausdruck `String.fromInt 3 ++ " Gegenstände"` ausgewertet.
+Die Auswertung dieses Ausdrucks liefert schließlich `"3 Gegenstände"` als Ergebnis.
 
-Man bezeichnet das Prüfen eines konkreten Wertes gegen die Angabe auf
-der linken Seite einer `case`-Regel als *Pattern Matching*. Das heißt,
-wenn wir den Ausdruck `items 3` auswerten, führt die Funktion Pattern
-Matching durch, da überprüft wird, welche der Regeln in der Funktion
-auf den Wert von `quantity` passt. Die Konstrukte auf der linken Seite
-der Regel, also in diesem Fall `0`, `1` und `_` bezeichnet man als
-*Pattern*, also als Muster.
+Man bezeichnet das Prüfen eines konkreten Wertes gegen die Angabe auf der linken Seite einer `case`-Regel als *Pattern Matching*.
+Das heißt, wenn wir den Ausdruck `items 3` auswerten, führt die Funktion Pattern Matching durch, da überprüft wird, welche der Regeln in der Funktion auf den Wert von `quantity` passt.
+Die Konstrukte auf der linken Seite der Regel, also in diesem Fall `0`, `1` und `_` bezeichnet man als *Pattern*, also als Muster.
+
+Wir nutzen _Pattern Matching_ auf Zahlen hier als einfaches und intuitives Beispiel.
+In vielen Fällen ist _Pattern Matching_ für eine Funktion, die einen `Int` verarbeitet, keine gute Lösung, da nicht auf negative Zahlen geprüft werden kann.
+In der Funktion `items` landen negativen Zahlen im dritten Fall, was nicht unbedingt gewünscht ist.
 
 ### Mehrstellige Funktionen
 
@@ -488,12 +510,9 @@ quartic x =
     square * square
 ```
 
-Ein `let`-Ausdruck startet mit dem Schlüsselwort `let`, definiert dann
-beliebig viele Konstanten und Funktionen und schließt schließlich mit
-dem Schlüsselwort `in` ab. Die Definitionen, die ein `let`-Ausdruck
-einführt, stehen nur in dem Ausdruck nach dem `in` zur Verfügung. Sie
-können wie im Beispiel `quartic` aber auf die Argumente der
-umschließenden Funktion zugreifen.
+Ein `let`-Ausdruck startet mit dem Schlüsselwort `let`, definiert dann beliebig viele Konstanten und Funktionen und schließt schließlich mit dem Schlüsselwort `in` ab.
+Die Definitionen, die ein `let`-Ausdruck einführt, stehen nur in dem Ausdruck nach dem `in` zur Verfügung.
+Sie können wie im Beispiel `quartic` aber auf die Argumente der umschließenden Funktion zugreifen.
 
 Man kann in einem `let`-Ausdruck auch Funktionen definieren, die dann
 auch nur in dem Ausdruck nach dem `in` sichtbar sind. Wir werden später
@@ -564,14 +583,27 @@ layout2 =
     42
 ```
 
-Die erste Definition in einem `let`-Ausdruck, also hier das `x`,
-definiert ebenfalls eine Spalte. Alle Zeilen, die links von der ersten
-Definition starten, beenden die Liste der Definitionen. Alle Zeilen, die
-rechts von der ersten Definition starten, werden noch zur vorherigen
-Definition gezählt. Das heißt, in diesem Beispiel geht der Compiler
-davon aus, dass die Definition von `y` eine Fortsetzung der Definition
-von `x` ist.
+Die erste Definition in einem `let`-Ausdruck, also hier das `x`, definiert ebenfalls eine Spalte.
+Alle Zeilen, die links von der ersten Definition starten, beenden die Liste der Definitionen.
+Alle Zeilen, die rechts von der ersten Definition starten, werden noch zur vorherigen Definition gezählt.
+Das heißt, in diesem Beispiel geht der Compiler davon aus, dass die Definition von `y` eine Fortsetzung der Definition von `x` ist.
 Dies ist auch wieder keine valide Syntax, da wir damit einer Definition der Form `x = 1 y = 2` erhalten, die nicht verarbeitet werden kann.
+
+Das `let`-Konstrukt ist ein Ausdruck, kann also an allen Stellen stehen, an denen ein Ausdruck stehen kann.
+Um diesen Aspekt zu illustrieren, betrachten wir die folgende nicht sehr sinnvolle, aber vom Compiler akzeptierte Definition.
+
+```elm
+test : Int
+test =
+    (let
+        x =
+            1
+     in
+     x
+    )
+        * 23
+```
+
 
 Weitere Datentypen
 ------------------
@@ -582,21 +614,19 @@ Anwendung benötigen.
 
 ### Typ-Synonyme
 
-In Elm kann ein neuer Typ eingeführt werden, indem ein neuer Name für
-einen bereits bestehenden Typ angegeben wird. Der folgende Code führt
-zum Beispiel den Namen `Weight` als Synonym für den Typ `Int` ein. Das
-heißt, an allen Stellen, an denen wir den Typ `Int` verwenden können,
-können wir auch den Typ `Weight` verwenden.
+In Elm kann ein neuer Typ eingeführt werden, indem ein neuer Name für einen bereits bestehenden Typ angegeben wird.
+Der folgende Code führt zum Beispiel den Namen `Weight` als Synonym für den Typ `Int` ein.
+Das heißt, an allen Stellen, an denen wir den Typ `Int` verwenden können, können wir auch den Typ `Weight` verwenden.
 
 ``` elm
 type alias Weight =
     Int
 ```
 
-Ein Typsynonym wird verwendet, um einem Typ zu Dokumentationszwecken
-einen spezifischeren Namen zu geben. Außerdem wird ein Typsynonym
-verwendet, um Schreibarbeit zu sparen. Wir werden diesen Effekt gleich
-sehen, wenn wir komplexere Typen wie Recordtypen kennenlernen.
+Ein Typsynonym wird verwendet, um einem komplexen Typ einen kürzeren Namen zu geben.
+Wir werden diesen Effekt sehen, wenn wir Recordtypen kennenlernen.
+Ein Typsynonym wie `Weight` ist eigentlich schlechter Programmierstil, da wir ein Typsysnonym für einen einfachen Typ einführen.
+Wir werden zu Anfang aus didaktischen Gründen diese Form eines Typsynonyms nutzen.
 
 ### Aufzählungstypen
 
