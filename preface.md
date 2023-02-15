@@ -3,6 +3,13 @@ layout: post
 title: "Vorwort"
 ---
 
+<figure class="float-right small" markdown="1">
+
+![Elm logo](/assets/logos/elm-logo.svg){: width="200px"}
+
+<figcaption>Logo der Sprache Elm</figcaption>
+</figure>
+
 In dieser Vorlesung wollen wir uns deklarative Technologien der Softwareentwicklung anschauen.
 Deklarativ bedeutet dabei, dass man die Lösung für ein Problem beschreibt.
 Im Bereich der Programmiersprachen unterscheidet man zum Beispiel zwischen deklarativen und imperativen Programmiersprachen.
@@ -18,9 +25,22 @@ In dieser Vorlesung werden wir zweierlei Arten von deklarativen Technologien bet
 Zum einen lernen wir deklarative Technologien kennen, die durch eine funktionale Programmiersprache zur Verfügung gestellt werden.
 Ein imperatives Programm wird zum Beispiel ausgeführt, indem die Anweisungen des Programms Schritt für Schritt ausgeführt werden.
 Im Gegensatz dazu gibt es in funktionalen Programmen gar keine Anweisungen.
+In funktionalen Sprachen entspricht die Ausführung eines Programms der Auswertung eines Ausdrucks und nicht der Abarbeitung von Anweisungen wie in imperativen Sprachen.
 Das heißt, die Reihenfolge, in der etwas ausgerechnet wird, wird nicht durch Entwickler\*innen bestimmt, sondern ist durch die Programmiersprache festgelegt.
 Auch in imperativen Programmiersprachen erhält man wartbareren Code, wenn der Code möglichst unabhängig von der Reihenfolge der Auswertung ist.
 Andersherum ausgedrückt, kann Code, dessen Verhalten sehr stark von der Reihenfolge der Ausführung abhängt, sehr schwer verständlich sein.
+
+<figure class="float-right small" markdown="1">
+![Elm logo](/assets/logos/haskell-logo.svg){: width="200px"}
+<figcaption>Logo der Sprache Haskell</figcaption>
+</figure>
+
+Die Programmiersprache [Elm](https://elm-lang.org) ist eine rein funktionale Programmiersprache.
+Das heißt, die Ausführung eines Programms ist immer die Auswertung eines Ausdrucks.
+Neben Elm gibt es eigentlich nur noch eine etwas verbreitetere rein funktionale Programmiersprache, nämlich [Haskell](https://en.wikipedia.org/wiki/Haskell).
+Neben den rein funktionalen Programmiersprachen, gibt es aber noch eine ganze Reihe von Programmiersprachen, die grundlegend funktional sind, aber auch einzelne Sprachfeatures zur Verfügung stellen, die auf der Abarbeitung von Anweisungen basieren.
+Zu diesen Sprachen gehören etwa [Clojure](https://en.wikipedia.org/wiki/Clojure), [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)), [Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language)) und [F#]().
+Außerdem gibt es Hybridsprachen, welche die Ideen der funktionalen und der objektorientierten Sprachen kombinieren, etwa [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)) und [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)).
 
 Neben diesen grundlegenden Ideen der funktionalen Programmierung, die es erlauben, deklarativ Software zu entwickeln, werden wir außerdem deklarative Technologien kennenlernen, die sich recht direkt auch im Kontext von imperativen oder objekt-orientierten Programmiersprachen umsetzen lassen.
 Diese Technologien basieren zum Teil auch auf Konzepten, die früher nur in funktionalen Programmiersprachen zu finden waren, inzwischen aber auch Einzug in alle anderen Formen von Programmiersprachen gehalten haben, wie Funktionen höherer Ordnung bzw. funktionale Argumente.
@@ -41,7 +61,7 @@ Stattdessen ist die Sprache für einen sehr speziellen Anwendungsfall gedacht.
 Beispiele für domänenspezifische Sprachen sind etwa HTML, CSS oder SQL.
 Eingebettete domänenspezifische Sprachen sind domänenspezifische Sprachen, die in einer *Host*-Sprache eingebettet sind und keinen eigenen Compiler oder Interpreter bieten.
 Im Wesentlichen handelt es sich dabei um Bibliotheken, die als eine Art von kleiner Sprache aufgefasst werden können.
-Hierzu gehören zum Beispiel Bibliotheken wie JUnit, jQuery oder LINQ.
+Hierzu gehören zum Beispiel Bibliotheken wie JUnit, jQuery oder [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query).
 
 Wir werden in dieser Vorlesung die Programmiersprache Elm nutzen.
 Elm ist eine domänenspezifische Sprache zur Entwicklung von Web-Frontend-Anwendungen und eignet sich sehr gut, um alle Facetten von deklarativen Software-Technologien zu beleuchten.
