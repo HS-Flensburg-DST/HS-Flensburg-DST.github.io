@@ -5,7 +5,7 @@ title: "Vorwort"
 
 <figure class="float-right small" markdown="1">
 
-![Elm logo](/assets/logos/elm-logo.svg){: width="200px"}
+![Elm logo](/assets/graphics/elm-logo.svg){: width="200px"}
 
 <figcaption>Logo der Sprache Elm</figcaption>
 </figure>
@@ -31,7 +31,7 @@ Auch in imperativen Programmiersprachen erhält man wartbareren Code, wenn der C
 Andersherum ausgedrückt, kann Code, dessen Verhalten sehr stark von der Reihenfolge der Ausführung abhängt, sehr schwer verständlich sein.
 
 <figure class="float-right small" markdown="1">
-![Elm logo](/assets/logos/haskell-logo.svg){: width="200px"}
+![Elm logo](/assets/graphics/haskell-logo.svg){: width="200px"}
 <figcaption>Logo der Sprache Haskell</figcaption>
 </figure>
 
