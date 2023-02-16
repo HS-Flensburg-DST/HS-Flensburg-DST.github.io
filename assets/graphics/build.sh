@@ -1,2 +1,4 @@
-pdflatex --shell-escape sequence-diagram.tex
-pdflatex --shell-escape memory.tex
+set -euxo pipefail
+
+./mksvg.sh sequence-diagram.tex
+./mksvg.sh memory.tex

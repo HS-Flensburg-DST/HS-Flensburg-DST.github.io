@@ -383,9 +383,9 @@ In der Funktion `append` wird zum Beispiel die Liste `list1` neu erstellt, da wi
 Wenn die Funktion `append` am Ende von `list1` angekommen ist, wird die Liste `list2` aber einfach zurückgegeben, wie sie ist.
 Dadurch entsteht nach einem Aufruf von `append` im Speicher die folgende Struktur.
 
-<figure id="memory">
-  <img src="./assets/graphics/memory.svg" alt="Darstellung der Speicherstruktur der Listen nach einem Aufruf von append"/>
-  <figcaption>Speicherstruktur nach dem Aufruf <code class="language-plaintext highlighter-rouge">append list1 list2</code></figcaption>
+<figure id="memory" markdown="1">
+![Darstellung der Speicherstruktur der Listen nach einem Aufruf von append](/assets/graphics/memory.svg){: width="100%" .centered}
+<figcaption>Speicherstruktur nach dem Aufruf <code class="language-plaintext highlighter-rouge">append list1 list2</code></figcaption>
 </figure>
 
 Das heißt, das Ergebnis des Aufrufs `append list1 list2` hat die `Cons`-Zellen mit den Werten `1`, `2` und `3` neu erstellt.

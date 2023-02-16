@@ -329,9 +329,9 @@ Das heißt, der entsprechende HTML-Knoten wird aus der HTML-Struktur herausgesuc
 
 Die Abbildung <a href="#sequence-diagram">Kommunikation einer Elm-Anwendung</a> illustriert noch einmal, wie die Komponenten der Elm-Architektur miteinander interagieren, wenn eine Anwendung mittels `Browser.sandbox` gestartet wurde.
 
-<figure id="sequence-diagram">
-  <img src="./assets/graphics/sequence-diagram.svg" alt="Sequenzdiagramm der Kommunikation einer Elm-Anwendung"/>
-  <figcaption>Kommunikation einer Elm-Anwendung</figcaption>
+<figure id="sequence-diagram" markdown="1">
+![Sequenzdiagramm der Kommunikation einer Elm-Anwendung](/assets/graphics/sequence-diagram.svg){: width="100%" .centered}
+<figcaption>Kommunikation einer Elm-Anwendung</figcaption>
 </figure>
 
 Wir übergeben das initiale Modell `init`, `update` und `view` mithilfe der Funktion `Browser.sandbox` an die Elm\-_Runtime_.
