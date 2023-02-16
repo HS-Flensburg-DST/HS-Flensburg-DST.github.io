@@ -49,68 +49,66 @@ custom_css: toc
 
 - 3.3. [_Print Debugging_](first-application.md#print-debugging)
 
-### 4. [Programmierstil](style.md)
+### 4. [Datentypen](data-types.md)
 
-### 5. [Datentypen](data-types.md)
+- 4.1. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
 
-- 5.1. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
+- 4.2. [Pattern Matching](data-types.md#pattern-matching)
 
-- 5.2. [Pattern Matching](data-types.md#pattern-matching)
+- 4.3. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
 
-- 5.3. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
+### 5. [Polymorphismus](polymorphism.md)
 
-### 6. [Polymorphismus](polymorphism.md)
+- 5.1. [Polymorphe Datentypen](polymorphism.md#polymorphe-datentypen)
 
-- 6.1. [Polymorphe Datentypen](polymorphism.md#polymorphe-datentypen)
+- 5.2. [Polymorphe Funktionen](polymorphism.md#polymorphe-funktionen)
 
-- 6.2. [Polymorphe Funktionen](polymorphism.md#polymorphe-funktionen)
+### 6. [Design von Datentypen](design.md)
 
-### 7. [Design von Datentypen](design.md)
+### 7. [Funktionen höherer Ordnung](recursion.md)
 
-### 8. [Funktionen höherer Ordnung](recursion.md)
+- 7.1. [Wiederkehrende rekursive Muster](recursion.md#wiederkehrende-rekursive-muster)
 
-- 8.1. [Wiederkehrende rekursive Muster](recursion.md#wiederkehrende-rekursive-muster)
+- 7.2. [Anonyme Funktionen](recursion.md#anonyme-funktionen)
 
-- 8.2. [Anonyme Funktionen](recursion.md#anonyme-funktionen)
+- 7.3. [Gecurryte Funktionen](recursion.md#gecurryte-funktionen)
 
-- 8.3. [Gecurryte Funktionen](recursion.md#gecurryte-funktionen)
+- 7.4. [Partielle Applikationen](recursion.md#partielle-applikationen)
 
-- 8.4. [Partielle Applikationen](recursion.md#partielle-applikationen)
+- 7.5. [Piping](recursion.md#piping)
 
-- 8.5. [Piping](recursion.md#piping)
+- 7.6. [Eta-Reduktion und -Expansion](recursion.md#eta-reduktion-und--expansion)
 
-- 8.6. [Eta-Reduktion und -Expansion](recursion.md#eta-reduktion-und--expansion)
+### 8. [Modellierung der Elm-Architektur](architecture.md)
 
-### 9. [Modellierung der Elm-Architektur](architecture.md)
+### 9. [Abonnements](subscriptions.md)
 
-### 10. [Abonnements](subscriptions.md)
+- 9.1. [Zeit](subscriptions.md#zeit)
 
-- 10.1. [Zeit](subscriptions.md#zeit)
+- 9.2. [Decoder](subscriptions.md#decoder)
 
-- 10.2. [Decoder](subscriptions.md#decoder)
+- 9.3. [Tasten](subscriptions.md#tasten)
 
-- 10.3. [Tasten](subscriptions.md#tasten)
+### 10. [Kommandos](commands.md)
 
-### 11. [Kommandos](commands.md)
+- 10.1. [Zufall](commands.md#zufall)
 
-- 11.1. [Zufall](commands.md#zufall)
+- 10.2. [HTTP-Anfragen](commands.md#http-anfragen)
 
-- 11.2. [HTTP-Anfragen](commands.md#http-anfragen)
+### 11. [Strukturierung einer Anwendung](structure.md)
 
-### 12. [Strukturierung einer Anwendung](structure.md)
+### 12. [Abstraktionen](abstractions.md)
 
-### 13. [Abstraktionen](abstractions.md)
+- 12.1. [Funktoren](abstractions.md#funktoren)
 
-- 13.1. [Funktoren](abstractions.md#funktoren)
+- 12.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
-- 13.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
+- 12.3. [Monaden](abstractions.md#monaden)
 
-- 13.3. [Monaden](abstractions.md#monaden)
+### 13. [Weitere Themen](final-topics.md)
 
-### 14. [Weitere Themen](final-topics.md)
+- 13.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
 
-- 14.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
+- 13.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
 
-- 14.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
-
-- 14.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
+- 13.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
