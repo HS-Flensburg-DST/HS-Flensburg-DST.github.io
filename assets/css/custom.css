@@ -141,6 +141,15 @@ figcaption {
     text-align: right;
 }
 
+.small {
+    width: 200px;
+}
+
+.float-right {
+    float: right;
+    padding: 10px 0 10px 10px;
+}
+
 /* Make images centered */
 
 img.centered {
