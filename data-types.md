@@ -3,11 +3,9 @@ layout: post
 title: "Datentypen"
 ---
 
-In diesem Kapitel wollen wir die Grundlagen für die Definition von
-Datentypen in Elm einführen. Wir haben bereits eine Reihe von Datentypen
-kennengelernt, zum Beispiel Listen und Aufzählungstypen. In diesem
-Kapitel werden wir zum Beispiel lernen, wie man einen Datentyp für
-Listen in Elm definiert.
+In diesem Kapitel wollen wir die Grundlagen für die Definition von Datentypen in Elm einführen.
+Wir haben bereits eine Reihe von Datentypen kennengelernt, zum Beispiel Listen und Aufzählungstypen.
+In diesem Kapitel werden wir zum Beispiel lernen, wie man einen Datentyp für Listen in Elm definiert.
 
 Algebraische Datentypen
 -----------------------
@@ -34,16 +32,12 @@ Der Datentyp `Point` fasst zwei Werte vom Typ `Float` zu einem Wert vom Typ `Poi
 Das Wort `Point` hinter dem Schlüsselwort `type` ist dabei der Name des Typs.
 Das Wort `Point` hinter dem `=`-Zeichen nennt man wie bei den Aufzählungstypen einen Konstruktor.
 
-Hinter dem Namen des Konstruktors folgt ein Leerzeichen und anschließend
-folgen, durch Leerzeichen getrennt, die Typen der Argumente des
-Konstruktors. Im Gegensatz zu Funktionen und Variablen müssen
-Konstruktoren und Datentypen immer mit einem großen Anfangsbuchstaben
-beginnen. Das heißt, der Konstruktor `Point` erhält zwei Argumente, die
-beide den Typ `Float` haben. Um mit Hilfe eines Konstruktors einen Wert
-zu erzeugen, benutzt man den Konstruktor wie eine Funktion. Das heißt,
-man schreibt den Namen des Konstruktors und durch Leerzeichen getrennt
-die Argumente des Konstruktors. Wir können nun zum Beispiel wie folgt
-einen Punkt definieren.
+Hinter dem Namen des Konstruktors folgt ein Leerzeichen und anschließend folgen, durch Leerzeichen getrennt, die Typen der Argumente des Konstruktors.
+Im Gegensatz zu Funktionen und Variablen müssen Konstruktoren und Datentypen immer mit einem großen Anfangsbuchstaben beginnen.
+Das heißt, der Konstruktor `Point` erhält zwei Argumente, die beide den Typ `Float` haben.
+Um mithilfe eines Konstruktors einen Wert zu erzeugen, benutzt man den Konstruktor wie eine Funktion.
+Das heißt, man schreibt den Namen des Konstruktors und durch Leerzeichen getrennt die Argumente des Konstruktors.
+Wir können nun zum Beispiel wie folgt einen Punkt definieren.
 
 ``` elm
 examplePoint : Point
@@ -51,11 +45,9 @@ examplePoint =
     Point 2.3 4.2
 ```
 
-Wie im Fall von Aufzählungstypen kann man auch auf Produkttypen _Pattern
-Matching_ durchführen. Im Fall von Produkttypen kann man mit Hilfe des
-_Pattern Matching_ auf die Inhalte des Konstruktors zugreifen. Die folgende Funktion
-verschiebt einen Punkt um einen Wert auf der x- und einen Wert auf der
-y-Achse.
+Wie im Fall von Aufzählungstypen kann man auch auf Produkttypen _Pattern Matching_ durchführen.
+Im Fall von Produkttypen kann man mithilfe des _Pattern Matching_ auf die Inhalte des Konstruktors zugreifen.
+Die folgende Funktion verschiebt einen Punkt um einen Wert auf der x- und einen Wert auf der y-Achse.
 
 ``` elm
 translate : Point -> Float -> Float -> Point
@@ -84,10 +76,8 @@ toString point =
                 ++ ")"
 ```
 
-In der Definition eines Produkttyps können wir natürlich auch
-selbstdefinierte Datentypen verwenden. Wir betrachten zum Beispiel
-folgenden Datentyp, der einen Spieler in einem Spiel modelliert, der
-einen Namen und eine aktuelle Position hat.
+In der Definition eines Produkttyps können wir natürlich auch selbstdefinierte Datentypen verwenden.
+Wir betrachten zum Beispiel folgenden Datentyp, der einen Spieler in einem Spiel modelliert, der einen Namen und eine aktuelle Position hat.
 
 ``` elm
 type Player
@@ -102,8 +92,7 @@ examplePlayer =
     Player "Player A" (Point 0 0)
 ```
 
-Wir können nun zum Beispiel eine Funktion definieren, die den Namen
-eines Spielers liefert.
+Wir können nun zum Beispiel eine Funktion definieren, die den Namen eines Spielers liefert.
 
 ``` elm
 playerName : Player -> String
@@ -113,16 +102,12 @@ playerName player =
             name
 ```
 
-Der Unterstrich bedeutet, dass wir uns für das entprechende Argument des
-Konstruktors, hier also den `Point`, nicht interessieren. Wenn wir
-stattdessen, an die Stelle des Argumentes eines Konstruktors eine
-Variable schreiben, wird die Variable an den Wert gebunden, der an der
-ensprechenden Stelle im Konstruktor steht. Im Fall von `playerName` wird die
-Variable `name` zum Beispiel an den Namen gebunden, der im `Player` steht.
+Der Unterstrich bedeutet, dass wir uns für das entsprechende Argument des Konstruktors, hier also den `Point`, nicht interessieren.
+Wenn wir stattdessen, an die Stelle des Argumentes eines Konstruktors eine Variable schreiben, wird die Variable an den Wert gebunden, der an der entsprechenden Stelle im Konstruktor steht.
+Im Fall von `playerName` wird die Variable `name` zum Beispiel an den Namen gebunden, der im `Player` steht.
 Das heißt, wenn wir den Aufruf `playerName examplePlayer` betrachten, wird die Variable `name` an den Wert `"Player A"` gebunden.
 
-Als weiteres Beispiel können wir auch eine Funktion zur Umwandlung eines
-Spielers in einen String schreiben.
+Als weiteres Beispiel können wir auch eine Funktion zur Umwandlung eines Spielers in einen String schreiben.
 
 ``` elm
 toString : Player -> String
@@ -132,18 +117,13 @@ toString player =
             name ++ " " ++ Point.toString point
 ```
 
-Wir gehen hier davon aus, dass die Funktion `toString` für den Datentyp `Point`, die wir zuvor definiert haben, sich auch in einem Modul `Point` befindet.
+Wir gehen hier davon aus, dass die Funktion `toString` für den Datentyp `Point`, die wir zuvor definiert haben, sich in einem Modul `Point` befindet.
 
 Im Allgemeinen kann man Summen- und Produkttypen auch kombinieren.
 Die Kombination aus Summen- und Produkttypen wird als algebraischer Datentyp bezeichnet.
-Anders ausgedrückt sind Summen- und Produkttypen jeweils Spezialefälle von algebraischen Datentypen.
-Man bezeichnet algebraische Datentypen manchmal auch als _Tagged Union_.
-Man spricht von einer _Union_, da der algebraische Datentyp wie bei einem Aufzählungstyp in der Lage ist, verschiedene Fälle zu einem Datentyp zu vereinigen.
-Die verschiedenen Fälle, die es gibt, werden dann in dem algebraischen Datentyp zu einem einzigen Datentyp vereinigt.
-Man bezeichnet diese Vereinigung als _Tagged_, da durch den Konstruktor immer eindeutig ist, um welchen Teil der Vereinigung es sich handelt.
-
-Wir wollen jetzt einmal einen algebraischen Datentyp definieren.
-Wir können zum Beispiel wie folgt einen Datentyp definieren, der beschreibt, ob ein Spiel unentschieden ausgegangen ist oder ob ein Spieler das Spiel gewonnen hat.
+Anders ausgedrückt sind Summen- und Produkttypen jeweils Spezialfälle von algebraischen Datentypen.
+Im folgenden ist ein algebraischer Datentyp definiert.
+Der Datentyp beschreibt, ob ein Spiel unentschieden ausgegangen ist oder ob ein Spieler das Spiel gewonnen hat.
 
 ``` elm
 type GameResult
@@ -151,20 +131,34 @@ type GameResult
     | Draw
 ```
 
-Der Konstruktor `Win` modelliert, dass einer der Spieler gewonnen hat. Wenn die Spielrunde unentschieden ausgegangen ist, liefert die Funktion als Ergebnis den Wert `Draw`.
+Der Konstruktor `Win` modelliert, dass einer der Spieler gewonnen hat.
+Wenn die Spielrunde unentschieden ausgegangen ist, liefert die Funktion als Ergebnis den Wert `Draw`.
 Da wir in diesem Fall keine zusätzlichen Informationen benötigen, hat der Konstruktor keine Argumente.
 
-Pattern Matching
-----------------
+Man bezeichnet algebraische Datentypen manchmal auch als _Tagged Union_.
+Man spricht von einer _Union_, da der algebraische Datentyp wie bei einem Aufzählungstyp in der Lage ist, verschiedene Fälle zu einem Datentyp zu vereinigen.
+Die verschiedenen Fälle, die es gibt, werden dann in dem algebraischen Datentyp zu einem einzigen Datentyp vereinigt.
+Man bezeichnet diese Vereinigung als _Tagged_, da durch den Konstruktor immer eindeutig ist, um welchen Teil der Vereinigung es sich handelt.
 
-Wir haben gesehen, dass man *Pattern Matching* nutzen kann, um
-Fallunterscheidungen über Zahlen zu treffen. Man kann *Pattern Matching*
-außerdem nutzen, um die verschiedenen Fälle eines Aufzählungstyps zu
-unterscheiden. Man kann *Pattern Matching* aber auch ganz allgemein
-nutzen, um die verschiedenen Konstruktoren eines algebraischen Datentyps
-zu unterscheiden. Wir können zum Beispiel wie folgt eine Funktion
-`isDraw` definieren, um zu überprüfen, ob ein Spiel unentschieden
-ausgegangen ist.
+Der folgende Datentyp illustriert noch einmal den Namen _Tagged Union_.
+
+```elm
+type IntOrString
+    = IntValue Int
+    | StringValue String
+```
+
+Der Datentyp `IntOrString` stellt entweder einen `Int` oder einen `String` dar, vereinigt also gewissermaßen die möglichen Werte der Datentypen `Int` und `String`.
+Wenn wir einen Wert vom Typ `IntOrString` haben, ist durch den Konstruktor aber klar, um welchen Teil der Vereinigung es sich handelt, also ob es sich um einen `Int` oder einen `String` handelt.
+
+_Pattern Matching_
+------------------
+
+Wir haben gesehen, dass man _Pattern Matching_ nutzen kann, um Fallunterscheidungen über Zahlen durchzuführen.
+Man kann _Pattern Matching_ außerdem nutzen, um die verschiedenen Fälle eines Aufzählungstyps zu
+unterscheiden.
+Man kann _Pattern Matching_ aber auch ganz allgemein nutzen, um die verschiedenen Konstruktoren eines algebraischen Datentyps zu unterscheiden.
+Wir können zum Beispiel wie folgt eine Funktion `isDraw` definieren, um zu überprüfen, ob ein Spiel unentschieden ausgegangen ist.
 
 ``` elm
 isDraw : GameResult -> Bool
@@ -179,13 +173,9 @@ isDraw result =
 
 Diese Funktion liefert `True`, falls das `GameResult` gleich `Draw` ist und `False` andernfalls.
 Der Unterstrich besagt, dass wir ignorieren, welche Form das Argument von `Win` hat.
-Das heißt, mit dem Muster `Win _`
-sagen wir, diese Regel soll genommen werden, wenn der Wert in `result`
-ein `Win`-Konstruktor mit einem beliebigen Argument ist. Anstelle des
-Unterstrichs können wir auch eine Variable verwenden, das heißt, statt
-`Win _` können wir auch `Win player` schreiben. Wir können zum Beispiel
-wie folgt eine Funktion definieren, die zu einem Spiel-Ergebnis eine
-Beschreibung in Form eines `String`s liefert.
+Das heißt, mit dem Muster `Win _` sagen wir, diese Regel soll genommen werden, wenn der Wert in `result` ein `Win`-Konstruktor mit einem beliebigen Argument ist.
+Anstelle des Unterstrichs können wir auch eine Variable verwenden, das heißt, statt `Win _` können wir auch `Win player` schreiben.
+Wir können zum Beispiel wie folgt eine Funktion definieren, die zu einem Spiel-Ergebnis eine Beschreibung in Form eines `String`s liefert.
 
 ``` elm
 description : GameResult -> String
@@ -201,10 +191,9 @@ description result =
 In diesem Fall wird die Variable `player` an den Wert vom Typ `Player`
 gebunden, der im Konstruktor `Win` steht.
 
-_Pattern_ können auch geschachtelt werden. Das heißt, anstelle einer
-Variable, können wir auch wieder ein komplexes _Pattern_ verwenden. Die folgende
-Funktion verwendet zum Beispiel ein geschachteltes _Pattern_, um die
-x-Position eines Spielers zu bestimmen.
+_Pattern_ können auch geschachtelt werden.
+Das heißt, anstelle einer Variable, können wir auch wieder ein komplexes _Pattern_ verwenden.
+Die folgende Funktion verwendet zum Beispiel ein geschachteltes _Pattern_, um die x-Position eines Spielers zu bestimmen.
 
 ``` elm
 playerXCoord : Player -> Float
@@ -214,7 +203,7 @@ playerXCoord player =
             x
 ```
 
-Im zweiten Argument des Konstruktors `Player` stehen ein Wert vom Typ `Point`.
+Im zweiten Argument des Konstruktors `Player` steht ein Wert vom Typ `Point`.
 Daher können wir im _Pattern_ an der entsprechenden Stelle auch ein _Pattern_ für einen `Point` verwenden.
 Der Konstruktor `Point` erhält zwei Argumente, daher hat das _Pattern_ `Point x _` hier ebenfalls zwei Argumente.
 
@@ -245,15 +234,12 @@ Die Ausgabe der REPL bedeutet, dass der Aufruf `description (Win examplePlayer)`
 
 geliefert hat und dieses Ergebnis vom Typ `String` ist.
 
-Ein `case`-Ausdruck wird für zwei Aufgaben genutzt. Zum einen führen wir
-eine Fallunterscheidung über die möglichen Konstruktoren eines Datentyps
-durch. Zum anderen zerlegen wir Konstruktoren in ihre Einzelteile. Bei
-Datentypen, die nur einen Konstruktor zur Verfügung stellen, wie etwa
-der Typ `Point`, müssen wir keine Fallunterscheidung über die
-verschiedenen Konstuktoren durchführen. Daher kann man ein *Pattern* für
-Datentypen mit nur einem Konstuktor auch ohne einen `case`-Ausdruck
-verwenden. Die folgende Funktion liefert zum Beispeil die X-Koordinate
-eines Punktes.
+Ein `case`-Ausdruck wird für zwei Aufgaben genutzt.
+Zum einen führen wir eine Fallunterscheidung über die möglichen Konstruktoren eines Datentyps durch.
+Zum anderen zerlegen wir Konstruktoren in ihre Einzelteile.
+Bei Datentypen, die nur einen Konstruktor zur Verfügung stellen, wie etwa der Typ `Point`, müssen wir keine Fallunterscheidung über die verschiedenen Konstruktoren durchführen.
+Daher kann man ein _Pattern_ für Datentypen mit nur einem Konstruktor auch ohne einen `case`-Ausdruck verwenden.
+Die folgende Funktion liefert zum Beispiel die x-Koordinate eines Punktes.
 
 ``` elm
 xCoord : Point -> Float
@@ -261,18 +247,16 @@ xCoord (Point x _) =
     x
 ```
 
-Wir schreiben in dieser Variante das _Pattern_ also an die Stelle, an der wir sonst die Variable für das Argument der Funktion schreiben.
+Wir schreiben in dieser Variante das _Pattern_ also an die Stelle, an der wir sonst die Variable für den Parameter der Funktion schreiben.
 
 Rekursive Datentypen
 --------------------
 
-Datentypen können auch rekursiv sein. Das heißt, wie eine rekursive
-Funktion kann ein Datentyp in seiner Definition wieder auf sich selbst
-verweisen. Wir können zum Beispiel wie folgt einen Datentyp
-definieren, der Listen mit Integern darstellt. In der funktionalen
-Programmierung haben sich die Namen *Nil* für eine leere Liste und
-*Cons* für eine nicht-leere Liste eingebürgert. Das Wort *Nil* ist eine
-Kurzform des lateinischen Wortes *nihil*, das “nichts” bedeutet.
+Datentypen können auch rekursiv sein.
+Das heißt, wie eine rekursive Funktion kann ein Datentyp in seiner Definition wieder auf sich selbst verweisen.
+Wir können zum Beispiel wie folgt einen Datentyp definieren, der Listen mit Integern darstellt.
+In der funktionalen Programmierung haben sich die Namen _Nil_ für eine leere Liste und _Cons_ für eine nicht-leere Liste eingebürgert.
+Das Wort _Nil_ ist eine Kurzform des lateinischen Wortes _nihil_, das “nichts” bedeutet.
 
 ``` elm
 type IntList
@@ -281,7 +265,7 @@ type IntList
 ```
 
 Zuerst einmal wollen wir uns anschauen, wie wir mit diesem Datentyp Listen konstruieren können.
-Die Konstruktion eines Wertes funktioniert bei einem rekursiven Datentyp genau so wie bei den algebraischen Datentypen, die wir bisher kennengelernt haben.
+Die Konstruktion eines Wertes funktioniert bei einem rekursiven Datentyp genau so wie bei den nicht-rekursiven Datentypen, die wir bisher kennengelernt haben.
 Um einen Wert zu konstruieren, verwenden wir einen Konstruktor.
 Wenn wir einen Konstruktor anwenden, dann gibt die Datentypdefinition an, welche Typen die Argumente jeweils haben müssen.
 
@@ -330,14 +314,13 @@ length list =
 
 Die Funktion `length` testet zuerst, ob die Liste leer ist.
 In diesem Fall liefert `length` als Ergebnis `0` zurück.
-Falls die Liste nicht leer ist, wird der Konstruktur `Cons` zerlegt.
+Falls die Liste nicht leer ist, wird der Konstruktor `Cons` zerlegt.
 Da wir nur die Länge der Liste berechnen wollen, ignorieren wir den `Int`-Wert, der im `Cons`-Konstruktor steht.
 Wir rufen die Funktion `length` rekursiv auf die Restliste `restlist` auf.
 Da die Liste `Cons _ restlist` um einen Eintrag länger ist als die Liste `restlist`, addieren wir auf das Ergebnis von `length restlist` noch `1` rauf.
 So erhalten wir die Länge der Liste `Cons _ restlist`.
 
-Als weiteres Beispiel zeigt die folgende Funktion, wie wir die Zahlen in
-einer Liste aufaddieren können.
+Als weiteres Beispiel zeigt die folgende Funktion, wie wir die Zahlen in einer Liste aufaddieren können.
 
 ``` elm
 sum : IntList -> Int
@@ -351,11 +334,9 @@ sum list =
 ```
 
 Das Muster ist bei der Funktion `sum` sehr ähnlich zur Funktion `length`.
-In diesem Fall ignorieren wir den Wert, der im `Cons`-Konstruktor steht aber nicht, sondern addieren ihn auf das rekursive Ergebnis.
+In diesem Fall ignorieren wir den Wert, der im `Cons`-Konstruktor steht, aber nicht, sondern addieren ihn auf das rekursive Ergebnis.
 
-Als nächstes wollen wir eine Funktion definieren, die zu einer Liste
-eine Liste berechnet, die jedes zweite Element der Originalliste
-enthält.
+Als nächstes wollen wir eine Funktion definieren, die zu einer Liste eine Liste berechnet, die jedes zweite Element der Originalliste enthält.
 Das heißt, der Aufruf `everySecond (Cons 23 (Cons 42 (Cons 13 Nil)))` soll als Ergebnis die Liste `Cons 42 Nil` liefern, da wir das erste und das dritte Element verwerfen.
 
 ``` elm
@@ -376,9 +357,8 @@ Um diese Funktion umzusetzen, verwenden wir ein geschachteltes _Pattern_.
 Das Muster `Cons _ (Cons int restlist)` prüft, ob die Liste mindestens zwei Elemente enthält.
 Im Ergebnis erstellen wir dann eine Liste, die nur das Element `int` enthält und als Restliste das Ergebnis des rekursiven Aufrufs `everySecond restlist` enthält.
 
-Als Abschluss für rekursive Funktionen auf Listen wollen wir eine
-Funktion definieren, die zwei Listen hintereinanderhängt. Diese Funktion
-wird klassischerweise als `append` bezeichnet.
+Als Abschluss für rekursive Funktionen auf Listen wollen wir eine Funktion definieren, die zwei Listen hintereinanderhängt.
+Diese Funktion wird klassischerweise als `append` bezeichnet.
 
 ``` elm
 append : IntList -> IntList -> IntList
@@ -395,25 +375,25 @@ Diese Funktion rekonstruiert sein erstes Argument.
 Wenn die Rekonstruktion schließlich bei der leeren Liste angekommen ist, liefert die Funktion das zweite Argument zurück.
 Auf diese Weise wird die leere Liste in der Liste `list1` durch die Liste `list2` ersetzt.
 
-Die Abbildung <a href="#sequence-diagram">Kommunikation einer Elm-Anwendung</a> illustriert noch einmal, wie die Komponenten der Elm-Architektur miteinander iteragieren, wenn eine Anwendung mittels `Browser.sandbox` gestartet wurde.
-
 Wir wollen an dieser Stelle auch ganz kurz das Speichermodell und die Laufzeit von Funktionen in Elm diskutieren.
 Das Aufrufen eines Konstruktors so wie _Pattern Matching_ sind konstante Operationen.
 Das heißt, die Laufzeit der Funktion `append` ist linear in der Länge der ersten Liste.
 Wenn wir einen Konstruktor verwenden, wird im Heap eine entsprechende Struktur angelegt.
-In der Funktion `append` wird zum Beispiel die Liste `list1` neu erstellt, da wird in der Regel für `Cons` den Konstruktor jeweils neu erstellen.
+In der Funktion `append` wird zum Beispiel die Liste `list1` neu erstellt, da wir in der Regel für `Cons` den Konstruktor jeweils neu erstellen.
 Wenn die Funktion `append` am Ende von `list1` angekommen ist, wird die Liste `list2` aber einfach zurückgegeben, wie sie ist.
-Dadurch entsteht nach einem Aufruf von `append` im Speicher die Struktur, die in <a href="#memory">Abbildung ?</a> zu sehen ist.
-Das heißt, das Eregebnis des Aufrufs `append list1 list2` hat die `Cons`-Zellen mit den Werten `1`, `2` und `3` neu erstellt.
-Diese existieren jetzt doppelt im Speicher.
-Die Liste `list` wird aber nicht dupliziert, sondern die Variable `list2` und das Ergebnis von `append list1 list2` verweisen beide auf die gleiche Struktur im Speicher.
+Dadurch entsteht nach einem Aufruf von `append` im Speicher die folgende Struktur.
 
 <figure id="memory">
   <img src="./assets/graphics/memory.svg" alt="Darstellung der Speicherstruktur der Listen nach einem Aufruf von append"/>
-  <figcaption>Abbildung ?: Speicherstruktur nach dem Aufruf <code class="language-plaintext highlighter-rouge">append list1 list2</code></figcaption>
+  <figcaption>Speicherstruktur nach dem Aufruf <code class="language-plaintext highlighter-rouge">append list1 list2</code></figcaption>
 </figure>
 
-Als weiteres Beispiel eines rekursiven Datentyps wollen wir uns eine Baumstruktur anschauen. Der folgende Datentyp stellt zum Beispiel einen binären Baum mit ganzen Zahlen in den Knoten dar.
+Das heißt, das Ergebnis des Aufrufs `append list1 list2` hat die `Cons`-Zellen mit den Werten `1`, `2` und `3` neu erstellt.
+Diese existieren jetzt doppelt im Speicher.
+Die Liste `list2` wird aber nicht dupliziert, sondern die Variable `list2` und das Ergebnis von `append list1 list2` verweisen beide auf die gleiche Struktur im Speicher.
+
+Als weiteres Beispiel eines rekursiven Datentyps wollen wir uns eine Baumstruktur anschauen.
+Der folgende Datentyp stellt zum Beispiel einen binären Baum mit ganzen Zahlen in den Knoten dar.
 
 ``` elm
 type IntTree
@@ -429,8 +409,7 @@ exampleTree =
     Node (Node Empty 3 (Node Empty 5 Empty)) 8 Empty
 ```
 
-Wir können zum Beispiel wie folgt eine Funktion schreiben, die testet,
-ob ein Eintrag in einem Baum vorhanden ist.
+Wir können zum Beispiel wie folgt eine Funktion schreiben, die testet, ob ein Eintrag in einem Baum vorhanden ist.
 
 ``` elm
 find : Int -> IntTree -> Bool
@@ -445,7 +424,8 @@ find n tree =
 
 Im Unterschied zur Programmiersprache Haskell ist Elm eine strikte Sprache, nutzt also **call-by-value** als Auswertungsstrategie.
 Das heißt, bei Definitionen wie `find` müssen wir beachten, dass rekursive Aufrufe auch durchgeführt werden, wenn ihr Ergebnis ggf. gar nicht benötigt wird.
-Der Ausdruck `n == int || find n lefttree` müsste zum Beispiel beide Argumente von `||` auswerten, auch wenn der gesuchte Eintrag bereits gefunden wurde, also `n == int` als Ergegbnis `True` liefert. 
+Der Ausdruck `n == int || find n lefttree` müsste zum Beispiel beide Argumente von `||` auswerten, auch wenn der gesuchte Eintrag bereits gefunden wurde, also `n == int` als Ergebnis `True` liefert.
+
 In Elm -- wie in vielen anderen Programmiersprachen -- sind die logischen Operatoren `||` und `&&` daher als Kurzschlussoperatoren definiert.
 Das heißt, der rekursive Aufruf `find n lefttree` wird nur durchgeführt, falls die Bedingung `n == int` nicht erfüllt ist.
 

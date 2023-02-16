@@ -53,7 +53,7 @@ custom_css: toc
 
 - 4.1. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
 
-- 4.2. [Pattern Matching](data-types.md#pattern-matching)
+- 4.2. [_Pattern Matching_](data-types.md#pattern-matching)
 
 - 4.3. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
 
