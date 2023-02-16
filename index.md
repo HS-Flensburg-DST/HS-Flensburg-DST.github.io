@@ -19,6 +19,8 @@ custom_css: toc
 
     - 2.3.2. [Boolesche Ausdrücke](basics.md#boolesche-ausdrücke)
 
+    - 2.3.3. [Präzedenzen](basics.md#präzedenzen)
+
 - 2.4. [Funktionsdefinitionen](basics.md#funktionsdefinitionen)
         
     - 2.4.1. [Konditionale](basics.md#konditionale)
@@ -45,7 +47,7 @@ custom_css: toc
 
 - 3.2. [Elm-Architektur](first-application.md#elm-architektur)
 
-- 3.3. [Debugging](first-application.md#debugging)
+- 3.3. [_Print Debugging_](first-application.md#print-debugging)
 
 ### 4. [Programmierstil](style.md)
 
