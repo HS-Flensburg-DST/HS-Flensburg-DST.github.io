@@ -3,8 +3,8 @@ layout: post
 title: "Design von Datentypen"
 ---
 
-In diesem Kapitel wollen wir uns mit einer Best Practice beim Entwurf von Datentypen beschäftigen.
-Diese Best Practice lässt sich nicht nur auf Elm anwenden, sondern ist auf andere Programmiersprachen übertragbar.
+In diesem Kapitel wollen wir uns mit einer _Best Practice_ beim Entwurf von Datentypen beschäftigen.
+Diese _Best Practice_ lässt sich nicht nur auf Elm anwenden, sondern ist auf andere Programmiersprachen übertragbar.
 Im Kontext von Elm wird dieses Konzept als
 
 > Making Impossible States Impossible
@@ -42,14 +42,15 @@ Der Eintrag `items` enthält eine Liste von Daten, die in der Anwendung verarbei
 Der Eintrag `options` enthält Informationen über die Konfiguration des _User Interface_, also etwa ob der _Light_ oder der _Dark Mode_ verwendet wird.
 
 Wie der Slogan _Making Impossible States Impossible_ schon andeutet, hat die von uns gewählte Struktur den Nachteil, dass wir Zustände modellieren können, die es gar nicht gibt.
-Das heißt, einige Ausprägungen des Datentyps dürfen nicht auftreten.
+Das heißt, einige Ausprägungen des Datentyps sollten in der Anwendung gar nicht auftreten.
+Treten sie doch auf, ist an irgendeiner Stelle ein Fehler in unserer Anwendung.
 Die Frage wäre etwa, was es bedeutet, wenn unsere Anwendung im Zustand `Success` ist, aber ein Fehler vorhanden ist.
 Alternativ könnte die Anwendung auch im Zustand `Loading` sein, es könnten aber Daten vorhanden sein.
 
-Zusätzliche Regeln, die von einem Datentyp eingehalten werden müssen, bezeichnet man als Invarianten.
+Zusätzliche Regeln, die von einem Datentyp eingehalten werden müssen, bezeichnet man als **Invarianten**.
 Grundsätzlich sind Invarianten ein wichtiges Konzept bei der Modellierung von Daten.
 Wenn ein Datentyp Invarianten erfordert, müssen wir diese aber entweder zur Laufzeit überprüfen und einen Fehler werfen, wenn sie nicht eingehalten werden oder wir müssen ignorieren, ob die Invarianten erfüllt sind oder nicht.
-Außerdem müssen Programmierer\*innen beim Erstellen und Verändern von Daten darauf achten, dass die Invarianten eingehalten werden.
+Außerdem müssen Entwickler\*innen beim Erstellen und Verändern von Daten darauf achten, dass die Invarianten eingehalten werden.
 Daher sind Invarianten, die durch die Struktur der Datentypen ausgedrückt werden, ein großer Vorteil.
 Das heißt, wir möchten den Datentyp gern so umstrukturieren, dass man möglichst wenige invalide Zustände erstellen kann und somit mit möglichst wenig Invarianten auskommt.
 
@@ -81,11 +82,12 @@ Wenn die Anwendung im Zustand `Success` ist, ist eine Liste von geladenen Daten 
 Diese veränderte Form der Datentypen hat einen weiteren Vorteil.
 Wenn wir auf die Daten in Form der `List Item` zugreifen möchten, müssen wir zuvor _Pattern Matching_ auf den Datentyp `Data` durchführen.
 Das heißt, wir müssen explizit überprüfen, in welchem der Fälle wir uns befinden.
-In der ursprünglichen Modellierung können Programmierer\*innen auf das Feld `items` direkt zugreifen und damit ggf. vergessen, zu überprüfen, wie der Zustand der Anwendung ist.
+In der ursprünglichen Modellierung können Entwickler\*innen auf das Feld `items` direkt zugreifen und damit ggf. vergessen, zu überprüfen, wie der Zustand der Anwendung ist.
 Dieser Aspekt wird auch in dem Blogartikel [How Elm Slays a UI Antipattern](http://blog.jenkster.com/2016/06/how-elm-slays-a-ui-antipattern.html) von Kris Jenkins hervorgehoben.
 Dort wird illustriert, dass die ursprüngliche Modellierung des Datentyps zu einem verbreiteten Fehler in Anwendungen führt, bei dem Daten bereits angezeigt werden, obwohl die Anwendung sich noch im Ladezustand befindet.
-Es gibt noch eine Vielzahl von anderen Beispielen etwa die [Modellierung von zwei Dropdows zur Wahl einer Stadt in einem Land](https://medium.com/elm-shorts/how-to-make-impossible-states-impossible-c12a07e907b5) oder die [Modellierung von Kontaktbucheinträgen](https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/).
 
+Es gibt noch eine Vielzahl von anderen Beispielen für das Konzept _Making Impossible States Impossible_ etwa die [Modellierung von zwei Dropdows zur Wahl einer Stadt in einem Land](https://medium.com/elm-shorts/how-to-make-impossible-states-impossible-c12a07e907b5) oder die [Modellierung von Kontaktbucheinträgen](https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/).
+Unter diesen Slogan oder dem Slogan _Make Illegal States Unrepresentable_ lassen sich auch Beispiele in anderen Programmiersprachen finden.
 
 <div class="nav">
     <ul class="nav-row">
