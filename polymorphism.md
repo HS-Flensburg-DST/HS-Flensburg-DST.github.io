@@ -53,9 +53,27 @@ m4 =
     Just "a"
 ```
 
-Als Beispiel für die Verwendung des Typs `Maybe` wollen wir die Funktion
+Als erstes einfaches Beispiel wollen wir uns die Funktion anschauen, die das erste Element einer Liste liefert.
+In Elm, ist diese Funktion im Modul `List` definiert.
 
-`toInt : String -> Maybe Int`
+```elm
+head : List a -> Maybe a
+```
+
+Die Funktion `head` erhält eine Liste und liefert das erste Element der Liste.
+Wir können dieser Funktion nicht den Typ `List a -> a` geben.
+In diesem Fall müsste die Funktion bei einer leeren Liste ein Element vom Typ `a` zurückliefern.
+Die Funktion `head` weiß aber gar nicht, von welchem Typ dieses Element sein muss, da die Funktion polymorph über diesem Typ ist.
+Das heißt, wenn wir eine Liste vom Typ `List Int` an `head` übergeben, müsste `head` sich für die leere Liste einen Wert vom Typ `Int` "ausdenken".
+Wenn wir eine Liste vom Typ `List String` an `head` übergeben, müsste `head` sich für die leere Liste einen Wert vom Typ `String` "ausdenken".
+Aus diesem Grund liefert die Funktion `head` einen `Maybe`-Wert als Ergebnis.
+Falls wir eine leere Liste an `head` übergeben, liefert die Funktion den Wert `Nothing` als Ergebnis.
+
+Als weiteres Beispiel für die Verwendung des Typs `Maybe` wollen wir die Funktion
+
+```elm
+toInt : String -> Maybe Int
+```
 
 aus dem Modul `String` betrachten.
 Falls das Argument der Funktion `toInt` keine ganze Zahl repräsentiert, liefert die Funktion den Wert `Nothing`.
@@ -132,9 +150,7 @@ toValidMonth month =
         Err ("Invalid month " ++ String.fromInt month)
 ```
 
-Der Aufruf `parseMonth "a"` liefert in dieser Implementierung
-
-`Err "Error parsing \"a\""`.
+Der Aufruf `parseMonth "a"` liefert in dieser Implementierung `Err "Error parsing \"a\""`.
 
 Das heißt, wir erhalten nicht nur die Information, dass die Verarbeitung fehlgeschlagen ist, sondern auch, warum die Verarbeitung fehlgeschlagen ist.
 
@@ -201,7 +217,9 @@ Das heißt, der Typ des Wertes `(1, False)` ist `(Int, Bool)`.
 Wie bei jedem anderen algebraischen Datentyp kann man *Pattern Matching* auch für Paare verwenden.
 Als Beispiel betrachten wir die Funktion
 
-`uncons : String -> Maybe ( Char, String )`
+```elm
+uncons : String -> Maybe ( Char, String )
+```
 
 aus dem Modul `String`.
 Mit Hilfe dieser Funktion kann man einen `String` in das erste Zeichen und den Rest des *Strings* zerlegen.
