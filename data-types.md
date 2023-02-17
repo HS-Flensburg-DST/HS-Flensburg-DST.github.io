@@ -249,6 +249,16 @@ xCoord (Point x _) =
 
 Wir schreiben in dieser Variante das _Pattern_ also an die Stelle, an der wir sonst die Variable für den Parameter der Funktion schreiben.
 
+Wenn wir sowohl die gesamte Struktur, die übergeben wird, benötigen als auch einen Teil der Struktur kann man mit dem Schlüsselwort `as` einen Namen für die gesamte Struktur einführen.
+Das heißt, im folgenden Beispiel wird der übergebene Punkt an die Variable `point` gebunden und die x-Koordinate an die Variable `x`.
+
+``` elm
+xCoord : Point -> Float
+xCoord ((Point x _) as point) =
+    ...
+```
+
+
 Rekursive Datentypen
 --------------------
 
