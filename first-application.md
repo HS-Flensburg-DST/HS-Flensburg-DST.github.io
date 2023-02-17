@@ -5,10 +5,9 @@ title: "Eine Erste Anwendung"
 
 In diesem Kapitel werden wir eine erste Frontend-Anwendung mit Elm entwickeln.
 
-HTML-Kombinatoren
------------------
+## _Hallo Welt_-Anwendung
 
-Wir wollen mit einem *Hallo Welt*-Beispiel starten.
+Wir wollen mit einem _Hallo Welt_-Beispiel starten.
 Zu diesem Zweck schreiben wir das folgende Programm.
 
 ``` elm
@@ -82,9 +81,9 @@ Das heißt, statt `Maybe.Nothing` zu schreiben, können wir die Konstruktoren un
 Das gleiche gilt für das Modul `Result`, auch hier werden der Typ `Result` und die Konstruktoren von `Result` unqualifiziert importiert.
 
 Die Namen von Modulen können aus mehreren Komponenten bestehen, die durch Punkte getrennt werden.
-Diese Art der Module werden als hierachische Module bezeichnet.
+Diese Art der Module werden als hierarchische Module bezeichnet.
 In diesem Fall führt man in einigen Fällen kürzere Namen für diese Module ein.
-Der Import `import Platform.Cmd as Cmd` bedeutet, dass das hierachische Modul `Platform.Cmd` unter dem Namen `Cmd` importiert wird.
+Der Import `import Platform.Cmd as Cmd` bedeutet, dass das hierarchische Modul `Platform.Cmd` unter dem Namen `Cmd` importiert wird.
 Das heißt, wir können die Definitionen aus dem Modul `Platform.Cmd` qualifiziert nutzen, müssen vor den Namen der Definition aber nicht den gesamten Modulnamen `Platform.Cmd` schreiben, sondern können stattdessen `Cmd` davorschreiben.
 
 Bei einer Elm-Anwendung ist es guter Stil, Funktionen qualifiziert zu nutzen, also zum Beispiel `String.fromInt` und nicht nur `fromInt`.
@@ -96,67 +95,6 @@ Unter der Adresse `localhost:8000` erhalten wir eine Auswahl aller Dateien, die 
 Wenn wir die Datei auswählen, die unser `HelloWorld`-Beispiel enthält, erhalten wir die entsprechende HTML-Seite.
 Wenn wir die Seite im Browser neu laden, wird der Elm-Code neu in JavaScript-Code übersetzt und wir erhalten die aktualisierte Version der Anwendung.
 
-Das Modul `Html` stellt eine ganze Reihe von Funktionen zur Verfügung, mit deren Hilfe man HTML-Seiten definieren kann.
-Als weiteres Beispiel generieren wir einmal eine HTML-Seite mit einem div, das zwei Text-Knoten als Kinder hat.
-
-``` elm
-main : Html msg
-main =
-    div [] [ text "Hallo Welt", text (String.fromInt 23) ]
-```
-
-Die Funktion `div` nimmt zwei Argumente.
-Das erste Argument ist eine Liste von Attributen, die das div-Element erhalten soll.
-Das zweite Argument ist eine Liste von HTML-Kind-Elementen.
-Wir könnten in der Liste der Kind-Elemente also zum Beispiel auch wieder ein div-Element verwenden.
-
-Um die Funktionsweise von Attributen zu illustrieren, geben wir unserem div-Element einmal einen CSS-Stil.
-Die Funktion `style` kommt aus dem Modul `Html.Attributes` und nimmt zwei Strings, nämlich den Namen des Stils und den entsprechenden Wert, den der Stil haben soll.
-Analog zum Modul `Html` importieren wir alle Definitionen aus dem Modul `Html.Attributes` unqualifiziert wie folgt.
-
-```elm
-import Html.Attributes exposing (Attribute, style)
-```
-
-Das Modul exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
-
-``` elm
-mainContentStyle : List (Attribute msg)
-mainContentStyle =
-    [ style "background-color" "red", style "height" "90px" ]
-
-
-main : Html msg
-main =
-    div mainContentStyle [ text "Hallo Welt", text (String.fromInt 23) ]
-```
-
-Statt eine CSS-Datei zu nutzen, kann man in Elm sehr gut _Inline_-Stile verwenden.
-Da diese Stile in Elm selbst definiert werden und nicht in einer externen Datei, kann man die Sprachkonstrukte von Elm zur Strukturierung der Stile nutzen.
-So sollte man die Stil-Definitionen zum Beispiel in Konstanten auslagern.
-Das heißt, statt die Stile direkt als Liste an die HTML-Kombinatoren wie `div` zu übergeben, definiert man eine Konstante wie `mainContentStyle` und gibt ihr einen beschreibenden Namen.
-Dadurch hat man ähnlich wie in CSS die Möglichkeit, Kombinationen von Stilen unter einem semantischen Namen zusammenzufassen und wiederzuverwenden.
-
-Als weiteres Beispiel für die Verwendung von Attributen, wollen wir einen Link definieren.
-
-``` elm
-linkStyle : List (Attribute msg)
-linkStyle =
-    [ style "color" "red" ]
-
-
-main : Html msg
-main =
-    a (href "https://hs-flensburg.de" :: linkStyle) [ text "Dies ist ein Link" ]
-```
-
-In diesem Beispiel kombinieren wir eine Konstante, die den Stil aller
-Links definiert mit einem Attribut, das für die Logik der Anwendung
-zuständig ist.
-Die Funktion `href` nimmt einen `String` und konstruiert das gleichnamige HTML-Attribut.
-Der Operator `::` hängt das Element `href "https://hs-flensburg.de"` vorne an die Liste `linkStyle`.
-Man sollte die Attribute, die zur visuellen Gestaltung der Elemente gehören von den Attributen trennen, die zur Logik der Web-Anwendung gehören.
-Wir könnten ansonsten eine Konstante wie `linkStyle` nicht für alle Links der Web-Anwendung nutzen und würden visuelle Darstellung und Logik unnötig mischen.
 
 Elm-Architektur
 ---------------
@@ -344,6 +282,83 @@ Stattdessen berechnet die Elm\-_Runtime_ die Unterschiede zwischen der HTML-Stru
 Aus diesen Unterschieden ergeben sich die Änderungen, welche die Elm\-_Runtime_ an der HTML-Struktur vornimmt, die im Browser angezeigt wird.
 Auf diese Weise können wir im Elm-Programm deklarativ beschreiben, wie die HTML-Struktur aussehen soll.
 Die Anzeige der HTML-Struktur im Browser ist aber dennoch effizient, da die Elm\-_Runtime_ nur die Änderungen durchführt, die notwendig sind und nicht die komplette Seite neu zeichnet.
+
+
+## HTML-Kombinatoren
+
+Das Modul `Html` stellt eine ganze Reihe von Funktionen zur Verfügung, mit deren Hilfe man HTML-Seiten definieren kann.
+Als weiteres Beispiel generieren wir einmal eine HTML-Seite mit einem div, das zwei Text-Knoten als Kinder hat.
+
+``` elm
+main : Html msg
+main =
+    div [] [ text "Hallo Welt", text (String.fromInt 23) ]
+```
+
+Die Funktion `div` nimmt zwei Argumente.
+Das erste Argument ist eine Liste von Attributen, die das div-Element erhalten soll.
+Das zweite Argument ist eine Liste von HTML-Kind-Elementen.
+Wir könnten in der Liste der Kind-Elemente also zum Beispiel auch wieder ein div-Element verwenden.
+
+Um die Funktionsweise von Attributen zu illustrieren, geben wir unserem div-Element einmal einen CSS-Stil.
+Die Funktion `style` kommt aus dem Modul `Html.Attributes` und nimmt zwei Strings, nämlich den Namen des Stils und den entsprechenden Wert, den der Stil haben soll.
+Analog zum Modul `Html` importieren wir alle Definitionen aus dem Modul `Html.Attributes` unqualifiziert wie folgt.
+
+```elm
+import Html.Attributes exposing (Attribute, style)
+```
+
+Das Modul exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
+
+``` elm
+mainContentStyle : List (Attribute msg)
+mainContentStyle =
+    [ style "background-color" "red", style "height" "90px" ]
+
+
+main : Html msg
+main =
+    div mainContentStyle [ text "Hallo Welt", text (String.fromInt 23) ]
+```
+
+Statt eine CSS-Datei zu nutzen, kann man in Elm sehr gut _Inline_-Stile verwenden.
+Da diese Stile in Elm selbst definiert werden und nicht in einer externen Datei, kann man die Sprachkonstrukte von Elm zur Strukturierung der Stile nutzen.
+So sollte man die Stil-Definitionen zum Beispiel in Konstanten auslagern.
+Das heißt, statt die Stile direkt als Liste an die HTML-Kombinatoren wie `div` zu übergeben, definiert man eine Konstante wie `mainContentStyle` und gibt ihr einen beschreibenden Namen.
+Dadurch hat man ähnlich wie in CSS die Möglichkeit, Kombinationen von Stilen unter einem semantischen Namen zusammenzufassen und wiederzuverwenden.
+
+Als weiteres Beispiel für die Verwendung von Attributen, wollen wir einen Link definieren.
+
+``` elm
+linkStyle : List (Attribute msg)
+linkStyle =
+    [ style "color" "red" ]
+
+
+main : Html msg
+main =
+    a (href "https://hs-flensburg.de" :: linkStyle) [ text "Dies ist ein Link" ]
+```
+
+In diesem Beispiel kombinieren wir eine Konstante, die den Stil aller
+Links definiert mit einem Attribut, das für die Logik der Anwendung
+zuständig ist.
+Die Funktion `href` nimmt einen `String` und konstruiert das gleichnamige HTML-Attribut.
+Der Operator `::` hängt das Element `href "https://hs-flensburg.de"` vorne an die Liste `linkStyle`.
+Man sollte die Attribute, die zur visuellen Gestaltung der Elemente gehören von den Attributen trennen, die zur Logik der Web-Anwendung gehören.
+Wir könnten ansonsten eine Konstante wie `linkStyle` nicht für alle Links der Web-Anwendung nutzen und würden visuelle Darstellung und Logik unnötig mischen.
+
+Zum Schluss soll an dieser Stelle noch erwähnt werden, dass Kombinatoren zur Generierung von HTML weitere Vorteile im Vergleich zum Schreiben von HTML mit sich bringen.
+Das Modul `Html.Attributes` stellt zum Beispiel die folgende Funktion zur Verfügung.
+
+```elm
+disabled : Bool -> Attribute msg
+```
+
+In HTML können wir ein Kontrollelement wie einen Knopf deaktivieren, indem wir das Attribut `disabled` zu den Attributen des Kontrollelementes hinzufügen.
+In der HTML-Bibliothek von Elm ist diese Funktionalität durch eine Funktion abgebildet.
+Das heißt, wir können an die Funktion `disabled` einen booleschen Wert übergeben und je nach dem, ob der Wert `True` oder `False` ist, wird das `disabled`-Attribut zu dem HTML-Knoten hinzugefügt oder nicht.
+Auf diese Weise können wir die Sprachkonstrukte von Elm nutzen, um komplexe Bedingungen zu formulieren, wann ein Kontrollelement deaktiviert ist.
 
 
 _Print Debugging_
