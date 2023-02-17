@@ -43,11 +43,13 @@ custom_css: toc
 
 ### 3. [Eine Erste Anwendung](first-application.md)
 
-- 3.1. [HTML-Kombinatoren](first-application.md#html-kombinatoren)
+- 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
 
 - 3.2. [Elm-Architektur](first-application.md#elm-architektur)
 
-- 3.3. [_Print Debugging_](first-application.md#print-debugging)
+- 3.3. [HTML-Kombinatoren](first-application.md#html-kombinatoren)
+
+- 3.4. [_Print Debugging_](first-application.md#print-debugging)
 
 ### 4. [Datentypen](data-types.md)
 
