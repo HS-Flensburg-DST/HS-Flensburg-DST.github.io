@@ -11,115 +11,125 @@ Wir wollen uns hier einige dieser Muster anschauen.
 Wiederkehrende rekursive Muster
 -------------------------------
 
-Nehmen wir an, wir haben eine Liste von Zahlen und wollen alle Zahlen inkrementieren.
-Wir können wie folgt eine Funktion definieren, die diese Aufgabe übernimmt.
+Nehmen wir an, wir haben eine Liste von Nutzer\*innen und wollen diese Liste auf unserer Seite anzeigen.
+Das Feld `id` stellt dabei eine Nummer dar, mit der Nutzer\*innen eindeutig identifiziert werden.
 
 ``` elm
-incList : List Int -> List Int
-incList list =
-    case list of
-        [] ->
-            []
-
-        i :: is ->
-            i + 1 :: incList is
+type alias User =
+    { id : Int
+    , firstName : String
+    , lastName : String
+    , age : Int
+    }
 ```
 
-Wir müssen den rekursiven Aufruf von `incList` an dieser Stelle nicht klammern, da, wie wir bereits gelernt haben, die Anwendung einer Funktion stärker bindet als ein Infix-Operator und damit `i + 1 :: incList is` implizit als `i + 1 :: (incList is)` geklammert ist.
-Wir müssen auch die Anwendungen von `+` und `::` nicht klammern, da der Operator `::` Präzedenz 5 und `+` Präzedenz 6 hat.
-Daher ist die rechte Seite der zweiten Regel implizit als `(i + 1) :: (incList is)` geklammert.
+Zuerst definieren wir eine Funktion, die für einen Wert vom Typ `User` eine HTML-Darstellung liefert.
 
-Nun nehmen wir an, wir möchten in einer Liste von Zahlen alle Zahlen quadrieren.
-Diese Aufgabe können wir wie folgt lösen.
-
-``` elm
-squareList : List Int -> List Int
-squareList list =
-    case list of
-        [] ->
-            []
-
-        i :: is ->
-            i * i :: squareList is
+```elm
+viewUser : User -> Html msg
+viewUser user =
+    text (user.firstName ++ " " ++ user.lastName)
 ```
 
-Zu guter Letzt nehmen wir an, wir haben eine Liste von Zeichenketten und wollen von jedem `String` die Länge berechnen.
-Diese Aufgabe können wir wie folgt lösen.
+Wir können nun wie folgt eine Funktion definieren, die unsere Liste von Nutzer\*innen in eine Liste von HTML-Knoten überführt.
 
-``` elm
-lengthList : List String -> List Int
-lengthList list =
+```elm
+viewUsers : List User -> List (Html msg)
+viewUsers list =
     case list of
         [] ->
             []
 
-        str :: strs ->
-            String.length str :: lengthList strs
+        user :: users ->
+            viewUser user :: viewUsers users
 ```
 
-Diese drei Funktionen unterscheiden sich nur leicht voneinander.
-Ein Ziel funktionaler Programmierer ist es, solche Duplikation von Code zu vermeiden.
+Das Ergebnis der Funktion `viewUsers` würden wir zum Beispiel als Kinder eines `div`-Knotens in unsere `view`-Funktion einbinden.
 
-Die Funktionen `incList`, `squareList` und `lengthList` durchlaufen alle
-eine Liste von Elementen und unterscheiden sich nur in der Operation,
-die sie auf die Listenelemente anwenden.
-Wir wollen einmal diese
-unterschiedlichen Operationen als Funktionen definieren.
+Nun nehmen wir an, dass wir eine _Dropdown_-Liste zu unserer Seite hinzufügen möchten, bei der wir alle Nutzer\*innen zur Auswahl stellen möchten.
+Zu diesem Zweck definieren wir zuerst eine Funktion, die zu einem Wert vom Typ `User` ein `option`-HTML-Element liefert.
+Wir nutzen dabei die `id` als eindeutigen Wert für die Option und zeigen bei jeder Option den vollständigen Namen als Text an.
+Anhand dieses Wertes kann später identifiziert werden, welche Option gewählt wurde.
 
-``` elm
-inc : Int -> Int
-inc i = i + 1
-
-square : Int -> Int
-square i = i * i
+```elm
+userOption : User -> Html msg
+userOption user =
+    option [ value (String.fromInt user.id) ] [ viewUser user ]
 ```
 
-Mit Hilfe dieser Funktionen werden die Gemeinsamkeiten der Funktionen
-`incList`, `squareList` und `lengthList` noch deutlicher.
+Wir können nun wie folgt eine Funktion definieren, die eine Liste von Nutzer\*innen in eine Liste von Optionen für eine _Dropdown_-Liste umwandelt.
 
-``` elm
-incList : List Int -> List Int
-incList list =
+```elm
+userOptions : List User -> List (Html msg)
+userOptions list =
     case list of
         [] ->
             []
 
-        i :: is ->
-            inc i :: incList is
-
-
-squareList : List Int -> List Int
-squareList list =
-    case list of
-        [] ->
-            []
-
-        i :: is ->
-            square i :: squareList is
-
-
-lengthList : List String -> List Int
-lengthList list =
-    case list of
-        [] ->
-            []
-
-        str :: strs ->
-            String.length str :: lengthList strs
+        user :: users ->
+            userOption user :: userOptions users
 ```
 
-Das heißt, die drei Definitionen unterscheiden sich nur durch die
-Funktion, die jeweils verwendet wird.
-Allerdings unterscheiden sich auch die Typen der Funktionen, so hat die Funktion in den ersten beiden Beispielen den Typ `Int -> Int` und im letzten Beispiel `String -> Int`.
+Mithilfe der Funktion `Html.select` können wir dann wie folgt eine _Dropdown_-Liste definieren.
+Die Funktion `onInput : (String -> msg) -> Attribute msg` aus dem Modul `Html.Events` schickt den `value` der gewählten Option an die Anwendung, wenn eine Option in der _Dropdown_-Liste gewählt wird.
 
-Wir können die Teile, die die drei Funktionen sich teilen, in eine
-Funktion extrahieren.
-Man nennt die Funktion, die wir dadurch erhalten
-`map`.
-Diese Funktion erhält die Operation, die auf die Elemente der
-Liste angewendet wird, als Argument übergeben.
+```elm
+view : Model -> Html msg
+view model =
+    select [ opInput Selected ] [ viewOptions (userOptions model.users) ]
+```
 
-In Elm sind Funktionen _First Class Citizens_.
+Zu guter Letzt wollen wir eine Funktion definieren, die das durchschnittliche Alter unserer Nutzer\*innen berechnet.
+Dazu wollen wir zuerst eine Funktion definieren, welche die Summe der Alter aller Nutzer\*innen berechnet.
+Elm stellt im Modul `List` eine Funktion `sum : List Int -> Int` zur Verfügung.
+Wir können diese Funktion aber nur nutzen, wenn wir eine Liste von Zahlen haben, während wir eine Liste von Nutzer\*innen zur Verfügung haben.
+Wir definieren daher die folgende Funktion.
+
+```elm
+ages : List User -> List Int
+ages list =
+    case list of
+        [] ->
+            []
+
+        user :: users ->
+            user.age :: ages users
+```
+
+Nun können wir wie folgt eine Funktion definieren, die das durchschnittliche Alter der Nutzer\*innen berechnet.
+
+```elm
+averageAge : List User -> Float
+averageAge users =
+    toFloat (List.sum (ages users)) / toFloat (List.length users)
+```
+
+Die Funktionen `viewUsers`, `userOptions` und `ages` durchlaufen alle eine Liste von Elementen und unterscheiden sich nur in der Operation, die sie auf die Listenelemente anwenden.
+Die Funktion `viewUsers` wendet `viewUser` auf alle Elemente an und die Funktion `userOptions` wendet `userOption` auf alle Elemente an.
+Im Abschnitt [Records](basics.md#records) haben wir gelernt, dass der Ausdruck `user.age` nur eine Kurzform für `.age user` ist.
+Daher können wir die Funktion `ages` auch wie folgt definieren.
+
+```elm
+ages : List User -> List Int
+ages list =
+    case list of
+        [] ->
+            []
+
+        user :: users ->
+            .age user :: ages users
+```
+
+Das heißt, in der Funktion `ages` wendet `.age` auf alle Elemente der Liste an.
+
+Die drei Funktionen unterscheiden sich also nur durch die Funktion, die jeweils auf alle Elemente der Liste angewendet wird.
+Allerdings unterscheiden sich auch die Typen der Funktionen, so hat die Funktion in den ersten beiden Fällen den Typ `User -> Html msg` und im letzten Beispiel `User -> Int`.
+
+Wir können die Teile, die die drei Funktionen sich teilen, in eine Funktion auslagern.
+Man nennt die Funktion, die wir dadurch erhalten `map`.
+Diese Funktion erhält die Operation, die auf die Elemente der Liste angewendet wird, als Argument übergeben.
+
+In Elm sind Funktionen _First-class Citizens_.
 Übersetzt bedeutet das in etwa, dass Funktionen die gleichen Rechte haben wie andere Werte.
 Das heißt, Funktionen können wie andere Werte, etwa Zahlen oder Zeichenketten, als Argumente und Ergebnisse in Funktionen verwendet werden.
 Außerdem können Funktionen in Datenstrukturen stecken.
@@ -137,56 +147,65 @@ map func list =
             func x :: map func xs
 ```
 
-Mithilfe der Funktion `map` können wir die Funktionen `incList`, `squareList` und `lengthList` nun wie folgt definieren.
+Mithilfe der Funktion `map` können wir die Funktionen `viewUsers`, `viewOptions` und `ages` nun wie folgt definieren.
 
 ``` elm
-incList : List Int -> List Int
-incList list =
-    map inc list
+viewUsers : List User -> List (Html msg)
+viewUsers list =
+    map viewUser list
 
-squareList : List Int -> List Int
-squareList list =
-    map square list
+viewOptions : List User -> List (Html msg)
+viewOptions list =
+    map viewOption list
 
-lengthList : List Int -> List Int
-lengthList list =
-    map String.length list
+ages : List User -> List Int
+ages list =
+    map .age list
 ```
 
 Man nennt eine Funktion, die eine andere Funktion als Argument erhält, eine Funktion höherer Ordnung (*Higher-order Function*).
 
 Neben dem Rekursionsmuster für `map`, wollen wir an dieser Stelle noch ein weiteres Rekursionsmuster vorstellen.
-Stellen wir uns vor, dass wir aus einer Liste von Zeichenketten die Liste aller Zeichenketten mit einer geraden Länge extrahieren möchten.
+Stellen wir uns vor, dass wir aus einer Liste von Nutzer\*innen alle extrahieren möchten, deren Nachname mit a beginnt.
 Dazu können wir die folgende Funktion definieren.
 
 ``` elm
-keepEvenLength : List String -> List String
-keepEvenLength list =
+startWithA : List User -> List User
+startWithA list =
     case list of
         [] ->
             []
 
-        str :: strs ->
-            if modBy 2 (String.length str) == 0 then
-                str :: keepEvenLength strs
+        user :: users ->
+            if String.startsWith "A" user.firstName then
+                user :: startWithA users
             else
-                keepEvenLength strs
+                startWithA users
 ```
 
-Als nächstes nehmen wir an, wir wollen aus einer Liste mit allen Zahlen alle Zahlen raussuchen, die kleiner sind als `5`.
+Als nächstes nehmen wir an, wir wollen das Durchschnittsalter aller Nutzer\*innen über 18 berechnen.
+Dazu definieren wir die folgende Funktion.
 
 ``` elm
-keepLessThan5 : List Int -> List Int
-keepLessThan5 list =
+keepAdultAges : List Int -> List Int
+keepAdultAges list =
     case list of
         [] ->
             []
 
-        x :: xs ->
-            if x < 5 then
-                x :: keepLessThan5 xs
+        ages :: ages ->
+            if ages >= 18 then
+                age :: keepAdultAges xs
             else
-                keepLessThan5 xs
+                keepAdultAges xs
+```
+
+Mithilfe der Funktion `keepAdultAges` können wir jetzt wie folgt das Durchschnittsalter `averageAdultAge`.
+
+```elm
+averageAdultAge : List User -> Float
+averageAdultAge users =
+    toFloat (List.sum (keepAdultAges (ages users))) / toFloat (List.length users)
 ```
 
 Wir können diese beiden Funktionen wieder mit Hilfe einer Funktion höherer Ordnung definieren.
@@ -209,12 +228,12 @@ Dieses Mal übergeben wir eine Funktion, die angibt, ob ein Element in die Ergeb
 Man bezeichnet eine solche Funktion, die einen booleschen Wert liefert, auch als Prädikat.
 
 Funktionen höherer Ordnung wie `map` und `filter` ermöglichen es, deklarativeren Code zu schreiben.
-Bei der Verwendung dieser Funktionen gibt der Entwickler nur an, was berechnet werden soll, aber nicht wie diese Berechnung durchgeführt wird.
+Bei der Verwendung dieser Funktionen geben Entwickler\*innen nur an, was berechnet werden soll, aber nicht wie diese Berechnung durchgeführt wird.
 Wie die Berechnung durchgeführt wird, wird dabei einfach durch die Abstraktionen festgelegt.
 Diese Form der deklarativen Programmierung ist in jeder Programmiersprache möglich, die es erlaubt Funktionen als Argumente zu übergeben.
 Heutzutage bietet fast jede Programmiersprache dieses Sprachfeature.
 Daher haben Abstraktionen wie `map` und `filter` inzwischen auch Einzug in die meisten Programmiersprachen gehalten.
-Im Folgenden sind einige Programmiersprachen aufgelistet, die diese Abstraktionen ähnlich zu `map` und `filter` zur Verfügung stellen.
+Im Folgenden sind einige Programmiersprachen aufgelistet, die Abstraktionen ähnlich zu `map` und `filter` zur Verfügung stellen.
 
 ##### Java
 
@@ -249,24 +268,32 @@ Elm stellt die Funktionen `map` und `filter` im Modul `List` zur Verfügung.
 Anonyme Funktionen
 ------------------
 
-Es ist recht umständlich extra die Funktionen `inc` und `square` zu definieren, nur, um sie in den Definitionen von `incList` und `squareList` zu verwenden.
-Stattdessen kann man anonyme Funktionen verwenden.
-Anonyme Funktionen sind einfach Funktionen, die keinen Namen erhalten.
-Die Funktion `incList` kann zum Beispiel wie folgt mit Hilfe einer anonymen Funktion definiert werden.
+Um die Funktion `startWithA` mithilfe von `filter` zu definieren, müssten wir das folgende Prädikat definieren.
 
-``` elm
-incList : List Int -> List Int
-incList list =
-    map (\x -> x + 1) list
+```elm
+userStartsWithA : User -> Bool
+userStartsWithA user =
+    String.startsWith "A" user.firstName
 ```
 
-Dabei stellt der Ausdruck `\x -> x + 1` die anonyme Funktion dar.
-Analog können wir die Funktion `squareList` mithilfe einer anonymen Funktion wie folgt definieren.
+Es ist recht umständlich extra die Funktionen `userStartsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden.
+Stattdessen kann man anonyme Funktionen verwenden.
+Anonyme Funktionen sind einfach Funktionen, die keinen Namen erhalten.
+Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mit Hilfe einer anonymen Funktion definiert werden.
 
 ``` elm
-squareList : List Int -> List Int
-squareList list =
-    map (\x -> x * x) list
+userStartsWithA : List User -> List User
+userStartsWithA list =
+    List.filter (\user -> String.startsWith "A" user.firstName) list
+```
+
+Dabei stellt der Ausdruck `\user -> String.startsWith "A" user.firstName` die anonyme Funktion dar.
+Analog können wir die Funktion `viewUsers` mithilfe einer anonymen Funktion wie folgt definieren.
+
+``` elm
+viewUsers : List User -> List (Html msg)
+viewUsers list =
+    List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) list
 ```
 
 Anonyme Funktionen, auch als Lambda-Ausdrücke bezeichnet, starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
@@ -280,15 +307,6 @@ f x y = e
 Der einzige Unterschied ist, dass wir die Funktion nicht verwenden, indem wir ihren Namen schreiben, sondern indem wir den gesamten Lambda-Ausdruck angeben.
 Während wir `f` zum Beispiel auf Argumente anwenden, indem wir `f 1 2` schreiben, wenden wir den Lambda-Ausdruck an, indem wir `(\x y -> e) 1 2` schreiben.
 
-Als weiteres Beispiel wollen wir eine Lambda-Funktion nutzen, um ein Prädikat zu definieren.
-Dazu betrachten wir noch einmal die Funktion `filter`.
-Wenn wir zum Beispiel aus einer Liste von Zeichenketten extrahieren möchten, deren Länge gerade ist, können wir diese Anwendung wie folgt definieren.
-
-``` elm
-keepEvenLength : List String -> List String
-keepEvenLength list =
-    filter (\str -> modBy 2 (String.length str) == 0) list
-```
 
 Gecurryte Funktionen
 ----------------------
@@ -400,13 +418,14 @@ Piping
 Funktionen höherer Ordnung haben viele Verwendungen.
 Wir wollen uns hier noch eine Anwendung anschauen, die sich recht stark von Funktionen wie `map` und `filter` unterscheidet.
 Wir betrachten dazu folgendes Beispiel.
-Wir haben eine Liste von Zahlen `list`, aus dieser wollen wir die geraden Zahlen filtern, dann wollen wir die verbleibenden Zahlen quadrieren und schließlich die Summe aller Zahlen bilden.
-Wir können diese Funktionalität wie folgt implementieren.
+Wir wollen wiederum das Durchschnittsalter aller volljährigen Nutzer\*innen berechnen.
+Dazu berechnen wir die Summe der Alter aller Nutzer\*innen über 18.
+Wir nutzen erst `List.map`, um eine Liste von Altersangaben zu erhalten, wir filtern die Altersangaben, die größer gleich `18` sind und summieren schließlich das Ergebnis.
 
 ``` elm
-sumOfEvenSquares : List Int -> Int
-sumOfEvenSquares list =
-    List.sum (List.filter (\x -> modBy 2 x == 0) (List.map (\x -> x * x) list))
+sumOfAdultAges : List User -> Int
+sumOfAdultAges list =
+    List.sum (List.filter (\age -> age >= 18) (List.map .age list))
 ```
 
 Die Verarbeitungsschritte müssen dabei in umgekehrter Reihenfolge angegeben werden.
@@ -415,16 +434,16 @@ Elm stellt einen Operator `(|>) : a -> (a -> b) -> b` zur Verfügung mit dessen 
 Wir können die Funktion mit Hilfe dieses Operators wie folgt definieren.
 
 ``` elm
-sumOfEvenSquares : List Int -> Int
-sumOfEvenSquares list =
+sumOfAdultAges : List Int -> Int
+sumOfAdultAges list =
     list
-        |> List.map (\x -> x * x)
-        |> List.filter (\x -> modBy 2 x == 0)
+        |> List.map .age
+        |> List.filter (\age -> age >= 18)
         |> List.sum
 ```
 
 Aus Gründen der Lesbarkeit wird eine solche Sequenz von Verarbeitungsschritten häufig wie oben aufgeführt eingerückt.
-Man spricht in diesem Zusammenhang auch von _Piping_.
+Man spricht in diesem Zusammenhang auch von _Piping_ in Anlehung an das entsprechende Konzept in einer Shell.
 
 Hinter dem Operator `(|>)` steckt die folgende einfache Definition.
 
@@ -442,14 +461,19 @@ infixl 0 |>
 ```
 
 Das heißt, der Operator hat die Präzedenz `0` und ist links-assoziativ.
-Man sollte den Operator `|>` allerdings wirklich nur einsetzen, wenn man, wie in `sumOfEvenSquares` eine Sequenz von Transformationen durchführt.
+Man sollte den Operator `|>` allerdings wirklich nur einsetzen, wenn man, wie in `sumOfAdultAges` eine Sequenz von Transformationen durchführt.
 Wenn man den Operator `|>` für "normale" Funktionsanwendungen innerhalb eines komplexeren Ausdrucks verwendet, wird der Code sehr schnell schlecht lesbar.
 
 Neben `|>` stellt Elm auch einen Operator `(<|) : (a -> b) -> a -> b` zur Verfügung.
 Die Operatoren `<|` und `|>` werden gern verwendet, um Klammern zu sparen.
 So kann man durch den Operator `<|` zum Beispiel eine Funktion auf ein Argument angewendet werden, ohne das Argument zu klammern.
 Wir können statt `items (23 + 42)` zum Beispiel `item <| 23 + 42` schreiben.
-Die Operatoren `<|` und `|>` sollten aber in Maßen genutzt werden, da der Code dadurch schnell schlecht lesbar wird.
+Es ist relativ verbreitet, die Operatoren `<|` und `|>` zu nutzen.
+Um existierenden Elm-Code lesen zu können, sollte man die Operatoren daher kennen.
+In vielen Fällen wird der Code durch die Verwendung dieser Operatoren aber nicht unbedingt lesbarer.
+Daher sollten die Operatoren vor allem genutzt werden, wenn es sich tatsächlich um eine längere Sequenz von Transformationen wie in der Definition von `sumOfAdultAges` handelt.
+Ansonsten sollte man die Operatoren aber eher vermeiden.
+
 
 Eta-Reduktion und -Expansion
 ----------------------------
@@ -457,11 +481,11 @@ Eta-Reduktion und -Expansion
 Mit der gecurryten Schreibweise geht noch ein weiteres wichtiges Konzept einher, die Eta-Reduktion bzw. die Eta-Expansion.
 Dies sind die wissenschaftlichen Namen für Umformungen eines Ausdrucks.
 Bei der Reduktion lässt man Argumente einer Funktion weg und bei der Expansion fügt man Argumente hinzu.
-Im Abschnitt [Wiederkehrende rekursive Muster](#wiederkehrende-rekursive-muster) haben wir die Funktion `map` mittels `map inc list` auf die Funktion `inc` und die Liste `list` angewendet.
-Wenn wir eine Lambda-Funktion verwenden, können wir den Aufruf aber auch als `map (\x -> inc x) list` definieren.
+Im Abschnitt [Wiederkehrende rekursive Muster](#wiederkehrende-rekursive-muster) haben wir die Funktion `map` mittels `map viewUser list` auf die Funktion `viewUser` und die Liste `list` angewendet.
+Wenn wir eine Lambda-Funktion verwenden, können wir den Aufruf aber auch als `map (\user -> viewUser user) list` definieren.
 Diese beiden Aufrufe verhalten sich exakt gleich.
-Den Wechsel von `\x -> inc x` zu `inc` bezeichnet man als Eta-Reduktion.
-Den Wechsel von `inc` zu `\x -> inc x` bezeichnet man als Eta-Expansion.
+Den Wechsel von `\user -> viewUser user` zu `viewUser` bezeichnet man als Eta-Reduktion.
+Den Wechsel von `viewUser` zu `\user -> viewUser user` bezeichnet man als Eta-Expansion.
 Ganz allgemein kann man durch die Anwendung der Eta-Reduktion einen Ausdruck der Form `\x -> f x` in `f` umwandeln, wenn `f` eine Funktion ist, die mindestens ein Argument nimmt.
 Durch die Eta-Expansion kann man einen Ausdruck der Form `f` in `\x -> f x` umwandeln, wenn `f` eine Funktion ist, die mindestens ein Argument nimmt.
 
@@ -469,38 +493,81 @@ Das Konzept der Eta-Reduktion und -Expansion lässt sich aber nicht nur auf Lamb
 Als Beispiel betrachten wir noch einmal die folgende Definition aus dem  Abschnitt [Wiederkehrende rekursive Muster](#wiederkehrende-rekursive-muster).
 
 ``` elm
-incList : List Int -> List Int
-incList list =
-    List.map inc list
+viewUsers : List User -> List (Html msg)
+viewUsers list =
+    List.map viewUser list
 ```
 
 Im Abschnitt [Gecurryte Funktionen](#gecurryte-funktionen) haben wir gelernt, dass diese Definition nur eine Kurzform für die folgende Definition ist.
 
 ``` elm
-incList : List Int -> List Int
-incList =
-    \list -> List.map inc list
+viewUsers : List User -> List (Html msg)
+viewUsers =
+    \list -> List.map viewUser list
 ```
 
 Durch Eta-Reduktion können wir diese Definition jetzt zur folgenden Definition abändern.
 
 ``` elm
-incList : List Int -> List Int
-incList =
-    List.map inc
+viewUsers : List User -> List (Html msg)
+viewUsers =
+    List.map viewUser
 ```
 
 Das heißt, wenn wir eine Funktion definieren und diese Funktion ruft nur eine andere Funktion mit dem Argument auf, dann können wir dieses Argument durch die Anwendung von Eta-Reduktion auch weglassen.
 
-Anders ausgedrückt stellen die beiden Varianten von `incList` einfach unterschiedliche Sichtweisen auf die Definition einer Funktion dar.
+Anders ausgedrückt stellen die beiden Varianten von `viewUsers` einfach unterschiedliche Sichtweisen auf die Definition einer Funktion dar.
 In der Variante mit dem expliziten Argument `list` wird eine Funktion definiert, indem beschrieben wird, was die Funktion mit ihrem Argument macht.
 In der Variante ohne explizites Argument `list` wird eine Funktion definiert, indem eine Funktion als partielle Applikation einer anderen Funktion definiert wird. Man nennt diese zweite Variante auch punkt-frei (*point-free*).
 
 An dieser Stelle soll noch kurz erwähnt werden, dass sie Eta-Reduktion auch anwenden lässt, wenn eine _Top Level_-Funktion eine lokale Definition enthält.
-Dazu betrachten wir die folgende Variante der Funktion `incList`.
-In dieser Variante haben wir die Funktion `inc`, die auf jedes Element der Liste angewendet wird, als lokale Funktion in einem `let`-Ausdruck definiert.
+Dazu betrachten wir die folgende Variante der Funktion `viewUsers`.
+In dieser Variante haben wir die Funktion `viewUser`, die auf jedes Element der Liste angewendet wird, als lokale Funktion in einem `let`-Ausdruck definiert.
 Es kommt in Elm relativ häufig vor, dass man eine lokale Funktion definiert und diese mit Hilfe von `List.map` auf alle Elemente einer Liste anwendet.
 Häufig definiert man die Funktion, die auf die Elemente der Liste angewendet wird, lokal, das sie außerhalb der Funktion nicht benötigt wird.
+
+``` elm
+viewUsers : List Int -> List Int
+viewUsers list =
+    let
+        viewUser user =
+            text (user.firstName ++ " " ++ user.lastName)
+    in
+    List.map viewUser list
+```
+
+Auf diese Variant von `viewUsers` kann man ebenfalls Eta-Reduktion anwenden und erhält die folgende Definition.
+
+``` elm
+viewUsers : List Int -> List Int
+viewUsers =
+    let
+        viewUser user =
+            text (user.firstName ++ " " ++ user.lastName)
+    in
+    List.map viewUser
+```
+
+Die Definition einer Funktion wie `viewUsers` mithilfe eines `let`-Ausdrucks ist relativ beliebt.
+Sie hat den Vorteil, dass die Funktion `viewUser` nur in der Definition von `viewUsers` verwendet werden kann.
+Dies ist vor allem sinnvoll, wenn die Funktion `viewUser` wirklich nur im Kontext dieser Funktion verwendet werden sollte.
+Im Fall von `viewUsers` verwerfen wir zum Beispiel einige der Komponenten, was in vielen anderen Anwendungsfällen möglicherweise nicht sinnvoll ist.
+Im Unterschied zur Definition mithilfe einer Lambda-Funktion, können wir der Funktion `viewUser` bei der Verwendung eines `let`-Ausdrucks einen Namen geben, der Entwickler\*innen ggf. hilft, den Code zu verstehen.
+Im Allgemeinen verwendet man meistens eine Lambda-Funktion, solange die Funktion recht einfach ist und nutzt einen `let`-Ausdruck sobald die Funktion etwas komplizierter wird.
+
+
+Funktionskomposition
+--------------------
+
+Am Ende dieses Kapitels wollen wir noch eine weitere Funktion höherer Ordnung betrachten, die häufig in Eta-reduzierten Funktionen zum Einsatz kommt.
+Diese Funktionen höherer Ordnung wird als Funktionskomposition bezeichnet und ist wie folgt definiert.
+
+```elm
+
+```
+
+
+Wir nehmen an, dass wir die Elemente einer Liste jeweils um einen erhöhen und anschließend quadrieren möchten.
 
 ``` elm
 incList : List Int -> List Int
@@ -511,25 +578,6 @@ incList list =
     in
     List.map inc list
 ```
-
-Auf diese Variant von `incList` kann man ebenfalls Eta-Reduktion anwenden und erhält die folgende Definition.
-
-``` elm
-incList : List Int -> List Int
-incList =
-    let
-        inc x =
-            x + 1
-    in
-    List.map inc
-```
-
-
-Funktionskomposition
---------------------
-
-Am Ende dieses Kapitels wollen wir 
-
 
 
 
