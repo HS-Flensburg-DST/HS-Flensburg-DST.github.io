@@ -282,8 +282,8 @@ Anonyme Funktionen sind einfach Funktionen, die keinen Namen erhalten.
 Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mit Hilfe einer anonymen Funktion definiert werden.
 
 ``` elm
-userStartsWithA : List User -> List User
-userStartsWithA list =
+startWithA : List User -> List User
+startWithA list =
     List.filter (\user -> String.startsWith "A" user.firstName) list
 ```
 
@@ -559,27 +559,86 @@ Im Allgemeinen verwendet man meistens eine Lambda-Funktion, solange die Funktion
 Funktionskomposition
 --------------------
 
-Am Ende dieses Kapitels wollen wir noch eine weitere Funktion höherer Ordnung betrachten, die häufig in Eta-reduzierten Funktionen zum Einsatz kommt.
+Am Ende dieses Kapitels wollen wir noch eine weitere Funktion höherer Ordnung betrachten, die es ermöglicht, Eta-Reduktion anzuwenden, wenn mehrere Funktionen hintereinander angewendet werden.
 Diese Funktionen höherer Ordnung wird als Funktionskomposition bezeichnet und ist wie folgt definiert.
 
 ```elm
-
+(<<) : (b -> c) -> (a -> b) -> a -> c
+g << f =
+    \x -> g (f x)
 ```
 
-
-Wir nehmen an, dass wir die Elemente einer Liste jeweils um einen erhöhen und anschließend quadrieren möchten.
+Die Funktionskomposition kann genutzt werden, um eine neue Funktion zu definieren, indem wir zwei bestehende Funktionen kombinieren.
+Wir betrachten noch einmal die Funktion `startWithA`.
 
 ``` elm
-incList : List Int -> List Int
-incList list =
-    let
-        inc x =
-            x + 1
-    in
-    List.map inc list
+startWithA : List User -> List User
+startWithA list =
+    List.filter (\user -> String.startsWith "A" user.firstName) list
 ```
 
+Mithilfe der Funktionskomposition können wir diese Funktion wie folgt definieren.
 
+``` elm
+startWithA : List User -> List User
+startWithA list =
+    List.filter (String.startsWith "A" << .firstName) list
+```
+
+Die Funktion `String.startsWith "A" << .firstName` erhält ein Argument und wendet auf dieses Argument zuerst die Funktion `.firstName` an.
+Auf das Ergebnis der Funktion `.firstName` wird die Funktion `String.startsWith "A"` angewendet.
+Hierbei handelt es sich um eine partielle Applikation, da die Funktion `String.startsWith` zwei Argumente nimmt, wie diese Funktion aber nur auf ein Argument anwenden.
+Die partielle Applikation `String.startsWith "A"` nimmt einen `String` und testet, ob der `String` mit dem Buchstaben `"A"` startet.
+
+Um die Funktionsweise der Funktionskomposition noch etwas zu illustrieren, können wir das funktionale Argument von `List.filter` Eta-expandieren und erhalten die folgende Definition.
+
+``` elm
+startWithA : List User -> List User
+startWithA list =
+    List.filter (\user -> (String.startsWith "A" << .firstName) user) list
+```
+
+Das heißt, das funktionale Argument ist eine Funktion, die das Argument `user` nimmt und die Funktion `(String.startsWith "A" << .firstName)` auf `user` anwendet.
+
+Als weiteres Beispiel wollen wir uns noch einmal die Funktion `sumOfAdultAges` anschauen.
+
+``` elm
+sumOfAdultAges : List User -> Int
+sumOfAdultAges list =
+    List.sum (List.filter (\age -> age >= 18) (List.map .age list))
+```
+
+Die Funktion wendet mehrere Funktionen nacheinander auf das Argument `list` an.
+Daher können wir diese Funktion auch mithilfe der Funktionskomposition definieren.
+
+``` elm
+sumOfAdultAges : List User -> Int
+sumOfAdultAges list =
+    (List.sum << List.filter (\age -> age >= 18) << List.map .age) list
+```
+
+Da wir `sumOfAdultAges` nun mittels Funktionskomposition definiert haben, können wir Eta-Reduktion anwenden und erhalten das folgende Ergebnis.
+
+``` elm
+sumOfAdultAges : List User -> Int
+sumOfAdultAges =
+    List.sum << List.filter (\age -> age >= 18) << List.map .age
+```
+
+Das heißt, mithilfe der Funktionskomposition können wir Funktionen eta-reduzieren, die mehrere Funktionen nacheinander auf ein Argument anwenden.
+
+Analog zu den Funktionen `<|` und `|>` gibt es neben der klassischen Form der Funktionskomposition `<<` in Elm noch den Operator `(>>) : (a -> b) -> (b -> c) -> a -> c`, bei dem die Argumente im Vergleich zu `<<` vertauscht sind.
+Mit der Funktion `>>` können wir `sumOfAdultAges` jetzt zum Beispiel im Stil des _Pipings_ wie folgt definieren.
+
+``` elm
+sumOfAdultAges : List User -> Int
+sumOfAdultAges =
+    List.map .age
+        >> List.filter (\age -> age >= 18)
+        >> List.sum
+```
+
+Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funktion `List.map .age` angewendet, dann wird `List.filter (\age -> age >>= 18)` angewendet und zu guter Letzt `List.sum`.
 
 [^1]: <https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/linq>
 

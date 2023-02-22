@@ -81,6 +81,8 @@ custom_css: toc
 
 - 7.6. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
+- 7.7. [Funktionskomposition](higher-order.md#funktionskomposition)
+
 ### 8. [Modellierung der Elm-Architektur](architecture.md)
 
 ### 9. [Abonnements](subscriptions.md)
