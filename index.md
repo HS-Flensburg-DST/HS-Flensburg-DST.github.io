@@ -67,19 +67,19 @@ custom_css: toc
 
 ### 6. [Design von Datentypen](design.md)
 
-### 7. [Funktionen höherer Ordnung](recursion.md)
+### 7. [Funktionen höherer Ordnung](higher-order.md)
 
-- 7.1. [Wiederkehrende rekursive Muster](recursion.md#wiederkehrende-rekursive-muster)
+- 7.1. [Wiederkehrende rekursive Muster](higher-order.md#wiederkehrende-rekursive-muster)
 
-- 7.2. [Anonyme Funktionen](recursion.md#anonyme-funktionen)
+- 7.2. [Anonyme Funktionen](higher-order.md#anonyme-funktionen)
 
-- 7.3. [Gecurryte Funktionen](recursion.md#gecurryte-funktionen)
+- 7.3. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
 
-- 7.4. [Partielle Applikationen](recursion.md#partielle-applikationen)
+- 7.4. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-- 7.5. [Piping](recursion.md#piping)
+- 7.5. [Piping](higher-order.md#piping)
 
-- 7.6. [Eta-Reduktion und -Expansion](recursion.md#eta-reduktion-und--expansion)
+- 7.6. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
 ### 8. [Modellierung der Elm-Architektur](architecture.md)
 
