@@ -52,13 +52,6 @@ header .wrapper {
     width: 200px;
 }
 
-@media screen and (max-width: 1260px) {
-
-    .logo {
-        margin-right: 50px;
-    }
-}
-
 .logo .support {
     font-size: 12px;
 }
