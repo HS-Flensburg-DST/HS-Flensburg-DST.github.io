@@ -101,6 +101,12 @@ custom_css: toc
 
 ### 11. [Strukturierung einer Anwendung](structure.md)
 
+- 11.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+
+- 11.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+
+- 11.3. [Modell strukturieren](structure.md#modell-strukturieren)
+
 ### 12. [Abstraktionen](abstractions.md)
 
 - 12.1. [Funktoren](abstractions.md#funktoren)
