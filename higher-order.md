@@ -4,7 +4,7 @@ title: "Funktionen höherer Ordnung"
 ---
 
 In diesem Kapitel wollen wir uns intensiver mit dem Thema Rekursion auseinandersetzen.
-Wie wir bereits gesehen haben, kann man mit Hilfe von Rekursion Funktionen in Elm definieren.
+Wie wir bereits gesehen haben, kann man mithilfe von Rekursion Funktionen in Elm definieren.
 Wenn man sich etwas länger mit rekursiven Funktionen beschäftigt, wird aber schnell klar, dass es unter diesen rekursiven Funktionen wiederkehrende Muster gibt.
 Wir wollen uns hier einige dieser Muster anschauen.
 
@@ -208,7 +208,7 @@ averageAdultAge users =
     toFloat (List.sum (keepAdultAges (ages users))) / toFloat (List.length users)
 ```
 
-Wir können diese beiden Funktionen wieder mit Hilfe einer Funktion höherer Ordnung definieren.
+Wir können diese beiden Funktionen wieder mithilfe einer Funktion höherer Ordnung definieren.
 
 ``` elm
 filter : (a -> Bool) -> List a -> List a
@@ -279,7 +279,7 @@ userStartsWithA user =
 Es ist recht umständlich extra die Funktionen `userStartsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden.
 Stattdessen kann man anonyme Funktionen verwenden.
 Anonyme Funktionen sind einfach Funktionen, die keinen Namen erhalten.
-Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mit Hilfe einer anonymen Funktion definiert werden.
+Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mithilfe einer anonymen Funktion definiert werden.
 
 ``` elm
 startWithA : List User -> List User
@@ -359,7 +359,7 @@ In dieser Form der Definition ist ganz explizit dargestellt, dass `cartL` eine F
 Um Schreibarbeit zu reduzieren, entsprechen alle Definitionen, die wir in Elm angeben, im Endeffekt diesem Muster.
 Wir können die Funktionen aber mit der Kurzschreibweise von `cart`, die auf die Verwendung der Lambda-Funktionen verzichtet, definieren.
 
-Mit Hilfe der Definition `cartL` können wir noch einmal illustrieren, dass die Funktionsanwendung linksassoziativ ist.
+Mithilfe der Definition `cartL` können wir noch einmal illustrieren, dass die Funktionsanwendung linksassoziativ ist.
 
 ``` elm
 cartL 4 2.23
@@ -431,7 +431,7 @@ sumOfAdultAges list =
 Die Verarbeitungsschritte müssen dabei in umgekehrter Reihenfolge angegeben werden.
 Das heißt, wir geben zuerst den letzten Verarbeitungsschritt an, nämlich das Summieren.
 Elm stellt einen Operator `(|>) : a -> (a -> b) -> b` zur Verfügung mit dessen Hilfe wir die Reihenfolge der Verarbeitungsschritte umkehren können.
-Wir können die Funktion mit Hilfe dieses Operators wie folgt definieren.
+Wir können die Funktion mithilfe dieses Operators wie folgt definieren.
 
 ``` elm
 sumOfAdultAges : List Int -> Int
@@ -523,7 +523,7 @@ In der Variante ohne explizites Argument `list` wird eine Funktion definiert, in
 An dieser Stelle soll noch kurz erwähnt werden, dass sie Eta-Reduktion auch anwenden lässt, wenn eine _Top Level_-Funktion eine lokale Definition enthält.
 Dazu betrachten wir die folgende Variante der Funktion `viewUsers`.
 In dieser Variante haben wir die Funktion `viewUser`, die auf jedes Element der Liste angewendet wird, als lokale Funktion in einem `let`-Ausdruck definiert.
-Es kommt in Elm relativ häufig vor, dass man eine lokale Funktion definiert und diese mit Hilfe von `List.map` auf alle Elemente einer Liste anwendet.
+Es kommt in Elm relativ häufig vor, dass man eine lokale Funktion definiert und diese mithilfe von `List.map` auf alle Elemente einer Liste anwendet.
 Häufig definiert man die Funktion, die auf die Elemente der Liste angewendet wird, lokal, das sie außerhalb der Funktion nicht benötigt wird.
 
 ``` elm

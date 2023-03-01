@@ -69,7 +69,7 @@ Elm ist, wie bereits erwähnt, eine domänenspezifische Sprache.
 Außerdem ist Elm eine funktionale Programmiersprache und bietet eine Reihe von eingebetteten domänenspezifischen Sprachen, zum Beispiel zur Definition von HTML oder um Daten im JSON-Format zu verarbeiten.
 Zu guter Letzt nutzt Elm eine sehr deklarative Architektur, die sogenannte Elm-Architektur, um Web-Frontend-Anwendungen deklarativ zu formulieren.
 Zum Beispiel wird in Elm nicht beschrieben, wie das HTML-Dokument sich durch Aktionen des Nutzers verändert.
-Stattdessen wird nur zu jedem Zeitpunkt beschrieben, wie das HTML-Dokument aktuell aussieht und Elm berechnet mit Hilfe einer Technik, die als *virtual dom* bezeichnet wird, welche Operationen durchgeführt werden müssen, um von einem Zustand zum anderen zu gelangen.
+Stattdessen wird nur zu jedem Zeitpunkt beschrieben, wie das HTML-Dokument aktuell aussieht und Elm berechnet mithilfe einer Technik, die als *virtual dom* bezeichnet wird, welche Operationen durchgeführt werden müssen, um von einem Zustand zum anderen zu gelangen.
 
 Zu guter Letzt sei hier noch erwähnt, dass Elm in JavaScript übersetzt wird.
 Wir können aus einer Elm-Anwendung entweder eine HTML-Seite inklusive JavaScript-Code erzeugen oder JavaScript-Code, den wir dann in eine bestehende Seite einbinden können.

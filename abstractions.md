@@ -179,7 +179,7 @@ Wir wollen uns an dieser Stelle noch eine dieser Abstraktionen anschauen, die Mo
 
 ![Monads, monad everywhere](./assets/images/monads-everywhere.png){: .centered}
 
-Es gibt einige Funktionen, die sich mit Hilfe eines applikativen Funktors nicht ausdrücken lassen.
+Es gibt einige Funktionen, die sich mithilfe eines applikativen Funktors nicht ausdrücken lassen.
 Wir betrachten dazu die folgende `apply`-Funktion.
 
 ```elm

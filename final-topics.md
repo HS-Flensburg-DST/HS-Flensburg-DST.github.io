@@ -83,7 +83,7 @@ Wenn wir einen Fehler zur _Compile Time_ erhalten, heißt das, wir finden den Fe
 Wenn wir den Fehler zur _Run Time_ erhalten, heißt das, dass das Programm ggf. beim Kunden abstürzt.
 
 Der Hauptkritikpunkt an den speziellen Variablennamen besteht darin, dass der Nutzer keine weiteren Typen hinzufügen kann.
-Das heißt, alle Typen, die nicht von Haus aus zu den vergleichbaren Typen gehören, können mit Hilfe von `(<)` nicht verglichen werden.
+Das heißt, alle Typen, die nicht von Haus aus zu den vergleichbaren Typen gehören, können mithilfe von `(<)` nicht verglichen werden.
 Eine Lösung für dieses Problem stellen zum Beispiel Typklassen dar, die in der funktionalen Programmiersprache Haskell genutzt werden, um Funktionen überladen zu können.
 In diesem Fall kann der Nutzer auch selbst Instanzen für eine Funktion hinzufügen.
 Eine Erweiterung von Elm um Typklassen oder ein vergleichbares Feature[^1] ist geplant, hat aber keine hohe Priorität.
@@ -133,7 +133,7 @@ port returnResult : (String -> msg) -> Sub msg
 ```
 
 Wir modellieren hier eine Funktion, die ebenfalls einen `String` als Ergebnis liefert.
-Mit Hilfe dieser *Subscription* können wir uns in der Elm-Anwendung informieren lassen, wenn der JavaScript-Code ein Ergebnis liefert.
+Mithilfe dieser *Subscription* können wir uns in der Elm-Anwendung informieren lassen, wenn der JavaScript-Code ein Ergebnis liefert.
 In der JavaScript-Anwendung rufen wir an einer beliebigen Stelle den folgenden Code auf.
 
 ``` javascript
@@ -155,11 +155,11 @@ Die Seite enthält außerdem Tipps, was man bei der Umsetzung einer Anwendung mi
 Die Seite [Optimization](https://guide.elm-lang.org/optimization/) bietet Informationen zur Performance einer Webanwendung.
 Dort findet sich zum Beispiel eine Erklärung des *virtual DOM*, der dafür sorgt, dass das Rendern von HTML im Browser effizient durchgeführt wird, obwohl die Funktion `view` immer die gesamte HTML-Struktur als Ergebnis liefert.
 Das Kapitel stellt außerdem die Funktion `lazy : (a -> Html msg) -> a -> Html msg` vor, die Caching von Funktionsaufrufen implementiert.
-Das heißt, wenn man eine Funktion hat, die eine HTML-Struktur liefert, kann man mit Hilfe von `lazy` dafür sorgen, dass diese Funktion nur ausgeführt wird, wenn sich die Argumente der Funktion im Vergleich zum vorherigen Aufruf geändert haben.
+Das heißt, wenn man eine Funktion hat, die eine HTML-Struktur liefert, kann man mithilfe von `lazy` dafür sorgen, dass diese Funktion nur ausgeführt wird, wenn sich die Argumente der Funktion im Vergleich zum vorherigen Aufruf geändert haben.
 
 [^1]: <https://github.com/elm-lang/elm-compiler/issues/38>
 
-[^2]: Alternativ kann man mit Hilfe des Parameters `-–output` auch dafür sorgen, dass der JavaScript-Code in eine JavaScript-Datei geschrieben wird.
+[^2]: Alternativ kann man mithilfe des Parameters `-–output` auch dafür sorgen, dass der JavaScript-Code in eine JavaScript-Datei geschrieben wird.
 
 <div class="nav">
     <ul class="nav-row">

@@ -31,7 +31,7 @@ Dazu führen wir das folgende Kommando aus.
 elm install elm/time
 ```
 
-Da wir unsere Uhr mit Hilfe eines SVG zeichnen wollen, fügen wir auch noch das SVG-Paket hinzu.
+Da wir unsere Uhr mithilfe eines SVG zeichnen wollen, fügen wir auch noch das SVG-Paket hinzu.
 
 ```console
 elm install elm/svg
@@ -390,7 +390,7 @@ decodeString : Decoder a -> String -> Result Error a
 ```
 
 zur Verfügung.
-Mit Hilfe dieser Funktion kann ein `Decoder` auf eine Zeichenkette angewendet werden.
+Mithilfe dieser Funktion kann ein `Decoder` auf eine Zeichenkette angewendet werden.
 Ein `Decoder a` liefert einen Wert vom Typ `a` als Ergebnis nach dem Parsen.
 Wenn wir einen `Decoder a` mit `decodeString` auf eine Zeichenkette anwenden, erhalten wir entweder einen Fehler und eine Fehlermeldung mit einer Fehlerbeschreibung oder wir erhalten einen Wert vom Typ `a`.
 Daher ist der Ergebnistyp der Funktion `decodeString` `Result Error a`.
@@ -540,7 +540,7 @@ Tasten
 ------
 
 Wir wollen uns nun eine Anwendung von `Decoder`n anschauen und zwar wollen wir auf die Eingabe einer Taste in unserer Anwendung horchen.
-Als Beispiel wollen wir einen einfachen Zähler implementieren, bei dem es möglich ist, den Zähler mit Hilfe der Pfeiltasten zu erhöhen oder zu erniedrigen.
+Als Beispiel wollen wir einen einfachen Zähler implementieren, bei dem es möglich ist, den Zähler mithilfe der Pfeiltasten zu erhöhen oder zu erniedrigen.
 Zu diesem Zweck müssen wir über alle Tastendrücke informiert werden.
 Die Funktion
 
