@@ -122,3 +122,6 @@ custom_css: toc
 - 13.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
 
 - 13.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
+
+### A. [Programmierregeln](rules.md)
+
