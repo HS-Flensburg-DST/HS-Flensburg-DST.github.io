@@ -167,7 +167,7 @@ Ohne das *Pattern Matching* auf `Tick` würde die Anwendung weiterhin kompiliere
 Die Anwendung würde sich aber für diese neue Nachricht genau so verhalten wie für die Nachricht `Tick`, was ggf. nicht das gewünschte Verhalten ist.
 
 Als nächstes wollen wir die Uhr zeichnen.
-Dazu definieren wie uns zunächst eine Hilfsfunktion.
+Dazu verwenden wir die Funktion `rotate`, die wir im Abschnitt [Records](basics.md#records) definiert haben.
 Diese Funktion werden wir später nutzen, um den Wert des SVG-Attributes `transform` zu setzen.
 Dabei geben wird einen Winkel in Grad und einem Punkt an und rotieren dann ein Objekt um den Winkel und um den angegebenen Punkt.
 
@@ -176,8 +176,8 @@ type alias Point =
     { x : Float, y : Float }
 
 
-rotate : Float -> Point -> String
-rotate angle point =
+rotate : { angle : Float, point : Point }
+rotate { angle, point } =
     "rotate("
         ++ String.fromFloat angle
         ++ ","
@@ -233,7 +233,7 @@ clockHand center radius seconds =
         , y2 (String.fromFloat (center.y - radius))
         , stroke "#2c2f88"
         , strokeWidth "2"
-        , transform (rotate (Seconds.toDegree seconds) center)
+        , transform (rotate { angle = Seconds.toDegree seconds, point = center })
         ]
         []
 ```

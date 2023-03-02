@@ -17,7 +17,8 @@ sandbox :
 ```
 
 Zuerst können wir feststellen, dass die Funktion einen Record als Argument erhält.
-Dieser Record hat drei Einträge, die `init`, `view` und `update` heißen.
+Wir haben die Idee, einen Record an eine Funktion zu übergeben, um die Argumente zu benennen bereits im Abschnitt [Records](basics.md#records) kennengelernt.
+Der Record, der an `sandbox` übergeben wird, hat drei Einträge, die `init`, `view` und `update` heißen.
 Die Funktion ist polymorph über zwei Typvariablen, nämlich `model` und `msg`.
 Der Eintrag `init` ist vom Typ `model`.
 Daher können wir die Funktion `sandbox` nicht nur mit einem festen Typ verwenden, sondern die Typen für das Modell und die Nachrichten wählen.

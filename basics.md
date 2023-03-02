@@ -813,6 +813,71 @@ Dabei gibt die Reihenfolge der Felder in der Definition des Records an, in welch
 Wir werden im Kapitel [Funktionen höherer Ordnung](recursion.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
 Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann.
 
+An dieser Stelle soll noch kurz ein interessanter Anwendungsfall für Records erwähnt werden.
+Einige Programmiersprachen bieten **benannte Argumente** als Sprachfeature.
+Das heißt, Argumente einer Funktion bzw. Methoden können einen Namen erhalten, um Entwickler\*innen beim Aufruf der Methode klarzumachen, welche Semantik die einzelnen Argumente haben.
+Wir betrachten als Beispiel die folgende Funktion, die genutzt werden kann, um das `transform`-Attribut in einer SVG-Graphik zu setzen.
+
+```elm
+rotate : String -> String -> String
+rotate angle x y =
+    "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
+```
+
+Wir können diese Funktion nun zum Beispiel mittels `rotate "50" "60" "10"` aufrufen.
+Um bei diesem Aufruf herauszufinden, welches der Argumente welche Bedeutung hat, müssen wir uns die Definition def Funktion `rotate` anschauen.
+In einer Programmiersprache mit benannten Argumenten, können wir den Argumenten einer Funktion/Methode Namen geben und diese beim Aufruf nutzen.
+In einer Programmiersprache mit Records können wir diese Funktionalität mithilfe eines Records nachstellen.
+Wir können die Funktion `rotate` zum Beispiel wie folgt definieren.
+
+```elm
+rotate : { angle : String, x : String, y : String }
+rotate { angle, x, y } =
+    "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
+```
+
+Wenn wir die Funktion `rotate` nun aufrufen, nutzen wir `rotate { angle = "50", x = "60", y = "10" }` und sehen am Argument der Funktion direkt, welche Semantik die verschiedenen Parameter haben.
+
+Wir können die Struktur der Funktion `rotate` noch weiter verbessern.
+Zuerst können wir observieren, dass die Argumente der Funktion `rotate` nicht alle gleichberechtigt sind.
+Anders ausdrückt gehören die Argumente `x` und `y` der Funktion stärker zusammen, da sie gemeinsam einen Punkt bilden.
+Diese Eigenschaft können wir in unserem Code wie folgt explizit darstellen.
+
+```elm
+type alias Point =
+    { x : String, y : String }
+
+
+rotate : { angle : String, point : Point }
+rotate { angle, point } =
+    "rotate(" ++ angle ++ "," ++ point.x ++ "," ++ point.y ++ ")"
+```
+
+Wir können diese Implementierung aber noch in einem weiteren Aspekt verbessern.
+Aktuell arbeitet unsere Anwendung mit Werten vom Typ `String`.
+Das heißt, wir können auch `"a"` als Winkel an die Funktion `rotate` übergeben und müssen dann erst observieren, dass die Anwendung nicht das gewünschte Ergebnis anzeigt.
+Um eine offensichtlich falsche Verwendung wie diese zu verhindern, können wir statt des Typs `String` einen Datentyp mit mehr Information nutzen.
+
+```elm
+type alias Point =
+    { x : Float, y : Float }
+
+
+rotate : { angle : Float, point : Point }
+rotate { angle, point } =
+    "rotate("
+        ++ String.fromFloat angle
+        ++ ","
+        ++ String.fromFloat point.x
+        ++ ","
+        ++ String.fromFloat point.y
+        ++ ")"
+```
+
+Wenn wir nun versuchen würden, den `String` `"a"` als Winkel an die Funktion `rotate` zu übergeben, würden wir direkt beim Übersetzen des Codes einen Fehler vom Compiler erhalten.
+Grundsätzlich sind Fehler zur _Compile Time_ besser als Fehler zur _Run Time_, da Fehler zur _Compile Time_ nicht bei Kund\*innen auftreten können.
+
+
 ### Listen
 
 Elm stellt einen vordefinierten Datentyp für Listen zur Verfügung.
