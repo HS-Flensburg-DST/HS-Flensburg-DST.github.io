@@ -11,7 +11,7 @@ Projekt-Setup
 -------------
 
 Zur Illustration der Beispiele verwenden wir das Kommando `elm repl`.
-Das Akronym *REPL* steht für *Read Evaluate Print Loop* und beschreibt eine textuelle, interaktive Eingabe, in der man einfache Programme eingeben (*read*), die Ergebnisse des Programms ausrechnen (*evaluate*) und das Ergebnis auf der Konsole ausgeben (*print*) kann.
+Das Akronym *REPL* steht für **_Read Evaluate Print Loop_** und beschreibt eine textuelle, interaktive Eingabe, in der man einfache Programme eingeben (_Read_), die Ergebnisse des Programms ausrechnen (_Evaluate_) und das Ergebnis auf der Konsole ausgeben (_Print_) kann.
 Mit dem Begriff *loop* wird dabei ausgedrückt, dass dieser Vorgang wiederholt werden kann.
 
 Wir werden die folgenden Programme immer in eine Datei mit der Endung `elm` schreiben.
@@ -154,7 +154,7 @@ Da ein Doc-Kommentar sich auf eine Definition bezieht, fügt `elm-format` zwisch
 Wir haben gesagt, dass in einer funktionalen Sprache und damit auch in Elm ein Programm ausgeführt wird, indem der Wert eines Ausdrucks berechnet wird.
 Dies lässt sich sehr schön mithilfe von arithmetischen und booleschen Ausdrücken illustrieren.
 Wir müssen für einen Ausdruck in Elm keinen Typ angeben, da der Compiler in der Lage ist, den Typ selbst zu bestimmen.
-Man sagt, dass Elm den Typ *inferiert* und spricht von [*Typinferenz*](https://en.wikipedia.org/wiki/Type_inference).
+Man sagt, dass Elm den Typ inferiert und spricht von [**Typinferenz**](https://en.wikipedia.org/wiki/Type_inference).
 
 Die folgenden Definitionen zeigen einige Beispiele für arithmetische Ausdrücke.
 
@@ -185,7 +185,7 @@ typeError = secretNumber + f
 Wir können Zahlen nur mit `+` addieren, wenn sie den gleichen Typ haben.
 Daher müssen wir Zahlen ggf. explizit konvertieren.
 
-Um einmal zu illustrieren, dass Elm sich sehr viel Mühe bei Fehlermeldungen gibt, wollen wir uns den Fehler anschauen, den die REPL liefert, wenn wir versuchen, zwei Zahlen, die unterschiedliche Typen haben, zu addieren.
+Um einmal zu illustrieren, dass Elm sich sehr viel Mühe bei **Fehlermeldungen** gibt, wollen wir uns den Fehler anschauen, den die REPL liefert, wenn wir versuchen, zwei Zahlen, die unterschiedliche Typen haben, zu addieren.
 
 ``` text
 -- TYPE MISMATCH -------------------------------------------------- src/Test.elm
@@ -210,7 +210,7 @@ Um den Wert der Variable `secretNumber` also in einen `Float` umzuwandeln, schre
 Dieser Ausdruck wendet die Funktion `toFloat` auf das Argument `secretNumber` an.
 Im Unterschied zu vielen anderen Programmiersprachen, wie Java, C# oder JavaScript werden in Elm die Argumente einer Funktion/Methode nicht geklammert.
 In JavaScript schreibt man zum Beispiel `toFloat(secretNumber)`, um eine Funktion `toFloat` auf ein Argument `secretNumber` anzuwenden.
-Wir werden im Kapitel [Funktionen höherer Ordnung](recursion.md) genauer lernen, welchen Hintergrund der Unterschied in der Schreibweise von Funktionsanwendungen hat.
+Wir werden im Kapitel [Funktionen höherer Ordnung](recursion.md) genauer lernen, welchen Hintergrund der Unterschied in der Schreibweise von **Funktionsanwendungen** hat.
 
 Um unser konkretes Problem zu lösen und die Zahlen `secretNumber` und `f` zu addieren, können wir die folgende Definition nutzen.
 Das Ergebnis dieser Addition ist dann wieder vom Typ `Float`, das heißt, die Variable `convert` hat den Typ `Float`.
@@ -225,7 +225,7 @@ Das heißt, ein Ausdruck der Form
 `secretNumber / 10` liefert ebenfalls einen Typfehler.
 Um zwei ganze
 Zahlen zu dividieren, muss der Operator `//` verwendet werden, der eine
-ganzzahlige Division durchführt.
+**ganzzahlige Division** durchführt.
 
 ### Boolesche Ausdrücke
 
@@ -248,14 +248,14 @@ ex10 =
     not (b1 && True)
 ```
 
-Im Beispiel `ex10` sehen wir auch gleich eine weitere Besonderheit bei der Funktionsanwendung in Elm.
+Im Beispiel `ex10` sehen wir auch gleich eine weitere Besonderheit bei der **Funktionsanwendung** in Elm.
 Während das Argument bei der Anwendung einer Funktion auf ein Argument an sich nicht geklammert wird, müssen wir das Argument aber klammern, wenn es sich selbst um das Ergebnis einer Anwendung handelt.
 In diesem Beispiel wollen wir etwa das Ergebnis der Berechnung `b1 && True` negieren.
 Daher klammern wir den Ausdruck `b1 && True` und übergeben so das Ergebnis dieser Berechnung an die Funktion `not`.
 Wir könnten auch `(not b1) && True` schreiben.
 In diesem Fall würden wir aber das Ergebnis der Berechnung `not b1` als erstes Argument an `&&` übergeben.
 
-Neben den booleschen Operatoren gibt es die üblichen Vergleichsoperatoren `==` und `/=`, so wie `<`,
+Neben den booleschen Operatoren gibt es die üblichen **Vergleichsoperatoren** `==` und `/=`, so wie `<`,
 `<=`, `>` und `>=`.
 Die Funktion `==` führt immer einen Wert-Vergleich und keinen Referenz-Vergleich durch.
 Das heißt, die Funktion `==` überprüft, ob die beiden Argumente die gleiche Struktur haben.
@@ -290,7 +290,7 @@ Die Präzedenz eines Operators liegt zwischen 0 und 9.
 Der Operator `+` hat zum Beispiel die Präzedenz 6 und `*` hat die Präzedenz 7.
 Da die Präzedenz von `*` also höher ist als die Präzedenz von `+` bindet `*` stärker als `+` und der Ausdruck `3 + 4 * 8` steht für den Ausdruck `3 + (4 * 8)`.
 
-Wie auch in anderen Programmiersprachen üblich binden die relationalen Operatoren, wie `<`, `<=`, `>`, `>=`, `==` und `/=` stärker als die logischen Operatoren `&&` und `||`.
+Wie auch in anderen Programmiersprachen üblich binden die **relationalen Operatoren**, wie `<`, `<=`, `>`, `>=`, `==` und `/=` stärker als die logischen Operatoren `&&` und `||`.
 Daher steht der Ausdruck `5 > 3 && 'p' <= 'q'` ohne Klammern für den Ausdruck `(5 > 3) && ('p' <= 'q')`.
 
 Wenn Code mit Operatoren mehrzeilig ist, formatiert `elm-format` den Code so, dass die Operatoren am Beginn der jeweiligen Zeile stehen.
@@ -316,7 +316,7 @@ Die Präzedenz einer Funktion ist 10, das heißt, eine Funktionsanwendung bindet
 Der Ausdruck `not True || False` steht daher zum Beispiel für `(not True) || False` und nicht etwa für `not (True || False)`.
 Wir werden später noch weitere Beispiele für diese Regel sehen.
 
-Neben der Bindungsstärke wird bei Operatoren noch definiert, ob diese links- oder rechts-assoziativ sind.
+Neben der Bindungsstärke wird bei Operatoren noch definiert, ob diese **links- oder rechts-assoziativ** sind.
 In Elm (wie in vielen anderen Sprachen) gibt es links- und rechts-assoziative Operatoren.
 Dies gibt an, wie ein Ausdruck der Form *x* ∘ *y* ∘ *z* interpretiert wird.
 Falls der Operator ∘ linksassoziativ ist, gilt *x* ∘ *y* ∘ *z* = (*x*∘*y*) ∘ *z*, falls er rechts-assoziativ ist, gilt *x* ∘ *y* ∘ *z* = *x* ∘ (*y*∘*z*).
@@ -343,7 +343,7 @@ Das heißt, die Ausdrücke `e1` und `e2` müssen nach der Auswertung Werte vom g
 Um den `if`-Ausdruck einmal zu illustrieren, wollen wir eine Funktion `items` definieren.
 Die Funktion `items` könnte zum Beispiel für den Warenkorb eines Online-Shops genutzt werden.
 Die Funktion erhält eine Zahl und liefert eine
-Lokalisierung für das Wort *Gegenstand*.
+Pluralisierung des Wortes *Gegenstand*.
 Die Zahl gibt dabei an, um wie
 viele Gegenstände es sich handelt.
 
@@ -511,7 +511,7 @@ Die Definitionen, die ein `let`-Ausdruck einführt, stehen nur in dem Ausdruck n
 Das heißt, wir können `square` hier in `square * square` verwenden, aber nicht außerhalb der Definition `quartic`.
 Die lokalen Definitionen wie hier `square` können auch auf die Argumente der umschließenden Funktion zugreifen, hier `x`.
 
-Man kann in einem `let`-Ausdruck auch Funktionen definieren, die dann auch nur in dem Ausdruck nach dem `in` sichtbar sind.
+Man kann in einem `let`-Ausdruck auch **Funktionen** definieren, die dann auch nur in dem Ausdruck nach dem `in` sichtbar sind.
 Wir werden später Beispiele sehen, in denen dies sehr praktisch ist, etwa, wenn wir Listen verarbeiten.
 Dort wird häufig die Verarbeitung eines einzelnen Listenelementes als lokale Funktion definiert.
 Im folgenden Beispiel wird eine lokale Funktion definiert, die eine Zahl um einen erhöht.
@@ -526,7 +526,7 @@ res =
     inc 41
 ```
 
-Wie andere Programmiersprachen, zum Beispiel Python, Elixir und Haskell, nutzt Elm eine *Off-side Rule*.
+Wie andere Programmiersprachen, zum Beispiel Python, Elixir und Haskell, nutzt Elm eine **Off-side Rule**.
 Das heißt, die Einrückung eines Programms wird genutzt, um Klammerung auszudrücken und somit Klammern einzusparen.
 In objektorientierten Sprachen wie Java wird diese Klammerung explizit durch geschweifte Klammern ausgedrückt.
 Dagegen muss die Liste der Definitionen in einem `let` zum Beispiel nicht geklammert werden, sondern wird durch ihre Einrückung dem `let`-Block zugeordnet.
@@ -687,7 +687,7 @@ isHorizontalAll key =
             False
 ```
 
-Der Unterstrich ist ein _Default_-Fall, der für alle Konstruktoren von `Key` passt.
+Der **Unterstrich** ist ein _Default_-Fall, der für alle Konstruktoren von `Key` passt.
 Das heißt, der Fall mit dem Unterstrich (_Underscore Pattern_) passt für alle möglichen Fälle, die `key` noch annehmen kann.
 Im Fall der Funktion `isHorizontal` wird der Unterstrich-Fall zum Beispiel verwendet, wenn `key` den Wert `Up` oder den Wert `Down` hat.
 
@@ -804,7 +804,7 @@ fullName { firstName, lastName } =
     firstName ++ " " ++ lastName
 ```
 
-Diese Variante ist relativ unflexibel, da wir nicht mehr auf den gesamten Record zugreifen können und unsere Funktion zum Beispiel nicht mehr direkt auf die _Update_-Syntax umstellen können.
+Diese Variante ist relativ unflexibel, da wir nicht mehr auf den gesamten Record zugreifen können und unsere Funktion zum Beispiel nicht mehr direkt auf die **_Update_-Syntax** umstellen können.
 Mit _Update_-Syntax bezeichnen wir an diese Stelle die Schreibweise zum Abändern eines Records mit dem senkrechten Strich.
 
 Wenn wir für einen Record ein Typsynonym einführen, gibt es eine Kurzschreibweise, um einen Record zu erstellen.
