@@ -487,7 +487,7 @@ Die Funktion `cart` soll aber nur zwei Argumente erhalten, daher fehlen an diese
 Wenn wir dagegen die Anwendung `cart (1 + 2) 3` betrachten, dann werden zwei Argumente an `cart` übergeben, nämlich `(1 + 2)` und `3`.
 
 
-### Lokale Definitionen
+<!-- ### Lokale Definitionen
 
 In Elm können Konstanten und Funktionen auch lokal definiert werden, das heißt, dass die entsprechende Konstante oder die Funktion nur innerhalb einer anderen Funktion sichtbar ist.
 Anders ausgedrückt ist der _Scope_ einer **_Top Level_-Definition** das gesamte Modul.
@@ -607,7 +607,7 @@ letExpr =
 
 Der `let`-Ausdruck liefert einen Wert vom Typ `Int`.
 Daher können wir den `let`-Ausdruck mit der Zahl `23` multiplizieren.
-Wir müssen hier den `let`-Ausdruck klammern, da andernfalls der Wert der Variable `x` mit `23` multipliziert wird.
+Wir müssen hier den `let`-Ausdruck klammern, da andernfalls der Wert der Variable `x` mit `23` multipliziert wird. -->
 
 
 Weitere Datentypen

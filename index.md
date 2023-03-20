@@ -29,7 +29,7 @@ custom_css: toc
             
     - 2.4.3. [Mehrstellige Funktionen](basics.md#mehrstellige-funktionen)
             
-    - 2.4.4. [Lokale Definitionen](basics.md#lokale-definitionen)
+    <!-- - 2.4.4. [Lokale Definitionen](basics.md#lokale-definitionen) -->
     
 - 2.5. [Weitere Datentypen](basics.md#weitere-datentypen)
 
