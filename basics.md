@@ -667,6 +667,10 @@ isHorizontal key =
             False
 ```
 
+Der **Unterstrich** ist ein _Default_-Fall, der für alle Konstruktoren von `Key` passt.
+Das heißt, der Fall mit dem Unterstrich (_Underscore Pattern_) passt für alle möglichen Fälle, die `key` noch annehmen kann.
+Im Fall der Funktion `isHorizontal` wird der Unterstrich-Fall zum Beispiel verwendet, wenn `key` den Wert `Up` oder den Wert `Down` hat.
+
 Wir können diese Funktion auch definieren, indem wir im _Pattern Matching_ alle Konstruktoren aufzählen und auf den Unterstrich verzichten.
 Das heißt, die folgende Funktion `isHorizontalAll` verhält sich genau so wie die Funktion `isHorizontal`.
 
@@ -686,10 +690,6 @@ isHorizontalAll key =
         Down ->
             False
 ```
-
-Der **Unterstrich** ist ein _Default_-Fall, der für alle Konstruktoren von `Key` passt.
-Das heißt, der Fall mit dem Unterstrich (_Underscore Pattern_) passt für alle möglichen Fälle, die `key` noch annehmen kann.
-Im Fall der Funktion `isHorizontal` wird der Unterstrich-Fall zum Beispiel verwendet, wenn `key` den Wert `Up` oder den Wert `Down` hat.
 
 Die Verwendung des Unterstrichs ist zwar praktisch, sollte aber mit Bedacht eingesetzt werden.
 Wenn wir einen weiteren Konstruktor zum Datentyp `Key` hinzufügen, würde die Funktion `isHorizontal` zum Beispiel weiterhin funktionieren.
@@ -764,8 +764,7 @@ exampleUser =
 ```
 
 Wir können einen Record natürlich auch abändern.
-Zu diesem Zweck wird
-die folgende Schreibweise verwendet.
+Zu diesem Zweck wird die folgende **_Update_-Syntax** verwendet.
 Die Funktion `maturing` erhält einen Record in der Variable `user` und liefert einen Record zurück, bei dem die Felder `firstName` und `lastName` die gleichen Einträge haben wie `user`, das Feld `age` ist beim Ergebnis-Record aber auf den Wert `18` gesetzt.
 
 ``` elm
@@ -776,7 +775,9 @@ maturing user =
 
 Da Elm eine rein funktionale Programmiersprache ist, wird hier der Record nicht wirklich abgeändert, sondern ein neuer Record mit anderen Werten erstellt.
 Das heißt, die Funktion `maturing` erstellt einen neuen Record, dessen Einträge `firstName` und `lastName` die gleichen Werte haben wie die entsprechenden Einträge von `user` und dessen Eintrag `age` auf `18` gesetzt ist.
-
+Dieses Beispiel demonstriert eine sehr einfache Form von deklarativer Programmierung.
+In einem sehr imperativen Ansatz, müssten wir den Code, um den neuen Record zu erzeugen und die Felder `firstName` und `lastName` zu kopieren, explizit schreiben.
+In einem deklarativeren Ansatz verwenden wir stattdessen eine spezielle Syntax oder eine vordefinierte Funktion, um das gleiche Ziel zu erreichen.
 
 Wir können das Verändern eines Record-Eintrags und das Lesen eines Eintrags natürlich auch kombinieren.
 Wir können zum Beispiel die folgende Definition verwenden, um einen Benutzer altern zu lassen.
@@ -804,18 +805,17 @@ fullName { firstName, lastName } =
     firstName ++ " " ++ lastName
 ```
 
-Diese Variante ist relativ unflexibel, da wir nicht mehr auf den gesamten Record zugreifen können und unsere Funktion zum Beispiel nicht mehr direkt auf die **_Update_-Syntax** umstellen können.
-Mit _Update_-Syntax bezeichnen wir an diese Stelle die Schreibweise zum Abändern eines Records mit dem senkrechten Strich.
+Diese Variante ist relativ unflexibel, da wir nicht mehr auf den gesamten Record zugreifen können und unsere Funktion zum Beispiel nicht mehr direkt auf die _Update_-Syntax umstellen können.
 
 Wenn wir für einen Record ein Typsynonym einführen, gibt es eine Kurzschreibweise, um einen Record zu erstellen.
 Um einen Wert vom Typ `User` zu erstellen, können wir zum Beispiel auch `User "John" "Doe" 20` schreiben.
 Dabei gibt die Reihenfolge der Felder in der Definition des Records an, in welcher Reihenfolge die Argumente übergeben werden.
-Wir werden im Kapitel [Funktionen höherer Ordnung](recursion.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
-Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann.
+Wir werden im Kapitel [Funktionen höherer Ordnung](higher-order.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
+Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann, da dadurch unser Programm ggf. nicht mehr kompilieren würde.
 
 An dieser Stelle soll noch kurz ein interessanter Anwendungsfall für Records erwähnt werden.
 Einige Programmiersprachen bieten **benannte Argumente** als Sprachfeature.
-Das heißt, Argumente einer Funktion bzw. Methoden können einen Namen erhalten, um Entwickler\*innen beim Aufruf der Methode klarzumachen, welche Semantik die einzelnen Argumente haben.
+Das heißt, Argumente einer Funktion bzw. Methode können einen Namen erhalten, um Entwickler\*innen beim Aufruf der Methode klarzumachen, welche Semantik die einzelnen Argumente haben.
 Wir betrachten als Beispiel die folgende Funktion, die genutzt werden kann, um das `transform`-Attribut in einer SVG-Graphik zu setzen.
 
 ```elm
@@ -825,7 +825,7 @@ rotate angle x y =
 ```
 
 Wir können diese Funktion nun zum Beispiel mittels `rotate "50" "60" "10"` aufrufen.
-Um bei diesem Aufruf herauszufinden, welches der Argumente welche Bedeutung hat, müssen wir uns die Definition def Funktion `rotate` anschauen.
+Um bei diesem Aufruf herauszufinden, welches der Argumente welche Bedeutung hat, müssen wir uns die Funktion `rotate` anschauen.
 In einer Programmiersprache mit benannten Argumenten, können wir den Argumenten einer Funktion/Methode Namen geben und diese beim Aufruf nutzen.
 In einer Programmiersprache mit Records können wir diese Funktionalität mithilfe eines Records nachstellen.
 Wir können die Funktion `rotate` zum Beispiel wie folgt definieren.
