@@ -45,7 +45,7 @@ Wenn wir ein Modul importieren, können wir eine Definition immer auch qualifizi
 Eigentlich ist es guter Stil, Definitionen qualifiziert zu verwenden, um explizit anzugeben, wo die Definition herkommt.
 Im Fall des Moduls `Html` verzichtet man aber häufig darauf, um Programme übersichtlich zu halten.
 Bei den Funktionen aus dem Modul `Html` ist im Kontext einer Frontend-Anwendung bereits aus dem Namen eindeutig, um welche Funktion es sich handelt.
-Daher importiert man in Elm-Anwendungen das Modul `Html` häufig mittels `Html exposing (..)`.
+Daher importiert man in Elm-Anwendungen die Definitionen aus dem Modul `Html` häufig unqualifiziert, also zum Beispiel mittels `Html exposing (Html, text)`.
 Wir werden die Definitionen aus dem Modul `Html` und ähnlichen Modulen auch immer unqualifiziert verwenden.
 Das heißt, wir schreiben `text` und nicht `Html.text`.
 Dagegen verwenden wir alle anderen Definitionen immer qualifiziert.
@@ -88,7 +88,7 @@ Das heißt, wir können die Definitionen aus dem Modul `Platform.Cmd` qualifizie
 
 Bei einer Elm-Anwendung ist es guter Stil, Funktionen qualifiziert zu nutzen, also zum Beispiel `String.fromInt` und nicht nur `fromInt`.
 Wenn ein Modul einen Datentyp mit identischem Namen zur Verfügung stellt, sollte man den Datentyp (samt Konstruktoren) aber unqualifiziert nutzen.
-Das heißt, man sollte nicht `String.String` schreiben, um den Typ `String` zu verwenden, sondern nur `String`.
+Das heißt, man sollte nicht `String.String` schreiben, um den Typ `String` aus dem Modul `String` zu verwenden, sondern nur `String`.
 
 Um unsere Anwendung zu testen, können wir den Befehl `elm reactor` verwenden, der einen lokalen Webserver startet.
 Unter der Adresse `localhost:8000` erhalten wir eine Auswahl aller Dateien, die sich in dem entsprechenden Verzeichnis befinden.
@@ -162,11 +162,12 @@ Diese Typen sind häufig einfach Synonyme für andere Typen, können aber auch d
 Die Konstante `init` gibt an, mit welchem Zustand die Anwendung startet.
 Die Funktion `update` nimmt eine Aktion und einen aktuellen Zustand und liefert einen neuen Zustand.
 Die Funktion `view` nimmt einen Zustand und liefert eine HTML-Seite.
-Außerdem stellt das Modul `Browser` eine Funktion `sandbox` zur Verfügung, deren Details wir auch erst im Kapitel [Modellierung der Elm-Architektur](architecture.md) diskutieren werden.
+Außerdem stellt das Modul `Browser` eine Funktion `sandbox` zur Verfügung, deren Details wir erst im Kapitel [Modellierung der Elm-Architektur](architecture.md) diskutieren werden.
 An dieser Stelle müssen wir nur wissen, dass wir der Funktion die Konstante `init` und die Funktionen `update` und `view`, wie oben angegeben, übergeben müssen.
 Wir geben hier auch den Typ der Funktion `main` an, werden ihn aber erst später diskutieren.
 Im Unterschied zur *HalloWelt*-Anwendung ist der Typ der Konstante `view` nun `Html Msg` und nicht mehr `Html msg`.
 Wir verweisen im `Html`-Typ also auf den Typ der Nachrichten, die wir an die Anwendung schicken können.
+Warum genau wir den Typ der Nachrichten an den `Html`-Typ übergeben, werden wir im Kapitel [Modellierung der Elm-Architektur](architecture.md) lernen.
 Was das kleingeschriebene `msg` bedeutet, werden wir im Kapitel [Polymorphismus](polymorphism.md) erfahren.
 
 Wir wollen uns einmal ein sehr einfaches Beispiel für eine Anwendung ansehen.
