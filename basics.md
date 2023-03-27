@@ -259,7 +259,7 @@ Neben den booleschen Operatoren gibt es die üblichen **Vergleichsoperatoren** `
 `<=`, `>` und `>=`.
 Die Funktion `==` führt immer einen Wert-Vergleich und keinen Referenz-Vergleich durch.
 Das heißt, die Funktion `==` überprüft, ob die beiden Argumente die gleiche Struktur haben.
-Das Konzept eines Referenz-Vergleichs existiert ist einer funktionalen Sprache wie Elm nicht.
+Das Konzept eines Referenz-Vergleichs existiert in einer funktionalen Sprache wie Elm nicht.
 
 ``` elm
 ex11 : Bool
