@@ -819,7 +819,7 @@ Das heißt, Argumente einer Funktion bzw. Methode können einen Namen erhalten, 
 Wir betrachten als Beispiel die folgende Funktion, die genutzt werden kann, um das `transform`-Attribut in einer SVG-Graphik zu setzen.
 
 ```elm
-rotate : String -> String -> String
+rotate : String -> String -> String -> String
 rotate angle x y =
     "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
 ```
@@ -831,7 +831,7 @@ In einer Programmiersprache mit Records können wir diese Funktionalität mithil
 Wir können die Funktion `rotate` zum Beispiel wie folgt definieren.
 
 ```elm
-rotate : { angle : String, x : String, y : String }
+rotate : { angle : String, x : String, y : String } -> String
 rotate { angle, x, y } =
     "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
 ```
@@ -848,7 +848,7 @@ type alias Point =
     { x : String, y : String }
 
 
-rotate : { angle : String, point : Point }
+rotate : { angle : String, point : Point } -> String
 rotate { angle, point } =
     "rotate(" ++ angle ++ "," ++ point.x ++ "," ++ point.y ++ ")"
 ```
@@ -863,7 +863,7 @@ type alias Point =
     { x : Float, y : Float }
 
 
-rotate : { angle : Float, point : Point }
+rotate : { angle : Float, point : Point } -> String
 rotate { angle, point } =
     "rotate("
         ++ String.fromFloat angle

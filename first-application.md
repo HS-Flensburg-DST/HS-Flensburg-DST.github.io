@@ -303,10 +303,12 @@ Wir könnten in der Liste der Kind-Elemente also zum Beispiel auch wieder ein di
 
 Um die Funktionsweise von Attributen zu illustrieren, geben wir unserem div-Element einmal einen CSS-Stil.
 Die Funktion `style` kommt aus dem Modul `Html.Attributes` und nimmt zwei Strings, nämlich den Namen des Stils und den entsprechenden Wert, den der Stil haben soll.
-Analog zum Modul `Html` importieren wir alle Definitionen aus dem Modul `Html.Attributes` unqualifiziert wie folgt.
+Analog zum Modul `Html` importieren wir alle Definitionen aus dem Modul `Html.Attributes` unqualifiziert.
+Wir erhalten somit die folgenden Importe.
 
 ```elm
-import Html.Attributes exposing (Attribute, style)
+import Html exposing (Attribute, Html, button, div, text)
+import Html.Attributes exposing (style)
 ```
 
 Das Modul exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
