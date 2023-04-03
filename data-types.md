@@ -10,9 +10,9 @@ In diesem Kapitel werden wir zum Beispiel lernen, wie man einen Datentyp für Li
 Algebraische Datentypen
 -----------------------
 
-In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte algebraische Datentypen definieren kann.
+In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte **algebraische Datentypen** definieren kann.
 Dazu wollen wir erst einmal den Namen algebraische Datentypen etwas analysieren.
-Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie auch den Namen Summentyp.
+Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie auch den Namen **Summentyp**.
 Dieser Name zeigt einen Zusammenhang zum Namen algebraischer Datentyp.
 Eine Algebra ist in der Mathematik eine Struktur, die eine Addition und eine Multiplikation zur Verfügung stellt.
 Neben der Addition (dem Summentyp) benötigen wir für einen algebraischen Datentyp also noch eine Multiplikation.
@@ -34,10 +34,10 @@ Das Wort `Point` hinter dem `=`-Zeichen nennt man wie bei den Aufzählungstypen 
 
 Hinter dem Namen des Konstruktors folgt ein Leerzeichen und anschließend folgen, durch Leerzeichen getrennt, die Typen der Argumente des Konstruktors.
 Im Gegensatz zu Funktionen und Variablen müssen Konstruktoren und Datentypen immer mit einem großen Anfangsbuchstaben beginnen.
-Das heißt, der Konstruktor `Point` erhält zwei Argumente, die beide den Typ `Float` haben.
+Der Konstruktor `Point` erhält zwei Argumente, die beide den Typ `Float` haben.
 Um mithilfe eines Konstruktors einen Wert zu erzeugen, benutzt man den Konstruktor wie eine Funktion.
 Das heißt, man schreibt den Namen des Konstruktors und durch Leerzeichen getrennt die Argumente des Konstruktors.
-Wir können nun zum Beispiel wie folgt einen Punkt definieren.
+Wir können nun zum Beispiel wie folgt einen Punkt erstellen.
 
 ``` elm
 examplePoint : Point
@@ -135,7 +135,7 @@ Der Konstruktor `Win` modelliert, dass einer der Spieler gewonnen hat.
 Wenn die Spielrunde unentschieden ausgegangen ist, liefert die Funktion als Ergebnis den Wert `Draw`.
 Da wir in diesem Fall keine zusätzlichen Informationen benötigen, hat der Konstruktor keine Argumente.
 
-Man bezeichnet algebraische Datentypen manchmal auch als _Tagged Union_.
+Man bezeichnet algebraische Datentypen manchmal auch als **_Tagged Union_**.
 Man spricht von einer _Union_, da der algebraische Datentyp wie bei einem Aufzählungstyp in der Lage ist, verschiedene Fälle zu einem Datentyp zu vereinigen.
 Die verschiedenen Fälle, die es gibt, werden dann in dem algebraischen Datentyp zu einem einzigen Datentyp vereinigt.
 Man bezeichnet diese Vereinigung als _Tagged_, da durch den Konstruktor immer eindeutig ist, um welchen Teil der Vereinigung es sich handelt.
@@ -148,8 +148,12 @@ type IntOrString
     | StringValue String
 ```
 
-Der Datentyp `IntOrString` stellt entweder einen `Int` oder einen `String` dar, vereinigt also gewissermaßen die möglichen Werte der Datentypen `Int` und `String`.
-Wenn wir einen Wert vom Typ `IntOrString` haben, ist durch den Konstruktor aber klar, um welchen Teil der Vereinigung es sich handelt, also ob es sich um einen `Int` oder einen `String` handelt.
+Der Datentyp `IntOrString` stellt entweder einen `Int` oder einen `String` dar, vereinigt also die möglichen Werte der Datentypen `Int` und `String`.
+Man nennt Typen, welche mehrere anderen Typen zu einem neuen vereinigen auch Vereinigungstyp.
+Im Unterschied zu einem einfachen Vereinigungstyp ist bei einem Wert vom Typ `IntOrString` durch den Konstruktor klar, um welchen Teil der Vereinigung es sich handelt, also ob es sich um einen `Int` oder einen `String` handelt.
+Anders ausgedrückt: wenn wir den Typ `IntOrString` verwenden möchten, müssen wir den jeweiligen Konstruktor verwenden.
+Diese Eigenschaft ist elementar wichtig für die Typinferenz.
+Wenn die Typinferenz zum Beispiel den Konstruktor `IntValue` sieht, ist klar, dass es sich um den Typ `IntOrString` handelt.
 
 _Pattern Matching_
 ------------------
@@ -188,8 +192,7 @@ description result =
             playerName player ++ " hat das Spiel gewonnen."
 ```
 
-In diesem Fall wird die Variable `player` an den Wert vom Typ `Player`
-gebunden, der im Konstruktor `Win` steht.
+In diesem Fall wird die Variable `player` an den Wert vom Typ `Player` gebunden, der im Konstruktor `Win` steckt.
 
 _Pattern_ können auch geschachtelt werden.
 Das heißt, anstelle einer Variable, können wir auch wieder ein komplexes _Pattern_ verwenden.
@@ -207,7 +210,7 @@ Im zweiten Argument des Konstruktors `Player` steht ein Wert vom Typ `Point`.
 Daher können wir im _Pattern_ an der entsprechenden Stelle auch ein _Pattern_ für einen `Point` verwenden.
 Der Konstruktor `Point` erhält zwei Argumente, daher hat das _Pattern_ `Point x _` hier ebenfalls zwei Argumente.
 
-Als weiteres Beispiel für ein geschachteltes Pattern wollen wir noch einmal die Funktion definieren, die einen `String` liefert, der beschreibt, wie ein Spiel ausgegangen ist.
+Als weiteres Beispiel für ein geschachteltes _Pattern_ wollen wir noch einmal die Funktion definieren, die einen `String` liefert, der beschreibt, wie ein Spiel ausgegangen ist.
 In diesem Fall verzichten wir aber auf die Hilfsfunktion `playerName` und verwenden stattdessen ein geschachteltes _Pattern_.
 
 ``` elm
@@ -386,7 +389,7 @@ Wenn die Rekonstruktion schließlich bei der leeren Liste angekommen ist, liefer
 Auf diese Weise wird die leere Liste in der Liste `list1` durch die Liste `list2` ersetzt.
 
 Wir wollen an dieser Stelle auch ganz kurz das Speichermodell und die Laufzeit von Funktionen in Elm diskutieren.
-Das Aufrufen eines Konstruktors so wie _Pattern Matching_ sind konstante Operationen.
+Das Aufrufen eines Konstruktors sowie _Pattern Matching_ sind konstante Operationen.
 Das heißt, die Laufzeit der Funktion `append` ist linear in der Länge der ersten Liste.
 Wenn wir einen Konstruktor verwenden, wird im Heap eine entsprechende Struktur angelegt.
 In der Funktion `append` wird zum Beispiel die Liste `list1` neu erstellt, da wir in der Regel für `Cons` den Konstruktor jeweils neu erstellen.
