@@ -22,7 +22,7 @@ custom_css: toc
     - 2.3.3. [Präzedenzen](basics.md#präzedenzen)
 
 - 2.4. [Funktionsdefinitionen](basics.md#funktionsdefinitionen)
-        
+
     - 2.4.1. [Konditionale](basics.md#konditionale)
         
     - 2.4.2. [Fallunterscheidungen](basics.md#fallunterscheidungen)
@@ -30,7 +30,7 @@ custom_css: toc
     - 2.4.3. [Mehrstellige Funktionen](basics.md#mehrstellige-funktionen)
             
     <!-- - 2.4.4. [Lokale Definitionen](basics.md#lokale-definitionen) -->
-    
+
 - 2.5. [Weitere Datentypen](basics.md#weitere-datentypen)
 
     - 2.5.1. [Typ-Synonyme](basics.md#typ-synonyme)
@@ -66,6 +66,10 @@ custom_css: toc
 - 5.2. [Polymorphe Funktionen](polymorphism.md#polymorphe-funktionen)
 
 ### 6. [Design von Datentypen](design.md)
+
+- 6.1. [Boolean Blindness](design.md#boolean-blindness)
+
+- 6.2. [Impossible States](design.md#impossible-states)
 
 ### 7. [Funktionen höherer Ordnung](higher-order.md)
 

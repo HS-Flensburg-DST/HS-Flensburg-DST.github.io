@@ -3,9 +3,53 @@ layout: post
 title: "Design von Datentypen"
 ---
 
-In diesem Kapitel wollen wir uns mit einer _Best Practice_ beim Entwurf von Datentypen beschäftigen.
-Diese _Best Practice_ lässt sich nicht nur auf Elm anwenden, sondern ist auf andere Programmiersprachen übertragbar.
-Im Kontext von Elm wird dieses Konzept als
+In diesem Kapitel wollen wir uns mit zwei _Best Practices_ beim Entwurf von Datentypen beschäftigen.
+Diese _Best Practices_ lassen sich nicht nur auf Elm anwenden, sondern sind auf andere Programmiersprachen übertragbar.
+
+
+## Boolean Blindness
+
+Zuerst wollen wir einen Aspekt betrachten, der
+
+> Boolean Blindness
+
+genannt wird und vermutlich auf den Artikel [Boolean Blindness](https://existentialtype.wordpress.com/2011/03/15/boolean-blindness/) von Robert Harper zurückgeht.
+Mit diesem Begriff bezeichnet man den Verlust von Information, wenn man einen booleschen Datentyp verwendet.
+Genauer gesagt geht bei der Verwendung des Datentyps `Bool` die Information verloren, welche Bedeutung die beiden Fälle jeweils haben.
+Im Grunde ist _Boolean Blindness_ eine Instanz eines allgemeineren Phänomens, wenn die Werte eines Datentyps nur mit zusätzlicher Information interpretiert werden können.
+Dieses Phänomen tritt etwa bei der Kodierung von Fehlercodes als _Integer_ auf.
+
+Als Beispiel für _Boolean Blindness_ betrachten wir die folgende Funktion in einer Elm-Anwendung, die einen _Button_ liefert.
+
+```elm
+mainButton : Bool -> Msg -> Html Msg
+mainButton isDisabled msg =
+    button (buttonStyle ++ [ disabled isDisabled, onClick msg ]) [ text (buttonLabel msg) ]
+```
+
+Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton False Increase` schwierig.
+Im Abschnitt [Records](basics.md#records) haben wir bereits einen Ansatz kennengelernt, um dieses Problem zu beheben.
+Wir können einen Record verwenden, um den Argumenten einer Funktion sprechende Namen zuzuordnen.
+Dieses Prinzip funktioniert aber nur, solange der boolesche Wert fest mit den Recordfeld verbunden ist.
+Das heißt, das Prinzip funktioniert zum Beispiel nicht mehr, wenn wir den booleschen Wert von einer Funktion zur nächsten reichen.
+Ein alternativer Ansatz zur Lösung dieses Problems ist die Verwendung von nutzerdefinierten Aufzählungstypen.
+Das heißt, statt den Datentyp `Bool` zu verwenden, definieren wir uns einen Datentyp der folgenden Art.
+
+```elm
+type ButtonState
+    = Enabled
+    | Disabled
+```
+
+Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton Disabled Increase`, der wesentlich ausdrucksstärker ist.
+
+In den Elm-Standardbibliotheken werden trotz der _Boolean Blindness_ häufig boolesche Werte verwendet.
+In einer selbstgeschriebenen Elm-Anwendung sollte aber darauf geachtet werden, dieses Problem wo möglich zu umgehen.
+
+
+## Impossible States
+
+Eine weitere _Best Practice_ wird im Kontext von Elm als
 
 > Making Impossible States Impossible
 
