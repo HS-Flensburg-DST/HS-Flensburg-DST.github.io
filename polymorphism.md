@@ -53,23 +53,7 @@ m4 =
     Just "a"
 ```
 
-Als erstes einfaches Beispiel wollen wir uns die Funktion anschauen, die das erste Element einer Liste liefert.
-In Elm, ist diese Funktion im Modul `List` definiert.
-
-```elm
-head : List a -> Maybe a
-```
-
-Die Funktion `head` erhält eine Liste und liefert das erste Element der Liste.
-Wir können dieser Funktion nicht den Typ `List a -> a` geben.
-In diesem Fall müsste die Funktion bei einer leeren Liste ein Element vom Typ `a` zurückliefern.
-Die Funktion `head` weiß aber gar nicht, von welchem Typ dieses Element sein muss, da die Funktion polymorph über diesem Typ ist.
-Das heißt, wenn wir eine Liste vom Typ `List Int` an `head` übergeben, müsste `head` sich für die leere Liste einen Wert vom Typ `Int` "ausdenken".
-Wenn wir eine Liste vom Typ `List String` an `head` übergeben, müsste `head` sich für die leere Liste einen Wert vom Typ `String` "ausdenken".
-Aus diesem Grund liefert die Funktion `head` einen `Maybe`-Wert als Ergebnis.
-Falls wir eine leere Liste an `head` übergeben, liefert die Funktion den Wert `Nothing` als Ergebnis.
-
-Als weiteres Beispiel für die Verwendung des Typs `Maybe` wollen wir die Funktion
+Als erstes einfaches Beispiel wollen wir die Funktion
 
 ```elm
 toInt : String -> Maybe Int
@@ -232,12 +216,12 @@ Die Funktion `cons : Char -> String -> String` hängt ein Zeichen vorne an eine 
 ``` elm
 toUpper : String -> String
 toUpper str =
-    case uncons str of
+    case String.uncons str of
         Nothing ->
             ""
 
         Just ( char, rest ) ->
-            cons (Char.toUpper char) (toUpper str)
+            String.cons (Char.toUpper char) (toUpper str)
 ```
 
 Neben Paaren bietet Elm auch Tupel anderer Stelligkeiten.
@@ -362,6 +346,30 @@ Das heißt, die Funktion hat für alle möglichen Typen `tau`, den Typ `tau -> t
 Wenn wir die Funktion `identity` verwenden, wählen wir implizit einen konkreten Typ, den wir für die Typvariable `a` einsetzen.
 Wenn wir zum Beispiel die Anwendung `identity "a"` betrachten, dann wählt der Compiler für die Typvariable `a` den Typ `String` und die konkrete Verwendung der Funktion `identity` erhält den Typ `String -> String`.
 
+Als weiteres einfaches Beispiel für eine polymorphe Funktion, wollen wir uns die Funktion anschauen, die das erste Element einer Liste liefert.
+In Elm, ist diese Funktion im Modul `List` definiert.
+
+```elm
+head : List a -> Maybe a
+head list =
+  case list of
+    x :: xs ->
+      Just x
+
+    [] ->
+      Nothing
+```
+
+Diese Funktion illustriert noch einmal einen Anwendungsfall für den `Maybe`-Typen.
+Die Funktion `head` erhält eine Liste und liefert das erste Element der Liste.
+Wir können dieser Funktion nicht den Typ `List a -> a` geben.
+In diesem Fall müsste die Funktion bei einer leeren Liste ein Element vom Typ `a` zurückliefern.
+Die Funktion `head` weiß aber gar nicht, von welchem Typ dieses Element sein muss, da die Funktion polymorph über diesem Typ ist.
+Das heißt, wenn wir eine Liste vom Typ `List Int` an `head` übergeben, müsste `head` sich für die leere Liste einen Wert vom Typ `Int` "ausdenken".
+Wenn wir eine Liste vom Typ `List String` an `head` übergeben, müsste `head` sich für die leere Liste einen Wert vom Typ `String` "ausdenken".
+Aus diesem Grund liefert die Funktion `head` einen `Maybe`-Wert als Ergebnis.
+Falls wir eine leere Liste an `head` übergeben, liefert die Funktion den Wert `Nothing` als Ergebnis.
+
 Als weiteres Beispiel wollen wir uns noch eine Funktion auf dem Datentyp `Result` anschauen.
 Die folgende Funktion kann genutzt werden, um einen *Default*-Wert für die Verwendung einer fehlgeschlagenen Berechnung anzugeben.
 Das heißt, falls die Berechnung erfolgreich war, verwenden wir den Wert, der im `Result`-Typ zur Verfügung steht und für den Fehlerfall geben wir einen *Default*-Wert an.
@@ -389,29 +397,28 @@ Da wir für die Typvariable `a` den Typ `Int` gewählt haben, wissen wir außerd
 
 Wenn wir den Aufruf `withDefault False (parseMonth "a")` in der REPL ausführen, erhalten wir dagegen einen Fehler.
 
-    -- TYPE MISMATCH ---------------------------------------------------------- REPL
+```
+-- TYPE MISMATCH ---------------------------------------------------------- REPL
 
-    The 2nd argument to `withDefault` is not what I expect:
+The 2nd argument to `withDefault` is not what I expect:
 
-    4|   withDefault False (parseMonth "a")
-                            ^^^^^^^^^^^^^^
-    This `parseMonth` call produces:
+4|   withDefault False (parseMonth "a")
+                        ^^^^^^^^^^^^^^
+This `parseMonth` call produces:
 
-        Result Error Int
+    Result Error Int
 
-    But `withDefault` needs the 2nd argument to be:
+But `withDefault` needs the 2nd argument to be:
 
-        Result Error Bool
+    Result Error Bool
 
-    Hint: I always figure out the argument types from left to right.
-If an argument
-    is acceptable, I assume it is "correct" and move on.
-So the problem may actually
-    be in one of the previous arguments!
+Hint: I always figure out the argument types from left to right. If an argument
+is acceptable, I assume it is "correct" and move on. So the problem may actually
+be in one of the previous arguments!
 
-    Hint: Elm does not have "truthiness" such that ints and strings and lists are
-    automatically converted to booleans.
-Do that conversion explicitly!
+Hint: Elm does not have "truthiness" such that ints and strings and lists are
+automatically converted to booleans. Do that conversion explicitly!
+```
 
 Wenn wir eine polymorphe Funktion verwenden, wählen wir für die Typvariablen konkrete Typen.
 Wir müssen aber für die gleiche Typvariable immer die gleiche Wahl treffen.
