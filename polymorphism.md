@@ -4,7 +4,7 @@ title: "Polymorphismus"
 ---
 
 In diesem Kapitel wird das Konzept des parametrischen Polymorphismus vorgestellt.
-Dieses Konzept wird in anderen Programmiersprachen wie Java und C# auch als Generics bezeichnet.
+Dieses Konzept wird in anderen Programmiersprachen wie Java und C# auch als _Generics_ bezeichnet.
 Wie in Programmiersprachen wie Java und C# kann man in Elm Datentypen definieren, die generisch über dem Typ der Elemente sind.
 Tatsächlich haben Programmiersprachen wie Java und C# dieses Konzept von den funktionalen Programmiersprachen übernommen.
 Die Idee des parametrischen Polymorphismus[^1] wurde vor 50 Jahren für die funktionale Programmiersprache ML entwickelt.
@@ -25,11 +25,11 @@ type Maybe a
     | Nothing
 ```
 
-`Maybe` nimmt ein Argument, das `a` heißt, und auch als *Typparameter* oder *Typvariable* bezeichnet wird.
+`Maybe` nimmt ein Argument, das `a` heißt, und auch als _Typparameter_ oder _Typvariable_ bezeichnet wird.
 Typvariablen werden in Elm im Gegensatz zu Typen klein geschrieben.
 Wenn wir den Datentyp `Maybe` verwenden, können wir für den Typparamenter einen konkreten Typ angeben.
 Ein Datentyp wie `Maybe`, der noch Typen als Argumente erhält, wird als
-*Typkonstruktor* bezeichnet.
+**Typkonstruktor** bezeichnet.
 Die folgenden Beispiele definieren Werte von `Maybe`-Typen.
 
 ``` elm
@@ -107,10 +107,12 @@ Der Aufruf `parseMonth "1"` liefert schließlich als Ergebnis `Just 1`.
 Viele andere Programmiersprachen stellen einen Datentyp wie `Maybe` ebenfalls zur Verfügung.
 So gibt es in Java zum Beispiel die Klasse`java.util.Optional`, die ebenfalls einen Typparameter nimmt und für die gleichen Zweck gedacht ist.
 Ein elementarer Unterschied in Programmiersprachen wie Java ist aber, dass es trotzdem noch den Wert `null` gibt.
-Das heißt, man muss eigentlich in jeder Stelle weiterhin auf `null` prüfen, da es keine Garantie gibt, dass der Typ `Optional` für diesen Zweck genutzt wird.
+Das heißt, man muss eigentlich an jeder Stelle weiterhin auf `null` prüfen, da es keine Garantie gibt, dass der Typ `Optional` für diesen Zweck genutzt wird.
 In Programmiersprachen wie Elm und Haskell existiert aber gar keine Null-Referenz.
 Das heißt, wenn eine Funktion möglicherweise kein Ergebnis zurückliefert, liefert die Funktion einen Wert vom Typ `Maybe`.
 Daher wissen wir durch das Typsystem, an welchen Stellen eine Art von "Null-Referenz" auftreten kann.
+Null-Referenzen sind in der Programmierung ein Problem, da sie für viele Laufzeitfehler und damit für Schaden in der Industrie sorgen.
+Der Erfinder der Null-Referenz, Tony Hoare[^3], bezeichnet die Erfindung der Null-Referenz als seinen Milliarden-Dollar-Fehler[^4], da Null-Referenzen die Industrie vermutlich bereits mehrere Milliarden Dollar gekostet haben.
 
 Häufig möchten wir im Fehlerfall noch einen Grund für das Fehlschlagen der Operation zur Verfügung stellen.
 Für diesen Zweck wird der Datentyp `Result` genutzt.
@@ -138,7 +140,7 @@ parseMonth userInput =
             toValidMonth n
 
         Nothing ->
-            Err ("Error parsing \"" ++ userInput ++ "\"")
+            Err ("Error parsing \"" ++ userInput ++ "\" as Int")
 
 
 toValidMonth : Int -> Result String Int
@@ -150,8 +152,7 @@ toValidMonth month =
         Err ("Invalid month " ++ String.fromInt month)
 ```
 
-Der Aufruf `parseMonth "a"` liefert in dieser Implementierung `Err "Error parsing \"a\""`.
-
+Der Aufruf `parseMonth "a"` liefert in dieser Implementierung `Err "Error parsing \"a\" as Int"`.
 Das heißt, wir erhalten nicht nur die Information, dass die Verarbeitung fehlgeschlagen ist, sondern auch, warum die Verarbeitung fehlgeschlagen ist.
 
 Wir verwenden an dieser Stelle zur Vereinfachung einen Wert vom Typ `String` für die Fehlermeldung.
@@ -175,7 +176,7 @@ description : Error -> String
 description error =
     case error of
         ParseError userInput ->
-            "Error parsing \"" ++ userInput ++ "\""
+            "Error parsing \"" ++ userInput ++ "\" as Int"
 
         InvalidMonth month ->
             "Invalid month " ++ String.fromInt month
@@ -207,12 +208,12 @@ Der Aufruf `parseMonth "a"` liefert in dieser Implementierung
 `Err (ParseError "a")`.
 
 Im Kontext von polymorphen Datentypen wollen wir uns auch noch Tupel anschauen.
-Neben den benannten Paaren stellt Elm auch ganz klassische Paare zur Verfügung.
+Neben den benannten Paaren stellt Elm auch ganz klassische **Paare** zur Verfügung.
 Im Grunde handelt es sich dabei auch um algebraische Datentypen, nur dass die Paare so wie die Listen eine spezielle Syntax nutzen.
 Die Einträge eines Paares werden durch ein Komma getrennt und das Paar wird durch Klammern umschlossen.
 Das heißt, der Ausdruck `(1, False)` erzeugt zum Beispiel ein Paar, bei dem die erste Komponente den Wert `1` enthält und die zweite Komponente den booleschen Wert `False`.
-Der Typkonstruktor für Paare wird genau so geschrieben wie der Konstruktor für Paare und ist über zwei Typvariablen polymorph, nämlich dem Typ der ersten Komponente und dem Typ der zweiten Komponente.
-Das heißt, der Typ des Wertes `(1, False)` ist `(Int, Bool)`.
+Der Typkonstruktor für Paare wird genau so geschrieben wie der Konstruktor für Paare und ist über zwei Typen parametrisiert, nämlich den Typ der ersten Komponente und den Typ der zweiten Komponente.
+Das heißt, der Typ des Wertes `(1, False)` ist zum Beispiel `(Int, Bool)`.
 
 Wie bei jedem anderen algebraischen Datentyp kann man *Pattern Matching* auch für Paare verwenden.
 Als Beispiel betrachten wir die Funktion
@@ -222,10 +223,10 @@ uncons : String -> Maybe ( Char, String )
 ```
 
 aus dem Modul `String`.
-Mit Hilfe dieser Funktion kann man einen `String` in das erste Zeichen und den Rest des *Strings* zerlegen.
+Mithilfe dieser Funktion kann man einen `String` in das erste Zeichen und den Rest des *Strings* zerlegen.
 Die Funktion liefert `Nothing`, falls wir sie auf einen leeren `String` anwenden.
 
-Mit Hilfe dieser Funktion können wir zum Beispiel wie folgt eine Funktion definieren, die alle Zeichen in einer Zeichenkette in Großbuchstaben verwandelt.
+Mithilfe dieser Funktion können wir zum Beispiel wie folgt eine Funktion definieren, die alle Zeichen in einer Zeichenkette in Großbuchstaben verwandelt.
 Die Funktion `cons : Char -> String -> String` hängt ein Zeichen vorne an eine Zeichenkette.
 
 ``` elm
@@ -257,7 +258,7 @@ type List a
 Hierbei ist vor allem zu beachten, dass wir auch bei der rekursiven Verwendung den Typparameter `a` übergeben müssen, da `List` ein Typkonstruktor ist und somit ein Argument verlangt.
 Wir geben damit an, dass der Rest der Liste Elemente vom gleichen Typ wie die bisherige Liste enthält.
 
-Mit Hilfe dieses Typs können wir die folgenden Werte definieren.
+Wir können wie folgt Werte vom Typ `List` definieren.
 
 ``` elm
 clist1 : List Int
@@ -276,7 +277,7 @@ clist3 =
 ```
 
 Der Listendatentyp ist in Elm genau definiert wie der Datentyp `List`, verwendet aber eine spezielle Syntax.
-Die folgende Definition liefert einen Syntaxfehler, illustriert aber den Listendatentyp, wie er in Elm definiert ist.
+Die folgende Definition liefert in Elm einen Syntaxfehler, illustriert aber den Listendatentyp, wie er in Elm definiert ist.
 
 ``` elm
 type List a
@@ -291,7 +292,7 @@ Alle anderen Konstruktoren werden vor ihre Argumente geschrieben.
 Bei Funktionen kennen wir auch beide Varianten, so wird eine selbstdefinierte Funktion vor ihre Argumente geschrieben, also zum Beispiel `f 1 2`.
 Die Funktion für die Addition wird aber zum Beispiel auch infix verwendet, also zum Beispiel `1 + 2`.
 
-Mit Hilfe des vordefinierten Listendatentyps können wir wie folgt eine Liste definieren.
+Mithilfe des vordefinierten Listendatentyps können wir wie folgt eine Liste definieren.
 
 ``` elm
 list1 : List Int
@@ -386,7 +387,7 @@ Dadurch muss das erste Argument von `withDefault` ebenfalls den Typ `Int` haben.
 Der Aufruf `withDefault 1 (parseMonth "a")` ist also typkorrekt.
 Da wir für die Typvariable `a` den Typ `Int` gewählt haben, wissen wir außerdem, dass der Aufruf einen `Int` als Ergebnis liefert.
 
-Wenn wir den Aufruf `withDefault False (parseMonth "a")` in der REPL ausführen, erhalten wir einen Fehler.
+Wenn wir den Aufruf `withDefault False (parseMonth "a")` in der REPL ausführen, erhalten wir dagegen einen Fehler.
 
     -- TYPE MISMATCH ---------------------------------------------------------- REPL
 
@@ -444,6 +445,10 @@ Wenn wir `length` mit einem Argument vom Typ `List (Maybe String)` aufrufen, wir
 [^1]: Milner, R., Morris, L., Newey, M. "A Logic for Computable Functions with reflexive and polymorphic types", In Proceedings of the Conference on Proving and Improving Programs (1975)
 
 [^2]: Der Begriff [syntaktischer Zucker](https://de.wikipedia.org/wiki/Syntaktischer_Zucker) geht ebenfalls auf Peter J. Landin zurück.
+
+[^3]: [Sir Charles Antony Richard (C. A. R.) bzw. Tony Hoare](https://en.wikipedia.org/wiki/Tony_Hoare) ist einer der bedeutensten Informatiker der frühern Jahre der Informatik.
+
+[^4]: Vortrag ["Null References: The Billion Dollar Mistake"](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/) aus dem Jahr 2009 von Tony Hoare.
 
 <div class="nav">
     <ul class="nav-row">
