@@ -41,8 +41,13 @@ Wenn man dagegen bei einer der Funktion eine andere Implementierung wählt, erwa
 Zur Lösung der Laboraufgaben sollen nur die Sprach-Features von Elm verwendet werden, die in der Vorlesung schon vorgestellt wurden.
 Die Laboraufgaben sollen häufig den Umgang mit bestimmten Features der Sprache trainieren.
 Dafür ist es aber wichtig, dass diese Features der Sprache auch tatsächlich zur Lösung der Aufgabe verwendet werden.
+Dabei gilt immer der Umfang der Sprache, der vor der Ausgabe der Aufgabe bekannt war.
+
+Sprach-Features wie algebraische Datentypen, Polymorphismus, Funktionen höherer Ordnung und lokale Definitionen sollen erst verwendet werden, wenn diese auch in der Vorlesung behandelt wurden.
 
 Die Funktion `List.append` sollte nicht verwendet werden, da stattdessen der Operator `++` verwendet werden sollte.
+
+Die Funktion `List.map` soll erst verwendet werden, wenn diese in der Vorlesung behandelt wurde.
 
 
 ### RemoveCodeDuplication
