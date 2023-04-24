@@ -76,7 +76,7 @@ Die Funktion `onInput : (String -> msg) -> Attribute msg` aus dem Modul `Html.Ev
 ```elm
 view : Model -> Html msg
 view model =
-    select [ opInput Selected ] [ viewOptions (userOptions model.users) ]
+    select [ opInput Selected ] (userOptions model.users)
 ```
 
 Zu guter Letzt wollen wir eine Funktion definieren, die das durchschnittliche Alter unserer Nutzer\*innen berechnet.
@@ -129,7 +129,7 @@ Wir können die Teile, die die drei Funktionen sich teilen, in eine Funktion aus
 Man nennt die Funktion, die wir dadurch erhalten `map`.
 Diese Funktion erhält die Operation, die auf die Elemente der Liste angewendet wird, als Argument übergeben.
 
-In Elm sind Funktionen _First-class Citizens_.
+In Elm sind Funktionen **_First-class Citizens_**.
 Übersetzt bedeutet das in etwa, dass Funktionen die gleichen Rechte haben wie andere Werte.
 Das heißt, Funktionen können wie andere Werte, etwa Zahlen oder Zeichenketten, als Argumente und Ergebnisse in Funktionen verwendet werden.
 Außerdem können Funktionen in Datenstrukturen stecken.
@@ -154,19 +154,19 @@ viewUsers : List User -> List (Html msg)
 viewUsers list =
     map viewUser list
 
-viewOptions : List User -> List (Html msg)
-viewOptions list =
-    map viewOption list
+userOptions : List User -> List (Html msg)
+userOptions list =
+    map userOption list
 
 ages : List User -> List Int
 ages list =
     map .age list
 ```
 
-Man nennt eine Funktion, die eine andere Funktion als Argument erhält, eine Funktion höherer Ordnung (*Higher-order Function*).
+Man nennt eine Funktion, die eine andere Funktion als Argument erhält, eine **Funktion höherer Ordnung (_Higher-order Function_)**.
 
 Neben dem Rekursionsmuster für `map`, wollen wir an dieser Stelle noch ein weiteres Rekursionsmuster vorstellen.
-Stellen wir uns vor, dass wir aus einer Liste von Nutzer\*innen alle extrahieren möchten, deren Nachname mit a beginnt.
+Stellen wir uns vor, dass wir aus einer Liste von Nutzer\*innen alle extrahieren möchten, deren Nachname mit `A` beginnt.
 Dazu können wir die folgende Funktion definieren.
 
 ``` elm
@@ -187,25 +187,25 @@ Als nächstes nehmen wir an, wir wollen das Durchschnittsalter aller Nutzer\*inn
 Dazu definieren wir die folgende Funktion.
 
 ``` elm
-keepAdultAges : List Int -> List Int
-keepAdultAges list =
+keepAdultUsers : List User -> List Int
+keepAdultUsers list =
     case list of
         [] ->
             []
 
-        ages :: ages ->
-            if ages >= 18 then
-                age :: keepAdultAges xs
+        user :: users ->
+            if user.age >= 18 then
+                user :: keepAdultUsers users
             else
-                keepAdultAges xs
+                keepAdultUsers users
 ```
 
-Mithilfe der Funktion `keepAdultAges` können wir jetzt wie folgt das Durchschnittsalter `averageAdultAge`.
+Mithilfe der Funktion `keepAdultUsers` können wir jetzt wie folgt das Durchschnittsalter der volljährigen Nutzer\*innen berechnen.
 
 ```elm
 averageAdultAge : List User -> Float
 averageAdultAge users =
-    toFloat (List.sum (keepAdultAges (ages users))) / toFloat (List.length users)
+    averageAge (keepAdultUsers users)
 ```
 
 Wir können diese beiden Funktionen wieder mithilfe einer Funktion höherer Ordnung definieren.
@@ -225,10 +225,10 @@ filter pred list =
 ```
 
 Dieses Mal übergeben wir eine Funktion, die angibt, ob ein Element in die Ergebnisliste kommt oder nicht.
-Man bezeichnet eine solche Funktion, die einen booleschen Wert liefert, auch als Prädikat.
+Man bezeichnet eine solche Funktion, die einen booleschen Wert liefert, auch als **Prädikat**.
 
 Funktionen höherer Ordnung wie `map` und `filter` ermöglichen es, deklarativeren Code zu schreiben.
-Bei der Verwendung dieser Funktionen geben Entwickler\*innen nur an, was berechnet werden soll, aber nicht wie diese Berechnung durchgeführt wird.
+Bei der Verwendung dieser Funktionen geben Entwickler\*innen nur an, was berechnet werden soll, aber nicht, wie diese Berechnung durchgeführt wird.
 Wie die Berechnung durchgeführt wird, wird dabei einfach durch die Abstraktionen festgelegt.
 Diese Form der deklarativen Programmierung ist in jeder Programmiersprache möglich, die es erlaubt Funktionen als Argumente zu übergeben.
 Heutzutage bietet fast jede Programmiersprache dieses Sprachfeature.
@@ -260,6 +260,10 @@ IEnumerable<TSource> Where<TSource> (this IEnumerable<TSource> source, Func<TSou
 
 Der Prototyp `Array` bietet Methoden `map` und `filter`, welche die
 Funktionalität von `map` und `filter` auf Arrays bieten.
+
+##### Haskell
+
+In Haskell sind die Funktionen `map` und `filter` im Modul `Prelude` definiert und werden dadurch immer implizit importiert.
 
 ##### Elm
 
@@ -443,7 +447,7 @@ viewUsers list =
     List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) list
 ```
 
-Anonyme Funktionen, auch als Lambda-Ausdrücke bezeichnet, starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
+**Anonyme Funktionen**, auch als **Lambda-Ausdrücke** bezeichnet, starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
 Das heißt, der Ausdruck `\x y -> x * y` definiert zum Beispiel eine Funktion, die ihre beiden Argumente multipliziert.
 Ein Lambda-Ausdruck der Form `\x y -> e` entspricht dabei der folgenden Funktionsdefinition.
 
@@ -476,7 +480,7 @@ cartP ( quantity, price ) =
     "Summe (" ++ items quantity ++ "): " ++ String.fromFloat price
 ```
 
-Die Funktion `cart` nennt man die ge*curry*te Variante und die Funktion `cartP` die unge*curry*te Variante.
+Die Funktion `cart` nennt man die **ge*curry*te** Variante und die Funktion `cartP` die **unge*curry*te** Variante.
 Die Funktion `cart` nimmt zwar auf den ersten Blick zwei Argumente, wir können den Typ der Funktion `cart` aber auch anders angeben.
 Die Schreibweise `Int -> Float -> String` steht eigentlich für den Typ `Int -> (Float -> String)`, das heißt, der Typkonstruktor `->` ist rechts-assoziativ.
 Das heißt, `cart` ist eine Funktion, die einen Wert vom Typ `Int` nimmt und eine Funktion vom Typ `Float -> String` liefert.
