@@ -28,8 +28,6 @@ custom_css: toc
     - 2.4.2. [Fallunterscheidungen](basics.md#fallunterscheidungen)
             
     - 2.4.3. [Mehrstellige Funktionen](basics.md#mehrstellige-funktionen)
-            
-    <!-- - 2.4.4. [Lokale Definitionen](basics.md#lokale-definitionen) -->
 
 - 2.5. [Weitere Datentypen](basics.md#weitere-datentypen)
 
@@ -65,27 +63,29 @@ custom_css: toc
 
 - 5.2. [Polymorphe Funktionen](polymorphism.md#polymorphe-funktionen)
 
-### 6. [Design von Datentypen](design.md)
+### 6. [Funktionen höherer Ordnung](higher-order.md)
 
-- 6.1. [Boolean Blindness](design.md#boolean-blindness)
+- 6.1. [Wiederkehrende rekursive Muster](higher-order.md#wiederkehrende-rekursive-muster)
 
-- 6.2. [Impossible States](design.md#impossible-states)
+- 6.2. [Lokale Definitionen](higher-order.md#lokale-definitionen)
 
-### 7. [Funktionen höherer Ordnung](higher-order.md)
+- 6.3. [Anonyme Funktionen](higher-order.md#anonyme-funktionen)
 
-- 7.1. [Wiederkehrende rekursive Muster](higher-order.md#wiederkehrende-rekursive-muster)
+- 6.4. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
 
-- 7.2. [Anonyme Funktionen](higher-order.md#anonyme-funktionen)
+- 6.5. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-- 7.3. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
+- 6.6. [Piping](higher-order.md#piping)
 
-- 7.4. [Partielle Applikationen](higher-order.md#partielle-applikationen)
+- 6.7. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
-- 7.5. [Piping](higher-order.md#piping)
+- 6.8. [Funktionskomposition](higher-order.md#funktionskomposition)
 
-- 7.6. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
+### 7. [Design von Datentypen](design.md)
 
-- 7.7. [Funktionskomposition](higher-order.md#funktionskomposition)
+- 7.1. [Boolean Blindness](design.md#boolean-blindness)
+
+- 7.2. [Impossible States](design.md#impossible-states)
 
 ### 8. [Modellierung der Elm-Architektur](architecture.md)
 

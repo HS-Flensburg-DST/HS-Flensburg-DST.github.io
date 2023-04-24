@@ -265,6 +265,153 @@ Funktionalität von `map` und `filter` auf Arrays bieten.
 
 Elm stellt die Funktionen `map` und `filter` im Modul `List` zur Verfügung.
 
+
+## Lokale Definitionen
+
+Bei der Anwendung von Funktionen wie `map` oder `filter` nutzt man in funktionalen Sprachen gerne lokale Definitionen, um die Funktion zu definieren, die auf jedes Element der Liste angewendet wird.
+In Elm können Konstanten und Funktionen auch lokal definiert werden, das heißt, dass die entsprechende Konstante oder die Funktion nur innerhalb einer anderen Funktion sichtbar ist.
+Anders ausgedrückt ist der _Scope_ einer **_Top Level_-Definition** das gesamte Modul.
+_Top Level_-Definitionen sind die Definitionen, die wir bisher kennengelernt haben, also Konstanten wie `secretNumber` und Funktionen wie `viewUser` oder `map`.
+Im Kontrast dazu ist der _Scope_ einer lokalen Definition auf einen bestimmten Ausdruck eingeschränkt.
+Wir betrachten zuerst die Definition einer Konstante mit einer lokalen Definition.
+
+Eine lokale Definition wird mithilfe eines `let`-Ausdrucks eingeführt.
+
+``` elm
+quartic : Int -> Int
+quartic x =
+    let
+        square =
+            x * x
+    in
+    square * square
+```
+
+Ein `let`-Ausdruck startet mit dem Schlüsselwort `let`, definiert dann beliebig viele Konstanten und Funktionen und schließt schließlich mit dem Schlüsselwort `in` ab.
+Die Definitionen, die ein `let`-Ausdruck einführt, stehen nur in dem Ausdruck nach dem `in` zur Verfügung.
+Das heißt, wir können `square` hier in `square * square` verwenden, aber nicht außerhalb der Definition `quartic`.
+Die lokalen Definitionen wie hier `square` können auch auf die Argumente der umschließenden Funktion zugreifen, hier `x`.
+
+Man kann in einem `let`-Ausdruck auch **Funktionen** definieren, die dann auch nur in dem Ausdruck nach dem `in` sichtbar sind.
+Wir werden später Beispiele sehen, in denen dies sehr praktisch ist, etwa, wenn wir Listen verarbeiten.
+Dort wird häufig die Verarbeitung eines einzelnen Listenelementes als lokale Funktion definiert.
+Im folgenden Beispiel wird eine lokale Funktion definiert, die eine Zahl um einen erhöht.
+
+``` elm
+res : Int
+res =
+    let
+        inc n =
+            n + 1
+    in
+    inc 41
+```
+
+Wie andere Programmiersprachen, zum Beispiel Python, Elixir und Haskell, nutzt Elm eine **Off-side Rule**.
+Das heißt, die Einrückung eines Programms wird genutzt, um Klammerung auszudrücken und somit Klammern einzusparen.
+In objektorientierten Sprachen wie Java wird diese Klammerung explizit durch geschweifte Klammern ausgedrückt.
+Dagegen muss die Liste der Definitionen in einem `let` zum Beispiel nicht geklammert werden, sondern wird durch ihre Einrückung dem `let`-Block zugeordnet.
+
+Das Prinzip der *Off-side Rule* wurde durch Peter J. Landin[^2] in seiner wegweisenden Veröffentlichung "The Next 700 Programming Languages" im Jahr 1966 erfunden.
+
+> Any non-whitespace token to the left of the first such token on the previous line is taken to be the start of a new declaration.
+
+Um diese Aussage zu illustrieren, betrachten wir das folgende
+Beispielprogramm, das vom Compiler aufgrund der Einrückung nicht
+akzeptiert wird.
+
+``` elm
+layout1 : Int
+layout1 =
+    let
+    x =
+        1
+    in
+    42
+```
+
+Das Schlüsselwort `let` definiert eine Spalte.
+Alle Definitionen im `let` müssen in einer Spalte rechts vom Schlüsselwort `let` starten.
+Die erste Definition, die in der Spalte des `let` oder weiter links steht, beendet die Sequenz der Definitionen.
+Die Definition `layout1` wird nicht akzeptiert, da die Sequenz der Definitionen durch das `x` beendet wird, was aber keine valide Syntax ist, da die Sequenz mit dem Schlüsselwort `in` beendet werden muss.
+
+Als weiteres Beispiel betrachten wir die folgende Definition, die ebenfalls aufgrund der Einrückung nicht akzeptiert wird.
+
+``` elm
+layout2 : Int
+layout2 =
+    let
+        x =
+            1
+
+         y =
+            2
+    in
+    42
+```
+
+Die erste Definition in einem `let`-Ausdruck, also hier das `x`, definiert ebenfalls eine Spalte.
+Alle Zeilen, die links von der ersten Definition starten, beenden die Liste der Definitionen.
+Alle Zeilen, die rechts von einer Definition starten, werden noch zu dieser Definition gezählt.
+Das heißt, in diesem Beispiel geht der Compiler davon aus, dass die Definition von `y` eine Fortsetzung der Definition von `x` ist.
+Dies ist auch wieder keine valide Syntax, da damit die Variable `x` den Wert des Ausdrucks `1 y = 2` erhält.
+Dies ist aber kein valider Ausdruck.
+Das folgende Beispiel zeigt noch einmal eine valide Definition eines `let`-Ausdrucks mit zwei lokalen Definitionen.
+
+``` elm
+layout3 : Int
+layout3 =
+    let
+        x =
+            1
+
+        y =
+            2
+    in
+    42
+```
+
+Das `let`-Konstrukt ist ein Ausdruck, kann also an allen Stellen stehen, an denen ein Ausdruck stehen kann.
+Um diesen Aspekt zu illustrieren, betrachten wir die folgende, nicht sehr sinnvolle, aber vom Compiler akzeptierte Definition.
+
+```elm
+letExpr : Int
+letExpr =
+    (let
+        x =
+            1
+     in
+     x
+    )
+        * 23
+```
+
+Der `let`-Ausdruck liefert einen Wert vom Typ `Int`.
+Daher können wir den `let`-Ausdruck mit der Zahl `23` multiplizieren.
+Wir müssen hier den `let`-Ausdruck klammern, da andernfalls der Wert der Variable `x` mit `23` multipliziert wird.
+
+Wenn eine Funktion wie `viewUser` nur in der Anwendung der Funktion `map` oder `filter` verwendet wird, nutzt man gern wie folgt eine lokale Definition.
+
+``` elm
+viewUsers : List Int -> List Int
+viewUsers list =
+    let
+        viewUser user =
+            text (user.firstName ++ " " ++ user.lastName)
+    in
+    List.map viewUser list
+```
+
+Diese Definition verhindert, dass die Funktion `viewUser` außerhalb der Definition `viewUsers` verwendet wird.
+Dadurch kann man verhindern, dass Funktionen, die eigentlich nur im Kontext einer ganz bestimmten Funktion sinnvoll sind, aus Versehen globaler verwendet werden.
+Außerdem bindet man auf diese Weise die Position der Definition `viewUser` an die Position der Definition `viewUsers`.
+Das heißt, es kann nicht passieren, dass man im Modul springen muss, um die Definition von `viewUser` zu suchen.
+
+Es gibt keine feste Regel, wann man eine Funktion wie `viewUser` lokale und wann auf _Top Level_ definieren sollte.
+Grundsätzlich kann man sich überlegen, ob man eine Funktion alleinstehend als _Black Box_ verstehen kann.
+In diesem Fall ist es durchaus sinnvoll, eine Funktion auf _Top Level_ zu definieren.
+
+
 Anonyme Funktionen
 ------------------
 
@@ -276,7 +423,7 @@ userStartsWithA user =
     String.startsWith "A" user.firstName
 ```
 
-Es ist recht umständlich extra die Funktionen `userStartsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden.
+Es ist recht umständlich extra die Funktionen `userStartsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden, unabhängig davon, ob wir die Funktion lokal definieren oder nicht.
 Stattdessen kann man anonyme Funktionen verwenden.
 Anonyme Funktionen sind einfach Funktionen, die keinen Namen erhalten.
 Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mithilfe einer anonymen Funktion definiert werden.
@@ -340,7 +487,7 @@ Wir erhalten dann eine Funktion, die noch einen `Float` als Argument erwartet.
 Diese Funktion wenden wir dann auf `2.23` an und erhalten schließlich einen `String`.
 
 Die Idee, Funktionen mit mehreren Argumenten als Funktion zu repräsentieren, die ein Argument nimmt und eine Funktion liefert, wird als *Currying* bezeichnet.
-*Currying* ist nach dem amerikanischen Logiker Haskell Brooks Curry[^2] benannt (1900–1982), nach dem auch die Programmiersprache Haskell benannt ist.
+*Currying* ist nach dem amerikanischen Logiker Haskell Brooks Curry[^3] benannt (1900–1982), nach dem auch die Programmiersprache Haskell benannt ist.
 
 Die Definition von `cart` ist im Grunde nur eine vereinfachte Schreibweise der folgenden Definition.
 
@@ -642,7 +789,9 @@ Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funkt
 
 [^1]: <https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/linq>
 
-[^2]: <https://en.wikipedia.org/wiki/Haskell_Curry>
+[^2]: Peter J. Landin (<https://en.wikipedia.org/wiki/Peter_Landin>) war einer der Begründer der funktionalen Programmierung.
+
+[^3]: <https://en.wikipedia.org/wiki/Haskell_Curry>
 
 <div class="nav">
     <ul class="nav-row">
