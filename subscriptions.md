@@ -4,21 +4,21 @@ title: "Abonnements"
 ---
 
 In diesem Kapitel wollen wir uns die Funktionsweise der `subscriptions` anschauen.
-Wie der Name schon sagt, handelt es sich dabei um einAbonnement, das heißt, wir teilen Elm damit mit, dass wir eigenständig von Elm informiert werden möchten.
+Wie der Name schon sagt, handelt es sich dabei um ein Abonnement, das heißt, wir teilen Elm damit mit, dass wir eigenständig von Elm informiert werden möchten.
 Um das Konzept des Abonnements zu illustrieren, werden wir eine einfache Stoppuhr implementieren, die nur einen Sekundenzeiger hat.
 
 Elm ist eine rein funktionale Programmiersprache.
 Das heißt, wir können keine Seiteneffekte ausführen, wie zum Beispiel das Schreiben von Dateien oder das Verändern von Variablen.
-Man spricht in diesem Kontext auch von referenzieller Transparenz.
+Man spricht in diesem Kontext auch von **referenzieller Transparenz**.
 Ein Ausdruck ist referenziell transparent, wenn der Wert des Ausdrucks nur von den Werten seiner Teilausdrücke abhängt.
 Damit darf der Wert eines Ausdrucks zum Beispiel nicht vom Zeitpunkt abhängen, zu dem der Ausdruck ausgewertet wird.
-Ein Beispiel für einen Ausdruck dessen Wert vom Zeitpunkt seiner Auswertungabhängt, ist der aktuelle Zeitstempel.
+Ein Beispiel für einen Ausdruck dessen Wert vom Zeitpunkt seiner Auswertung abhängt, ist der aktuelle Zeitstempel.
 Wenn wir in Java eine Methode schreiben, welche die Methode `currentTimeMillis()` aufruft, ist die Methode zum Beispiel mit hoher Wahrscheinlichkeit nicht referentiell transparent.
 
 In Elm werden wir gezwungen, referentiell transparente Programme zu schreiben.
 In Programmiersprachen, die uns nicht dazu zwingen, solche Programme zu schreiben, ist es aber auch guter Stil, diese Eigenschaft an möglichst vielen Stellen zu gewährleisten.
 Man kann sich leicht vorstellen, dass es recht schwierig ist, Fehler zu finden, wenn
-wiederholte Aufrufe der gleichen Methoden mit gleichen Argumenten immer wieder andere Ergebnisse liefern.
+wiederholte Aufrufe der gleichen Methode mit identischen Argumenten immer wieder andere Ergebnisse liefern.
 Daher versucht man auch in anderen Programmiersprachen den Teil der Anwendung, der nicht referentiell transparent ist, möglichst von dem Teil zu trennen, der referentiell transparent ist.
 
 Zeit
@@ -31,7 +31,7 @@ Dazu führen wir das folgende Kommando aus.
 elm install elm/time
 ```
 
-Da wir unsere Uhr mithilfe eines SVG zeichnen wollen, fügen wir auch noch das SVG-Paket hinzu.
+Da wir unsere Uhr mithilfe einer SVG zeichnen wollen, fügen wir auch noch das SVG-Paket hinzu.
 
 ```console
 elm install elm/svg
@@ -122,7 +122,7 @@ main =
 
 Unser initiales Modell setzt den Sekundenwert zu Anfang auf null.
 Die Funktion `update` soll unseren Sekundenzähler hochzählen.
-Daher definieren wie dir Konstante `zero` und die Funktion `inc` im Modul `Seconds`.
+Daher definieren wie die Konstante `zero` und die Funktion `inc` im Modul `Seconds`.
 Die Funktion `inc` rechnet den Wert der Sekunden jeweils modulo `60`, damit immer nur valide Sekundenwerte entstehen, also Werte zwischen `0` und `59`.
 
 ```elm
@@ -145,7 +145,7 @@ inc (Seconds seconds) =
 
 Der Modulkopf des Moduls `Seconds` exportiert zwar den Typ `Seconds` aber nicht seine Konstruktoren.
 Auf diese Weise garantieren wir, dass Werte vom Typ `Seconds` nur mithilfe der Konstante `zero` und der Funktion `inc` erzeugt werden.
-Wir erreichen dadurch eine Datenkapselung (_Information Hiding_), wie sie auch aus anderen Programmiersprachen bekannt ist.
+Wir erreichen dadurch eine **Datenkapselung (_Information Hiding_)**, wie sie auch aus anderen Programmiersprachen bekannt ist.
 Das heißt, wir stellen den Nutzer*innen eine feste Schnittstelle zur Arbeit mit `Seconds` zur Verfügung und verhindern, dass auf die interne Darstellung zugegriffen wird.
 
 Durch diese Abstraktion können wir die Implementierung später auch einfach ersetzen.
@@ -353,7 +353,7 @@ main =
 ```
 
 Zum Abschluss soll hier noch die Funktion `batch : List (Sub msg) -> Sub msg` vorgestellt werden.
-Diese Funktion kann genutzt werden, um eine Liste von Abonnements zu einem Abonement zusammenzufassen.
+Diese Funktion kann genutzt werden, um eine Liste von Abonnements zu einem Abonnement zusammenzufassen.
 Auf diese Weise können wir in einer Anwendung über mehrere Ereignisse informiert werden.
 Im folgenden Abschnitt werden wir zum Beispiel lernen, wie man sich über Tastendrücke informieren lassen kann.
 Mithilfe der Funktion `batch` kann man dann zum Beispiel informiert werden, wenn ein Interval vergangen ist oder wenn eine Taste gedrückt wurde.

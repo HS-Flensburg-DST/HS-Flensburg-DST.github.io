@@ -17,7 +17,7 @@ sandbox :
 ```
 
 Zuerst können wir feststellen, dass die Funktion einen Record als Argument erhält.
-Wir haben die Idee, einen Record an eine Funktion zu übergeben, um die Argumente zu benennen bereits im Abschnitt [Records](basics.md#records) kennengelernt.
+Wir haben die Idee, einen Record an eine Funktion zu übergeben, um die Argumente zu benennen, bereits im Abschnitt [Records](basics.md#records) kennengelernt.
 Der Record, der an `sandbox` übergeben wird, hat drei Einträge, die `init`, `view` und `update` heißen.
 Die Funktion ist polymorph über zwei Typvariablen, nämlich `model` und `msg`.
 Der Eintrag `init` ist vom Typ `model`.
@@ -36,11 +36,11 @@ Dieser erhält den Typ des Modells und den Typ der Nachrichten als Argumente.
 Der Typ `()` wird als *Unit* bezeichnet und ist der Typ der nullstelligen Tupel.
 Dieser Typ hat nur einen nullstelligen Konstruktor, nämlich `()`.
 Der *Unit*-Typ wird ähnlich verwendet wie der Typ `void` in Java.
-Das erste Argument von `Program` wird genutzt, wenn eine Anwendung mit Flags gestartet werden soll.
+Das erste Argument von `Program` wird genutzt, wenn eine Anwendung mit _Flags_ gestartet werden soll.
 In diesem Fall können der JavaScript-Anwendung, die aus dem Elm-Code erzeugt wird, initial Informationen übergeben werden.
 Das erste Argument von `Program` gibt den Typ dieser initialen Informationen an.
 Da diese Funktionalität bei einer einfachen Elm-Anwendung nicht benötigt wird, wird dem Typkonstruktor `Program` der Typ `()` übergeben.
-Das heißt, die Anwendung erhält beim Start ein Flag, das den Typ `()` hat.
+Das heißt, die Anwendung erhält beim Start ein _Flag_, das den Typ `()` hat.
 Die Anwendung erhält initial dann einfach den Wert `()`, der aber keinerlei Information enthält.
 
 An der Typsignatur von `sandbox` erkennt man auch, dass `Html` ein Typkonstruktor ist.
