@@ -155,10 +155,10 @@ Wir nutzen die Funktion `inc` nun wie folgt in unserer Uhr.
 
 ``` elm
 update : Msg -> Model -> Model
-update msg seconds =
+update msg model =
     case msg of
         Tick ->
-            Seconds.inc seconds
+            Seconds.inc model
 ```
 
 Im Grunde könnten wir hier auch auf das Pattern Matching verzichten, da wir wissen, dass die einzige Nachricht, die wir erhalten können, die Nachricht `Tick` ist.
@@ -176,7 +176,7 @@ type alias Point =
     { x : Float, y : Float }
 
 
-rotate : { angle : Float, point : Point }
+rotate : { angle : Float, point : Point } -> String
 rotate { angle, point } =
     "rotate("
         ++ String.fromFloat angle
@@ -191,8 +191,8 @@ Nun implementieren wir eine Funktion, die die aktuelle Sekundenzahl in Form eine
 
 ``` elm
 view : Model -> Html msg
-view seconds =
-    clock seconds
+view model =
+    clock model
 
 
 clock : Seconds -> Html msg
@@ -345,7 +345,7 @@ subscriptions model =
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \_ -> ( 0, Cmd.none )
+        { init = \_ -> ( Seconds.zero, Cmd.none )
         , subscriptions = subscriptions
         , view = view
         , update = \msg model -> ( update msg model, Cmd.none )
