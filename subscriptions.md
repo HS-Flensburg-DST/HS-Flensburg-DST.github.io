@@ -155,14 +155,12 @@ Wir nutzen die Funktion `inc` nun wie folgt in unserer Uhr.
 
 ``` elm
 update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        Tick ->
-            Seconds.inc model
+update Tick model =
+    Seconds.inc model
 ```
 
-Im Grunde könnten wir hier auch auf das Pattern Matching verzichten, da wir wissen, dass die einzige Nachricht, die wir erhalten können, die Nachricht `Tick` ist.
-Durch das _Pattern Matching_ gewährleisten wir aber, dass der Elm-Compiler sich über ein fehlendes _Pattern_ beschwert, falls wir einen weiteren Konstruktor zum Typ `Msg` hinzufügen.
+Im Grunde könnten wir hier auch auf das Pattern Matching verzichten und einen Unterstrich verwenden, da wir wissen, dass die einzige Nachricht, die wir erhalten können, die Nachricht `Tick` ist.
+Durch das _Pattern Matching_ gewährleisten wir aber, dass der Elm-Compiler sich beschwert, falls wir einen weiteren Konstruktor zum Typ `Msg` hinzufügen.
 Ohne das *Pattern Matching* auf `Tick` würde die Anwendung weiterhin kompilieren, wenn wir einen weiteren Konstruktor zu `Msg` hinzufügen.
 Die Anwendung würde sich aber für diese neue Nachricht genau so verhalten wie für die Nachricht `Tick`, was ggf. nicht das gewünschte Verhalten ist.
 
