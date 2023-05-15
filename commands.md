@@ -8,7 +8,7 @@ Wir haben zuvor bereits gelernt, dass Elm eine rein funktionale Programmiersprac
 keine Seiteneffekte ausführen kann.
 Einige Teile einer Frontend-Anwendung benötigen aber natürlich Seiteneffekte.
 Als ein Beispiel für einen solchen Seiteneffekt wollen wir uns das Würfeln einer Zufallszahl anschauen.
-Um Seiteneffekte in Elm ausführen zu können und dennoch eine referenziell transparente Anwendung zu behalten, wird die Durchführung von Seiteneffekten von der Elm-Runtime übernommen.
+Um Seiteneffekte in Elm ausführen zu können und dennoch eine referenziell transparente Anwendung zu behalten, wird die Durchführung von Seiteneffekten von der Elm-_Runtime_ übernommen.
 Genauer gesagt, teilen wir Elm nur mit, dass wir einen Seiteneffekt durchführen möchten.
 Elm führt dann diesen Seiteneffekt durch und informiert uns über das Ergebnis.
 Auch die Kommandos sind wieder ein Beispiel für den deklarativen Ansatz, da man nur beschreibt, dass ein Seiteneffekt durchgeführt werden soll, man beschreibt aber nicht, wie dieser genau ausgeführt wird.
@@ -49,7 +49,7 @@ init =
 ```
 
 Als nächstes definieren wir die Nachrichten, die unsere Anwendung verarbeiten kann.
-Die Anwendung soll nur in der Lage sein einen Würfel zu würfeln, daher benötigen wir nur eine einzige Nachricht.
+Die Anwendung soll nur in der Lage sein, einen Würfel zu würfeln, daher benötigen wir nur eine einzige Nachricht.
 
 ``` elm
 type Msg
@@ -99,7 +99,7 @@ die =
     Random.uniform One [ Two, Three, Four, Five, Six ]
 ```
 
-Die Funktion `uniform` erhält einen Wert und eine Liste von Werten und liefert mit gleicher Verteilung den Wert oder eines der Elemente der Liste.
+Die Funktion `uniform` erhält einen Wert und eine Liste von Werten und liefert mit gleicher Wahrscheinlichkeit den Wert oder eines der Elemente der Liste.
 An sich könnte die Funktion auch nur eine Liste erhalten.
 In diesem Fall könnten wir die Funktion aber mit einer leeren Liste aufrufen.
 Wenn wir an `uniform` eine leere Liste übergeben, kann der Generator aber keinen Wert erzeugen, da wir ihm gar keinen möglichen Wert zur Verfügung gestellt haben.
@@ -119,7 +119,7 @@ update msg model =
             ( Just side, Cmd.none )
 ```
 
-Wenn der Benutzer auf den Button Knopf, erhält die Anwendung die Nachricht `Roll`.
+Wenn der Benutzer auf den Knopf drückt, erhält die Anwendung die Nachricht `Roll`.
 In diesem Fall lassen wir das Modell einfach wie es ist und fordern die Laufzeitumgebung auf, einen zufälligen Wert mit unserem Generator zu erzeugen.
 Wenn dieser Wert erzeugt wurde, wird die Funktion `update` wieder aufgerufen, dieses Mal aber mit der Nachricht `Rolled`.
 Der Konstruktor enthält die Seite, die gewürfelt wurde.
@@ -142,7 +142,7 @@ main =
 
 Das Modul `Random` stellt ähnliche Funktionen zur Verfügung wie das Modul `Json.Decode` für die Definition von `Decoder`n.
 Zum Einen stellt das Modul `Random` die Funktion `map : (a -> b) -> Generator a -> Generator b` zur Verfügung.
-Mithilfe dieser Funktion können wir die Ergebnisse eines `Generator` abändern.
+Mithilfe dieser Funktion können wir die Ergebnisse eines `Generator`s abändern.
 Nehmen wir an, wir benötigen einen Zufallsgenerator, der Zahlen liefert anstelle des Datentyps `Side`.
 In diesem Fall können wir wie folgt einen Generator definieren.
 
