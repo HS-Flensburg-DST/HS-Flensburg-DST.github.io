@@ -44,7 +44,35 @@ type ButtonState
 Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton Disabled Increase`, der wesentlich ausdrucksstärker ist.
 
 In den Elm-Standardbibliotheken werden trotz der _Boolean Blindness_ häufig boolesche Werte verwendet.
-In einer selbstgeschriebenen Elm-Anwendung sollte aber darauf geachtet werden, dieses Problem wo möglich zu umgehen.
+Ein Beispiel für das Problem der _Boolean Blindness_ in den Standard-Bibliotheken ist die Funktion `filter`.
+Wenn wir den Typ der Funktion `filter` betrachten
+
+```elm
+filter : (a -> Bool) -> List a -> List a
+```
+
+ist nicht klar, ob das Prädikat für diejenigen Elemente `True` liefert, die in der Liste verbleiben sollen, oder für die Elemente, die aus der Liste entfernt werden sollen.
+Wenn wir stattdessen den folgenden Datentyp definieren
+
+```elm
+type Keep
+    = Discard
+    | Keep
+```
+
+und diesen in der Definition von `filter` nutzen
+
+```elm
+filter : (a -> Keep) -> List a -> List a
+```
+
+drückt das Ergebnis der Funktion, die wir an `filter` übergeben, sehr explizit aus, ob wir das Element behalten oder verwerfen möchten.
+
+Die Verwendung von benutzerdefinierten Aufzählungstypen an Stelle des Datentyps `Bool` hat einen Nachteil.
+Es gibt viele Funktionen, die mit dem Datentyp `Bool` arbeiten und wir müssen diese Funktionen dann für einen Datentyp wie `Keep` redefinieren.
+Daher nutzen viele der Funktionen in den Standardbibliotheken den Datentyp `Bool`.
+In der Hauptanwendungslogik einer Elm-Anwendung gibt es aber Stellen, an denen man besser auf den Datentyp `Bool` verzichten sollte.
+Insbesondere ist ein selbstdefinierter Aufzählungstyp auch um weitere Fälle erweiterbar, während dies bei `Bool` nicht der Fall ist.
 
 
 ## Impossible States
@@ -96,7 +124,7 @@ Grundsätzlich sind Invarianten ein wichtiges Konzept bei der Modellierung von D
 Wenn ein Datentyp Invarianten erfordert, müssen wir diese aber entweder zur Laufzeit überprüfen und einen Fehler werfen, wenn sie nicht eingehalten werden oder wir müssen ignorieren, ob die Invarianten erfüllt sind oder nicht.
 Außerdem müssen Entwickler\*innen beim Erstellen und Verändern von Daten darauf achten, dass die Invarianten eingehalten werden.
 Daher sind Invarianten, die durch die Struktur der Datentypen ausgedrückt werden, ein großer Vorteil.
-Das heißt, wir möchten den Datentyp gern so umstrukturieren, dass man möglichst wenige invalide Zustände erstellen kann und somit mit möglichst wenig Invarianten auskommt.
+Das heißt, wir möchten den Datentyp gern so umstrukturieren, dass man möglichst wenige invalide Zustände erstellen kann und somit mit möglichst wenig impliziten Invarianten auskommt.
 
 Zuerst einmal sollte es nur im Zustand `Success` auch Daten geben.
 Daher verändern wir die Struktur des Datentyps so, dass die `List Item` ein Argument des Konstruktors `Success` ist.

@@ -594,7 +594,7 @@ sumOfAdultAges list =
 ```
 
 Aus Gründen der Lesbarkeit wird eine solche Sequenz von Verarbeitungsschritten häufig wie oben aufgeführt eingerückt.
-Man spricht in diesem Zusammenhang auch von _Piping_ in Anlehung an das entsprechende Konzept in einer Shell.
+Man spricht in diesem Zusammenhang auch von _Piping_ in Anlehung an das entsprechende Konzept in einer _Shell_.
 
 Hinter dem Operator `(|>)` steckt die folgende einfache Definition.
 
@@ -612,8 +612,6 @@ infixl 0 |>
 ```
 
 Das heißt, der Operator hat die Präzedenz `0` und ist links-assoziativ.
-Man sollte den Operator `|>` allerdings wirklich nur einsetzen, wenn man, wie in `sumOfAdultAges` eine Sequenz von Transformationen durchführt.
-Wenn man den Operator `|>` für "normale" Funktionsanwendungen innerhalb eines komplexeren Ausdrucks verwendet, wird der Code sehr schnell schlecht lesbar.
 
 Neben `|>` stellt Elm auch einen Operator `(<|) : (a -> b) -> a -> b` zur Verfügung.
 Die Operatoren `<|` und `|>` werden gern verwendet, um Klammern zu sparen.
@@ -624,6 +622,7 @@ Um existierenden Elm-Code lesen zu können, sollte man die Operatoren daher kenn
 In vielen Fällen wird der Code durch die Verwendung dieser Operatoren aber nicht unbedingt lesbarer.
 Daher sollten die Operatoren vor allem genutzt werden, wenn es sich tatsächlich um eine längere Sequenz von Transformationen wie in der Definition von `sumOfAdultAges` handelt.
 Ansonsten sollte man die Operatoren aber eher vermeiden.
+Leider ist die Verwendung der Operatoren `<|` und `|>` auch in solchen Fällen, in denen die Verwendung den Code eher schlechter lesbar macht, in Elm relativ weit verbreitet.
 
 
 Eta-Reduktion und -Expansion
@@ -671,11 +670,11 @@ Anders ausgedrückt stellen die beiden Varianten von `viewUsers` einfach untersc
 In der Variante mit dem expliziten Argument `list` wird eine Funktion definiert, indem beschrieben wird, was die Funktion mit ihrem Argument macht.
 In der Variante ohne explizites Argument `list` wird eine Funktion definiert, indem eine Funktion als partielle Applikation einer anderen Funktion definiert wird. Man nennt diese zweite Variante auch punkt-frei (*point-free*).
 
-An dieser Stelle soll noch kurz erwähnt werden, dass sie Eta-Reduktion auch anwenden lässt, wenn eine _Top Level_-Funktion eine lokale Definition enthält.
+An dieser Stelle soll noch kurz erwähnt werden, dass sich Eta-Reduktion auch anwenden lässt, wenn eine _Top Level_-Funktion eine lokale Definition enthält.
 Dazu betrachten wir die folgende Variante der Funktion `viewUsers`.
 In dieser Variante haben wir die Funktion `viewUser`, die auf jedes Element der Liste angewendet wird, als lokale Funktion in einem `let`-Ausdruck definiert.
 Es kommt in Elm relativ häufig vor, dass man eine lokale Funktion definiert und diese mithilfe von `List.map` auf alle Elemente einer Liste anwendet.
-Häufig definiert man die Funktion, die auf die Elemente der Liste angewendet wird, lokal, das sie außerhalb der Funktion nicht benötigt wird.
+Häufig definiert man die Funktion, die auf die Elemente der Liste angewendet wird, lokal, da sie außerhalb der Funktion nicht benötigt wird.
 
 ``` elm
 viewUsers : List Int -> List Int
@@ -711,7 +710,7 @@ Funktionskomposition
 --------------------
 
 Am Ende dieses Kapitels wollen wir noch eine weitere Funktion höherer Ordnung betrachten, die es ermöglicht, Eta-Reduktion anzuwenden, wenn mehrere Funktionen hintereinander angewendet werden.
-Diese Funktionen höherer Ordnung wird als Funktionskomposition bezeichnet und ist wie folgt definiert.
+Diese Funktion höherer Ordnung wird als Funktionskomposition bezeichnet und ist wie folgt definiert.
 
 ```elm
 (<<) : (b -> c) -> (a -> b) -> a -> c
@@ -738,7 +737,7 @@ startWithA list =
 
 Die Funktion `String.startsWith "A" << .firstName` erhält ein Argument und wendet auf dieses Argument zuerst die Funktion `.firstName` an.
 Auf das Ergebnis der Funktion `.firstName` wird die Funktion `String.startsWith "A"` angewendet.
-Hierbei handelt es sich um eine partielle Applikation, da die Funktion `String.startsWith` zwei Argumente nimmt, wie diese Funktion aber nur auf ein Argument anwenden.
+Hierbei handelt es sich um eine partielle Applikation, da die Funktion `String.startsWith` zwei Argumente nimmt, wir `String.startsWith` aber nur auf ein Argument anwenden.
 Die partielle Applikation `String.startsWith "A"` nimmt einen `String` und testet, ob der `String` mit dem Buchstaben `"A"` startet.
 
 Um die Funktionsweise der Funktionskomposition noch etwas zu illustrieren, können wir das funktionale Argument von `List.filter` Eta-expandieren und erhalten die folgende Definition.
@@ -801,6 +800,6 @@ Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funkt
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="design.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="architecture.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="design.html">weiter</a></li>
     </ul>
 </div>
