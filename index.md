@@ -63,69 +63,70 @@ custom_css: toc
 
 - 5.2. [Polymorphe Funktionen](polymorphism.md#polymorphe-funktionen)
 
-### 6. [Funktionen höherer Ordnung](higher-order.md)
+### 6. [Funktionale Abstraktionen](functional-abstractions.md)
 
-- 6.1. [Wiederkehrende rekursive Muster](higher-order.md#wiederkehrende-rekursive-muster)
+- 6.1. [Wiederkehrende rekursive Muster](functional-abstractions.md#wiederkehrende-rekursive-muster)
 
-- 6.2. [Lokale Definitionen](higher-order.md#lokale-definitionen)
+- 6.2. [Lokale Definitionen](functional-abstractions.md#lokale-definitionen)
 
-- 6.3. [Anonyme Funktionen](higher-order.md#anonyme-funktionen)
+- 6.3. [Anonyme Funktionen](functional-abstractions.md#anonyme-funktionen)
 
-- 6.4. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
+### 7. [Modellierung der Elm-Architektur](architecture.md)
 
-- 6.5. [Partielle Applikationen](higher-order.md#partielle-applikationen)
+### 8. [Abonnements](subscriptions.md)
 
-- 6.6. [Piping](higher-order.md#piping)
+- 8.1. [Zeit](subscriptions.md#zeit)
 
-- 6.7. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
+- 8.2. [Decoder](subscriptions.md#decoder)
 
-- 6.8. [Funktionskomposition](higher-order.md#funktionskomposition)
+- 8.3. [Tasten](subscriptions.md#tasten)
 
-### 7. [Design von Datentypen](design.md)
+### 9. [Design von Datentypen](design.md)
 
-- 7.1. [Boolean Blindness](design.md#boolean-blindness)
+- 9.1. [Boolean Blindness](design.md#boolean-blindness)
 
-- 7.2. [Impossible States](design.md#impossible-states)
+- 9.2. [Impossible States](design.md#impossible-states)
 
-### 8. [Modellierung der Elm-Architektur](architecture.md)
+### 10. [Funktionen höherer Ordnung](higher-order.md)
 
-### 9. [Abonnements](subscriptions.md)
+- 10.1. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
 
-- 9.1. [Zeit](subscriptions.md#zeit)
+- 10.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-- 9.2. [Decoder](subscriptions.md#decoder)
+- 10.3. [Piping](higher-order.md#piping)
 
-- 9.3. [Tasten](subscriptions.md#tasten)
+- 10.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
-### 10. [Kommandos](commands.md)
+- 10.5. [Funktionskomposition](higher-order.md#funktionskomposition)
 
-- 10.1. [Zufall](commands.md#zufall)
+### 11. [Kommandos](commands.md)
 
-- 10.2. [HTTP-Anfragen](commands.md#http-anfragen)
+- 11.1. [Zufall](commands.md#zufall)
 
-### 11. [Strukturierung einer Anwendung](structure.md)
+- 11.2. [HTTP-Anfragen](commands.md#http-anfragen)
 
-- 11.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+### 12. [Strukturierung einer Anwendung](structure.md)
 
-- 11.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+- 12.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
 
-- 11.3. [Modell strukturieren](structure.md#modell-strukturieren)
+- 12.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
 
-### 12. [Abstraktionen](abstractions.md)
+- 12.3. [Modell strukturieren](structure.md#modell-strukturieren)
 
-- 12.1. [Funktoren](abstractions.md#funktoren)
+### 13. [Abstraktionen](abstractions.md)
 
-- 12.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
+- 13.1. [Funktoren](abstractions.md#funktoren)
 
-- 12.3. [Monaden](abstractions.md#monaden)
+- 13.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
-### 13. [Weitere Themen](final-topics.md)
+- 13.3. [Monaden](abstractions.md#monaden)
 
-- 13.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
+### 14. [Weitere Themen](final-topics.md)
 
-- 13.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
+- 14.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
 
-- 13.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
+- 14.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
+
+- 14.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
 
 ### A. [Programmierregeln](rules.md)
-

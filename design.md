@@ -163,7 +163,7 @@ Unter diesen Slogan oder dem Slogan _Make Illegal States Unrepresentable_ lassen
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="polymorphism.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="subscriptions.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
         <li class="nav-item nav-right"><a href="higher-order.html">weiter</a></li>
     </ul>

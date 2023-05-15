@@ -126,7 +126,7 @@ Das heißt, mithilfe des statischen Typsystems sorgen wir dafür, dass klar ist,
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="recursion.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="functional-abstractions.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
         <li class="nav-item nav-right"><a href="subscriptions.html">weiter</a></li>
     </ul>

@@ -461,6 +461,6 @@ Wenn wir `length` mit einem Argument vom Typ `List (Maybe String)` aufrufen, wir
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="data-types.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="design.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="functional-abstractions.html">weiter</a></li>
     </ul>
 </div>

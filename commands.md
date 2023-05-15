@@ -394,7 +394,7 @@ Diese Funktion kann einen beliebigen Elm-Wert in einen `String` umwandeln und is
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="subscriptions.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="higher-order.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
         <li class="nav-item nav-right"><a href="structure.html">weiter</a></li>
     </ul>
