@@ -64,10 +64,10 @@ view model =
     div []
         [ case model of
               Nothing ->
-                  "Please roll the die!"
+                  text "Please roll the die!"
 
               Just side ->
-                  text (toString model)
+                  text (toString side)
         , button [ onClick Roll ] [ text "Roll" ]
         ]
 ```

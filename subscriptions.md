@@ -609,7 +609,7 @@ updateKey key model =
 
 main : Program () Model Msg
 main =
-    program
+    Browser.element
         { init = \_ -> ( 0, Cmd.none )
         , subscriptions = \_ -> Sub.map Key (onKeyDown keyDecoder)
         , view = view
