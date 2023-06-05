@@ -394,7 +394,7 @@ viewData data =
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \_ -> ( { number = 0, response = Loading }, isEvenCmd 0 )
+        { init = \_ -> ( { number = 0, data = Loading }, isEvenCmd 0 )
         , subscriptions = \_ -> Sub.none
         , view = view
         , update = update
