@@ -202,7 +202,7 @@ Als Abschluss dieses Kapitels wollen wir uns noch anschauen, wie man HTTP-Anfrag
 Eine HTTP-Anfrage folgt dem gleichen Muster wie das Erzeugen eines zufälligen Wertes.
 Wir teilen dem System mit, welche Anfrage wir stellen möchten und das System ruft die Funktion `update` auf, wenn die Anfrage erfolgreich abgeschlossen ist.
 Im Unterschied zum Erzeugen eines Zufallswertes, kann in diesem Fall aber auch ein Fehler bei der Abarbeitung der Aufgabe auftreten.
-Um einen HTTP-Anfrage zu senden, müssen wir zunächst mit dem folgenden Kommando eine Bibliothek installieren.
+Um eine HTTP-Anfrage zu senden, müssen wir zunächst mit dem folgenden Kommando eine Bibliothek installieren.
 
 ```console
 elm install elm/http
@@ -268,13 +268,18 @@ Hierbei ist allerdings zu beachten, dass die Anfrage auch fehlschlagen kann.
 Daher muss die Funktion auch in der Lage sein, einen möglichen Fehler zu verarbeiten.
 
 Wir definieren im Datentyp `Msg` einfach einen Konstruktor, der später als erstes Argument von `expectJson` genutzt wird.
-Neben diesem Konstruktor fügen wir noch Nachrichten hinzu, um den Zähler hoch- und runterzuzählen.
+Neben diesem Konstruktor fügen wir noch Nachrichten hinzu, um einen Zähler hoch- und runterzuzählen.
+Die Anwendung wird für den Zähler später die API anfragen, um zu prüfen, ob die Zahl gerade ist.
 
 ``` elm
 type Msg
+    = Counter Change
+    | Response (Result Http.Error IsEven)
+
+
+type Change
     = Increase
     | Decrease
-    | Response (Result Http.Error IsEven)
 ```
 
 Wir definieren nun zuerst einen `Decoder`, um die JSON-Struktur, die wir vom Server erhalten, in den Record `IsEven` umzuwandeln.
@@ -287,26 +292,29 @@ isEvenDecoder =
         (Decode.field "ad" Decode.string)
 ```
 
-Mithilfe des Konstruktors `Request` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
+Mithilfe des Konstruktors `Response` des Datentyps `Msg` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
 
 ``` elm
-getCmd : Int -> Cmd Msg
-getCmd no =
+isEvenCmd : Int -> Cmd Msg
+isEvenCmd no =
     Http.get
         { url = "https://api.isevenapi.xyz/api/iseven/" ++ String.fromInt no
         , expect = Http.expectJson Response isEvenDecoder
         }
 ```
 
-Wir nutzen zur Modellierung des internen Zustands unserer Anwendung die folgenden Datentypen.
+Wir nutzen zur Modellierung des internen Zustands unserer Anwendung den folgenden Datentyp.
 
 ``` elm
 type alias Model =
     { number : Int
     , data : Data IsEvenInfo
     }
+```
 
+Der Datentyp `Data` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
 
+```elm
 type Data value
     = Loading
     | Failure Http.Error
@@ -333,19 +341,25 @@ Wenn eine der Aktionen `Increase` und `Decrease` durchgeführt wird, wird eine n
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Decrease ->
-            updateNumber (model.number - 1) model
-
-        Increase ->
-            updateNumber (model.number + 1) model
+        Counter change ->
+            let newCounter = updateCounter model.number change
+            in
+            ( { model | number = newCounter, data = Loading }
+            , isEvenCmd newCounter )
 
         Response result ->
-            ( { model | data = Data.fromResult result }, Cmd.none )
+            ( { model | data = Data.fromResult result }
+            , Cmd.none )
 
 
-updateNumber : Int -> Model -> ( Model, Cmd Msg )
-updateNumber number model =
-    ( { model | number = number, data = Loading }, getCmd number )
+updateCounter : Int -> Change -> Int
+updateCounter counter change =
+    case change of
+        Decrease ->
+            counter - 1
+
+        Increase ->
+            counter + 1
 ```
 
 Zu guter Letzt müssen wir nur noch Funktionen schreiben, die abhängig vom aktuellen Zustand eine entsprechende HTML-Seite anzeigen.
@@ -356,9 +370,9 @@ view : Model -> Html Msg
 view model =
     div []
         [ div []
-            [ button [ onClick Decrease ] [ text "-" ]
+            [ button [ onClick (Counter Decrease) ] [ text "-" ]
             , text (String.fromInt model.number)
-            , button [ onClick Increase ] [ text "+" ]
+            , button [ onClick (Counter Increase) ] [ text "+" ]
             ]
         , viewData model.data
         ]
@@ -380,7 +394,7 @@ viewData data =
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \_ -> ( { number = 0, response = Loading }, getCmd 0 )
+        { init = \_ -> ( { number = 0, response = Loading }, isEvenCmd 0 )
         , subscriptions = \_ -> Sub.none
         , view = view
         , update = update
