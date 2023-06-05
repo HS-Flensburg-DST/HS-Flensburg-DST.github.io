@@ -15,7 +15,7 @@ Viele der Beispiele in diesem Kapitel sind durch den Vortrag [Scaling Elm Apps](
 
 Als Beispiel für das Strukturieren von Funktionen betrachten wir die Funktion `view`.
 Grundsätzlich kann jede Funktion durch die Einführung von Hilfsfunktionen besser strukturiert werden.
-In einer Elm-Anwendung tendieren vor allem die Funktion `view` und `update` dazu lang bzw. unübersichtlich zu werden und bieten daher die häufigsten Ansatzpunkte für die Einführung von Hilfsfunktionen.
+In einer Elm-Anwendung tendieren vor allem die Funktionen `view` und `update` dazu, lang bzw. unübersichtlich zu werden und bieten daher die häufigsten Ansatzpunkte für die Einführung von Hilfsfunktionen.
 Wir betrachten die folgende `view`-Funktion.
 
 ```elm
@@ -120,21 +120,21 @@ type Name
 
 
 type Msg
-    = Clicked Key
-    | Changed Name
+    = Click Key
+    | Change Name
 ```
 
-Die neue Struktur erlaubt es viel besser zu erkennen, dass die Anwendung zwei Arten von Interaktion erlaubt.
-Außerdem können wir die Datentypen nutzen, um die `update`-Funktion durch Hilfsfunktionen zu strukturieren.
+Die neue Struktur erlaubt es viel besser zu erkennen, dass die Anwendung zwei Arten von Interaktionen ermöglicht.
+Außerdem können wir die neuen Datentypen nutzen, um die `update`-Funktion durch Hilfsfunktionen zu strukturieren.
 
 ```elm
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Clicked key ->
+        Click key ->
             processKey key model
 
-        Changed name ->
+        Change name ->
             changeName name model
 
 
@@ -168,11 +168,11 @@ type Model =
 ```
 
 Das Modell modelliert ein Spiel, bei dem man seinen Namen in Form von Vor- und Nachname angibt.
-Außerdem hat der Spieler eine aktuelle Punktzahl und es gibt eine Highscore für das Spiel.
+Außerdem hat der Spieler eine aktuelle Punktzahl und es gibt einen Highscore für das Spiel.
 Zuletzt ist noch angegeben, wer aktuell den Highscore hält.
 
 Um die Wiederverwendbarkeit von Funktionen zu erhöhen, sollte man Funktionen nur die Informationen übergeben, die sie auch benötigen.
-Das heißt, wenn die Funktionen `viewHeader`, `viewBoard` und `viewFooter` nur Teile des Modells benötigen, sollten auch nur diese Teile übergeben werden.
+Das heißt, wenn die Funktionen `viewHeader`, `viewBoard` und `viewFooter` aus Abschnitt [Funktionen strukturieren](#funktionen-strukturieren) nur Teile des Modells benötigen, sollten auch nur diese Teile übergeben werden.
 Da unser Modell flach ist, müssten wir die einzelnen Felder, die benötigt werden als einzelne Argumente an die Funktionen übergeben.
 Stattdessen sollten wir an dieser Stelle die Gelegenheit nutzen, um zu überprüfen, ob unser Modell besser strukturiert werden kann.
 
@@ -240,10 +240,10 @@ viewFooter user highscore =
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Clicked key ->
+        Click key ->
             { model | board = processKey key model.board }
 
-        Changed name ->
+        Change name ->
             { model | user = changeName name model.user }
 
 
@@ -258,7 +258,7 @@ changeName name user =
 ```
 
 Die Funktionen `processKey` und `changeName` arbeiten nun nur noch auf einem Teil des Modells.
-Dieser Teil des Modells kann ggf. nun auch in eine eigenes Modul ausgelagert werden, da die Logik der Funktionen häufig unabhängig von der konkreten Anwendung sind.
+Dieser Teil des Modells kann ggf. nun auch in ein eigenes Modul ausgelagert werden, da die Logik der Funktionen häufig unabhängig von der konkreten Anwendung sind.
 
 Ein weiterer Vorteil dieser Art der Strukturierung ist, dass nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
 Da die Hilfsfunktionen jetzt nur noch auf einem Teil des Modells arbeiten, können wir jetzt in einem Fall auch mehrere Hilfsfunktionen verwenden.
