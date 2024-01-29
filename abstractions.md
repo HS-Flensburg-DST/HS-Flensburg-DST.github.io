@@ -171,6 +171,24 @@ map func maybe =
     apply maybe (pure func)
 ```
 
+Die Standardbibliotheken von Elm bieten für Datenstrukturen wie `List` und `Maybe` nicht die Funktion `apply` an, sondern eine Funktion `map2 : (a -> b -> c) -> f a -> f b -> f c` verwendet.
+Diese Funktion ist für Einsteiger vermutlich besser zugänglich.
+Elm bietet zum Beispiel die Funktion `map2 : (a -> b -> c) -> List a -> List b -> List c` im Modul `List`, die Funktion `map2 : (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c` im Modul `Maybe` und `map2 : (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c` im Modul `Json.Decode`.
+Wie haben die Funktion `apply` für `Decoder` mithilfe von `map2` definiert.
+Falls eine Datenstruktur eine Funktion `map2 : (a -> b -> c) -> f a -> f b -> f c` zur Verfügung stellt, können wir `apply` mittels `map2 (|>)` definieren.
+
+Falls eine Struktur eine Funktion `pure` zur Verfügung stellt, können wir mithilfe von `pure` und `apply` auch die Funktion `map2` definieren.
+
+```elm
+map2 (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+map2 func ma mb =
+    apply (apply (pure func) ma) mb
+```
+
+Das heißt, statt --- wie in Haskell üblich --- die Funktionen `pure` und `apply` für einen applikativen Funktor zu definieren, könnten wir auch die Funktion `pure` und `map2` definieren.
+Diesen Ansatz wählt die Programmiersprache Elm, um Einsteigern den Zugang zu vereinfachen.
+
+
 Monaden
 -------
 
