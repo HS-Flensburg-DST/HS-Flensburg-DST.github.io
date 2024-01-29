@@ -350,11 +350,8 @@ viele Gegenstände es sich handelt.
 ``` elm
 items : Int -> String
 items quantity =
-    if quantity == 0 then
-        "Kein Gegenstand"
-
-    else if quantity == 1 then
-        "Ein Gegenstand"
+    if quantity == 1 then
+        "1 Gegenstand"
 
     else
         String.fromInt quantity ++ " Gegenstände"
@@ -387,6 +384,25 @@ In diesem Beispiel greift wieder die Regeln, dass Funktionsanwendungen -- auch F
 Daher steht der Ausdruck `String.fromInt quantity ++ " Gegenstände"` für den Ausdruck `(String.fromInt quantity) ++ " Gegenstände"`.
 Das heißt, wir hängen das Ergebnis des Aufrufs `String.fromInt quantity` vorne an den String `" Gegenstände"`.
 
+Um komplexere Programme zu konstruieren, folgt man in Elm --- wie in allen Programmiersprachen --- Bauprinzipien.
+Zum Beispiel können im `then`- und im `else`-Zweig eines `if`-Ausdrucks wieder Ausdrücke stehen.
+Da ein `if`-Ausdruck selbst ein Ausdruck ist, können wir auf diese Weise Mehrfachfallunterscheidungen umsetzen.
+Wir betrachten zum Beispiel die folgende Variante der Funktion `items`.
+
+``` elm
+items : Int -> String
+items quantity =
+    if quantity == 0 then
+        "Keine Gegenstände"
+
+    else if quantity == 1 then
+        "1 Gegenstand"
+
+    else
+        String.fromInt quantity ++ " Gegenstände"
+```
+
+
 
 ### Fallunterscheidungen
 
@@ -400,10 +416,10 @@ items : Int -> String
 items quantity =
     case quantity of
         0 ->
-            "Kein Gegenstand"
+            "Keine Gegenstände"
 
         1 ->
-            "Ein Gegenstand"
+            "1 Gegenstand"
 
         _ ->
             String.fromInt quantity ++ " Gegenstände"
@@ -432,10 +448,10 @@ items : Int -> String
 items quantity =
     case quantity + 1 of
         1 ->
-            "Kein Gegenstand"
+            "Keine Gegenstände"
 
         2 ->
-            "Ein Gegenstand"
+            "1 Gegenstand"
 
         _ ->
             String.fromInt quantity ++ " Gegenstände"
@@ -443,6 +459,9 @@ items quantity =
 
 Diese Funktion verhält sich genau so, wie die zuvor definierte Funktion.
 Wir werden später Anwendungsfälle kennenlernen, bei denen es sinnvoll ist, eine Fallunterscheidung über einen komplexen Ausdruck durchzuführen.
+
+{% include callout.html content="Wenn man in einer Anwendung eine Fallunterscheidung über eine Zahl durchführen möchte, sollte man in den meisten Fällen statt eines `case`-Ausdrucks geschachtelte `if`-Ausdrücke nutzen. Häufig möchte man bei der Verzweigung über eine Zahl nicht nur feste Zahlen behandeln, sondern Fälle wie \"ist negativ\". Solche Fälle lassen sich in einem `case`-Ausdruck nicht darstellen." %}
+
 
 
 ### Mehrstellige Funktionen
@@ -452,9 +471,13 @@ Um eine mehrstellige Funktion zu definieren, werden die Parameter der Funktion e
 Wir können zum Beispiel wie folgt eine Funktion definieren, die den Preis eines Online-Warenkorbs beschreibt.
 
 ``` elm
-cart : Int -> Float -> String
-cart quantity price =
-    "Summe (" ++ items quantity ++ "): " ++ String.fromFloat price
+pluralize : String -> String -> Int -> String
+pluralize singular plural quantity  =
+    if quantity == 1 then
+        "1 " ++ singular
+
+    else
+        String.fromInt quantity ++ " " ++ plural
 ```
 
 Dabei sieht der Typ der Funktion auf den ersten Blick etwas ungewöhnlich aus.
@@ -462,29 +485,27 @@ Wir werden später sehen, was es mit diesem Typ auf sich hat.
 An dieser Stelle wollen wir nur festhalten, dass die Typen der Parameter bei mehrstelligen Funktionen durch einen Pfeil getrennt werden.
 Das heißt, wenn wir den Typ einer Funktion angeben, listen wir die Typen der Argumente und den Ergebnistyp auf und schreiben jeweils `->` dazwischen.
 
-Um die Funktion `cart` anzuwenden, schreiben wir ebenfalls die Argumente durch Leerzeichen getrennt hinter den Namen der Funktion.
-Das heißt, der folgende Ausdruck wendet die Funktion `cart` auf die Argumente `3` und `23.42` an.
+Um die Funktion `pluralize` anzuwenden, schreiben wir ebenfalls die Argumente durch Leerzeichen getrennt hinter den Namen der Funktion.
+Das heißt, der folgende Ausdruck wendet die Funktion `pluralize` auf die Argumente `"Gegenstand"` und `"Gegenstände"` an.
 
 ``` elm
-cart 3 23.42
+pluralize "Gegenstand" "Gegenstände" 3
 ```
 
-Wenn eines der Argumente der Funktion `cart` das Ergebnis einer anderen
-Funktion sein soll, so muss diese Funktionsanwendung mit Klammern umschlossen werden.
-So wendet der folgende Ausdruck die Funktion `cart`
-auf die Summe von `1` und `2` und das Minimum von `1.23` und `3.14` an.
+Wenn eines der Argumente der Funktion `pluralize` das Ergebnis einer anderen Funktion sein soll, so muss diese Funktionsanwendung mit Klammern umschlossen werden.
+So wendet der folgende Ausdruck die Funktion `pluralize` auf `"Gegenstand"` und `"Gegenstände"` und die Summe von `1` und `2` an.
 
 ``` elm
-cart (1 + 2) (min 1.23 3.14)
+pluralize "Gegenstand" "Gegenstände" (1 + 2)
 ```
 
 Diese Schreibweise stellt für viele Nutzer\*innen, die Programmiersprachen wie Java gewöhnt sind, häufig eine große Hürde dar.
 Im Grunde muss man sich bei der Anwendung einer Funktion an Hand der Klammern und der Leerzeichen nur überlegen, wie viele Argumente man bei einer Funktionsanwendung an eine Funktion übergibt.
 Diese Anzahl muss man dann mit der Anzahl der Parameter der Funktion vergleichen.
-Wir betrachten zum Beispiel die Anwendung `cart 1 + 2 3`.
-Nach der Leerzeichen- und Klammerregel erhält die Funktion `cart` hier vier Argumente, nämlich `1`, `+`, `2` und `3`, denn diese Argumente sind alle durch Leerzeichen getrennt und keines der Argumente ist von Klammern umschlossen.
-Die Funktion `cart` soll aber nur zwei Argumente erhalten, daher fehlen an dieser Stelle Klammern.
-Wenn wir dagegen die Anwendung `cart (1 + 2) 3` betrachten, dann werden zwei Argumente an `cart` übergeben, nämlich `(1 + 2)` und `3`.
+Wir betrachten zum Beispiel die Anwendung `pluralize "Gegenstand" "Gegenstände" 1 + 2`.
+Nach der Leerzeichen- und Klammerregel erhält die Funktion `pluralize` hier vier Argumente, nämlich `"Gegenstand"`, `"Gegenstände"`, `1` und `2`, denn diese Argumente sind alle durch Leerzeichen getrennt und keines der Argumente ist von Klammern umschlossen.
+Die Funktion `pluralize` soll aber nur zwei Argumente erhalten, daher fehlen an dieser Stelle Klammern.
+Wenn wir dagegen die Anwendung `pluralize "Gegenstand" "Gegenstände" (1 + 2)` betrachten, dann werden drei Argumente an `pluralize` übergeben, nämlich `"Gegenstand"`, `"Gegenstände"` und `(1 + 2)`.
 
 
 Weitere Datentypen

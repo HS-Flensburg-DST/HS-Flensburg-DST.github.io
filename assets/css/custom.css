@@ -174,3 +174,28 @@ img.centered {
     margin-left: 25px;
     margin-right: 25px;
 }
+
+.callout {
+    padding-left: 15px;
+    margin: 20px 0;
+    border: 0px solid;
+    border-left-width: 5px;
+    border-left-color: #e30613;
+}
+
+.callout-title {
+    font-weight: bold;
+    /* color: #e30613; */
+    float: left;
+    margin-right: 10px;
+}
+
+/*
+#2c2f88
+#6b3e91
+#a35494
+#d35378
+#ec6707
+#e30613
+#aaddf9
+*/
