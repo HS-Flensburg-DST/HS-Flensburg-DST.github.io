@@ -190,12 +190,65 @@ img.centered {
     margin-right: 10px;
 }
 
-/*
-#2c2f88
-#6b3e91
-#a35494
-#d35378
-#ec6707
-#e30613
-#aaddf9
-*/
+
+.info {}
+
+
+/* Colors */
+a {
+    color: #6b3e91;
+}
+
+a:visited {
+    color: #2c2f88;
+}
+
+/* Colors of code blocks */
+code {
+    background-color: color-mix(in srgb, #aaddf9 20%, white);
+}
+
+pre,
+code {
+    border: 1px solid color-mix(in srgb, #aaddf9 60%, white);
+}
+
+.highlighter-rouge .highlight {
+    background-color: color-mix(in srgb, #aaddf9 20%, white);
+}
+
+.highlight .kt {
+    color: #2c2f88;
+}
+
+.highlight .s2 {
+    color: #e30613;
+}
+
+.highlight .sc {
+    color: #ec6707;
+}
+
+.highlight .mi {
+    color: #d35378;
+}
+
+.highlight .mf {
+    color: #a35494;
+}
+
+.highlight .na {
+    color: #6b3e91;
+}
+
+.highlight .nb {
+    color: #6b3e91;
+}
+
+.highlight .c1 {
+    color: color-mix(in srgb, #2c2f88 50%, white);
+}
+
+.highlight .cm {
+    color: color-mix(in srgb, #2c2f88 50%, white);
+}
