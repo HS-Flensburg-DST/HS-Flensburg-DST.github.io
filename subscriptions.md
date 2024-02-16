@@ -546,21 +546,40 @@ Die Funktion
 onKeyDown : Decoder msg -> Sub msg
 ```
 
-aus dem Modul `Browser.Events` erlaubt es uns, auf *KeyDown*-Ereignisse zu reagieren.
+aus dem Modul `Browser.Events` erlaubt es uns, auf _KeyDown_-Ereignisse zu reagieren.
 Der `Decoder`, den wir übergeben, wandelt die JSON-Struktur, die bei einem Tastendruck geliefert wird, in einen Elm-Wert um.
-Wir definieren zum Beispiel den folgenden Decoder.
+Zur Modellierung der Tastendrücke als Elm-Wert definieren wir den folgenden Aufzählungstyp.
 
-``` elm
-type Msg
-    = Key Key
-
-
+```elm
 type Key
     = Up
     | Down
     | Unknown
+```
 
+Wir wollen in unserer Anwendung Pfeiltasten _Up_ und _Down_ verarbeiten, daher enthält der Datentyp `Key` die Konstruktoren `Up` und `Down`.
+Da wir von Elm über alle Tastendrücke informiert werden, also auch über Tastendrücke, die für die Anwendung irrelevant sind, fügen wir einen Fall `Unknown` hinzu, den wir für sonstige Tastendrücke nutzen werden.
 
+{% include callout-important.html content="Ein Datentyp wie `Key` sollte die tatsächlich gedrückten Tasten modellieren und nicht deren Semantik.
+Die Semantik der Tastendrücke sollte erst in der `update`-Funktion interpretiert werden." %}
+
+Die Konstruktoren `Up` und `Down` beschreiben zum Beispiel nur, welche Tasten gedrückt wurden.
+Welche Aktion diese Tasten auslösen, werden wir erst in der `update`-Funktion implementieren.
+Alternativ könnten wir auch den folgenden Datentyp definieren, der bereits eine Semantik in den Namen der Konstruktoren kodiert.
+
+```elm
+type Key
+    = Increase
+    | Decrease
+    | Unknown
+```
+
+Diese Definition ist aber schlechter Stil, da wir an dieser Stelle unnötigerweise die Taste mit ihrer Interpretation koppeln.
+
+Um die Funktion `onKeyDown` nutzen zu können, müssen wir einen `Decoder` definieren.
+Wir definieren den folgenden `Decoder`, der abhängig davon, welchen `String` das Feld mit dem Namen `"key"`[^2] enthält, einen Wert vom Typ `Key`.
+
+``` elm
 keyDecoder : Decoder Key
 keyDecoder =
     let
@@ -578,9 +597,16 @@ keyDecoder =
     Decode.map toKey (Decode.field "key" Decode.string)
 ```
 
-Dieser `Decoder` liefert abhängig davon, welchen `String` das Feld mit dem Namen `"key"`[^2] enthält, einen Wert vom Typ `Key`.
 Diesen `Decoder` können wir nun nutzen, um in unserer Anwendung auf Tastendrücke zu lauschen.
-Hierzu nutzen wir die folgende Definition unserer Anwendung.
+Wir werden mit hoher Wahrscheinlichkeit neben den Tastendrücken später noch weitere Nachrichten in unserer Anwendung verarbeiten.
+Daher definieren wir einen Nachrichtentyp, der als eine Ausprägung einen Tastendruck enthält.
+
+```elm
+type Msg
+    = Key Key
+```
+
+Auf Grundlagen dieses Nachrichtentyps können wir nun eine Anwendung definieren, die mithilfe von Tastendrücken einen Zähler hoch- bzw. runterzählt.
 
 ``` elm
 type alias Model =
@@ -618,6 +644,26 @@ main =
 ```
 
 Die `view`-Funktion stellt einfach den Zähler als Text in einer HTML-Struktur dar.
+
+Wir wollen an dieser Stelle noch kurz eine alternative, aber schlechtere Strukturierung des Datentyps `Msg` diskutieren.
+Wir hätten auch den folgenden flachen Nachrichtentyp definieren können.
+
+```elm
+type Msg
+    = Increase
+    | Decrease
+    | Unknown
+```
+
+Wenn wir später weitere Nachrichten zu unserer Anwendung hinzufügen wollen, fügen wir dann einfach weitere Konstruktoren zum Datentyp `Msg` hinzu.
+
+{% include callout-important.html content="Die Verwendung eines solchen flachen Nachrichtentyps hat mehrere Nachteile und sollte vermieden werden." %}
+
+Zuerst einmal müsste die Funktion `keyDecoder` nun den Typ `Decoder Msg` erhalten.
+Das heißt, wir verlieren die statische Information, dass der `keyDecoder` auch wirklich nur einen `Key` liefert.
+Solche statische Informationen sind aber für eine wartbare Codebasis unerlässlich.
+Durch diesen alternativen `Msg`-Datentyp verlieren wir auch die Möglichkeit eine Funktion wie `updateKey` aus der Definition von `update` herauszuziehen.
+Wir werden diese Aspekte der Strukturierung einer Anwendung noch einmal gesammelt im Kapitel [Strukturierung einer Anwendung](structure.md) diskutieren.
 
 [^1]: Dieses Modul wird hier mittels `import Json.Decode as Decode exposing (Decoder)` importiert.
 
