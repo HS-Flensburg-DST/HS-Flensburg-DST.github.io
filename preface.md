@@ -45,6 +45,14 @@ Neben den rein funktionalen Programmiersprachen, gibt es aber noch eine ganze Re
 Zu diesen Sprachen gehören etwa [Clojure](https://en.wikipedia.org/wiki/Clojure), [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)), [Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language)) und [F#]().
 Außerdem gibt es Hybridsprachen, welche die Ideen der funktionalen und der objektorientierten Sprachen kombinieren, etwa [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)) und [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)).
 
+Während zu den funktionalen Programmiersprachen eine ganze Reihe von **dynamisch getypten Sprachen** wie [Clojure](https://en.wikipedia.org/wiki/Clojure), [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)) und [Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language)) gehören, sind die rein funktionalen Sprachen ausschließlich **statisch getypt** und weisen vergleichsweise **ausdrucksstarke Typsysteme** auf.
+Statisch getypt bedeutet dabei, dass die Prüfung der Typkorrektheit eines Programms zur Kompilierzeit stattfindet.
+Im Gegensatz dazu wird die Typkorrektheit bei einem dynamischen Typsystem erst zur Laufzeit des Programms überprüft.
+Aus den rein funktionalen Sprachen stammen viele Konzepte, um **statische Garantien** für Eigenschaften von Programmen zu erhalten.
+Wir werden uns in dieser Vorlesung daher auch immer wieder damit beschäftigen, wie wir statische Garantien über unsere Programme erhalten können.
+Statische Garantien bedeuten dabei, dass ein erfolgreich kompilierendes Programm unter Garantie bestimmte Eigenschaften aufweist.
+Zum Beispiel erhalten wir in einer statisch getypten Programmiersprache nie einen Typfehler zur Laufzeit, wenn das Programm erfolgreich kompiliert werden kann.[^1]
+
 Neben diesen grundlegenden Ideen der funktionalen Programmierung, die es erlauben, deklarativ Software zu entwickeln, werden wir außerdem deklarative Technologien kennenlernen, die sich recht direkt auch im Kontext von imperativen oder objekt-orientierten Programmiersprachen umsetzen lassen.
 Diese Technologien basieren zum Teil auch auf Konzepten, die früher nur in funktionalen Programmiersprachen zu finden waren, inzwischen aber auch Einzug in alle anderen Formen von Programmiersprachen gehalten haben, wie **Funktionen höherer Ordnung** bzw. **funktionale Argumente**.
 Im Wesentlichen basieren diese Technologien immer auf einer gewissen Form von Abstraktion.
@@ -76,6 +84,8 @@ Stattdessen wird nur zu jedem Zeitpunkt beschrieben, wie das HTML-Dokument aktue
 
 Zu guter Letzt sei hier noch erwähnt, dass Elm in JavaScript übersetzt wird.
 Wir können aus einer Elm-Anwendung entweder eine HTML-Seite inklusive JavaScript-Code erzeugen oder JavaScript-Code, den wir dann in eine bestehende Seite einbinden können.
+
+[^1]: Diese Eigenschaft wird häufig durch das Zitat "Well-typed programs cannot 'go wrong'." von [Robin Milner](https://en.wikipedia.org/wiki/Robin_Milner) zusammengefasst.
 
 <div class="nav">
     <ul class="nav-row">
