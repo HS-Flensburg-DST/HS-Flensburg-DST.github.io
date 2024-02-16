@@ -14,8 +14,9 @@ In dieser Vorlesung wollen wir uns **deklarative Technologien der Softwareentwic
 **Deklarativ** bedeutet dabei, dass man die Lösung für ein Problem beschreibt.
 Im Bereich der Programmiersprachen unterscheidet man zum Beispiel zwischen deklarativen und imperativen Programmiersprachen.
 In den **deklarativen Sprachen** wird eher beschrieben, wie die Lösung eines Problems aussieht, während in den imperativen Sprachen eher Schritt für Schritt erläutert wird, wie die Lösung berechnet wird.
-Dadurch liegt bei den imperativen Programmiersprachen mehr Verantwortung bei Entwickler\*innen, was diesen mehr Freiheiten gibt.
-Im Gegensatz dazu liegt die Verantwortung bei den deklarativen Sprachen eher beim Compiler und Entwickler\*innen haben weniger Freiheiten.
+Dadurch liegt bei den imperativen Programmiersprachen mehr Verantwortung bei den Entwickler\*innen.
+Gleichzeitig haben die Entwickler\*innen bei einer imperativen Programmiersprache aber auch mehr Freiheiten, da weniger Aufgaben vom Compiler übernommen werden.
+Im Gegensatz dazu liegt die Verantwortung bei den deklarativen Sprachen eher beim Compiler und die Entwickler\*innen haben weniger Freiheiten.
 
 Der Hauptvertreter der deklarativen Sprachen sind **funktionale Programmiersprachen**.
 Daher werden wir in dieser Vorlesung auch eine funktionale Programmiersprache einsetzen.
@@ -26,7 +27,7 @@ Zum einen lernen wir deklarative Technologien kennen, die durch eine funktionale
 Ein imperatives Programm wird zum Beispiel ausgeführt, indem die Anweisungen des Programms Schritt für Schritt ausgeführt werden.
 Im Gegensatz dazu gibt es in funktionalen Programmen gar keine Anweisungen.
 In funktionalen Sprachen entspricht die Ausführung eines Programms der Auswertung eines Ausdrucks und nicht der Abarbeitung von Anweisungen wie in imperativen Sprachen.
-Das heißt, die Reihenfolge, in der etwas ausgerechnet wird, wird nicht durch Entwickler\*innen bestimmt, sondern ist durch die Programmiersprache festgelegt.
+Das heißt, die Reihenfolge, in der etwas ausgerechnet wird, wird nicht durch die Entwickler\*innen bestimmt, sondern ist durch die Programmiersprache festgelegt.
 Auch in imperativen Programmiersprachen erhält man wartbareren Code, wenn der Code möglichst unabhängig von der Reihenfolge der Auswertung ist.
 Andersherum ausgedrückt, kann Code, dessen Verhalten sehr stark von der Reihenfolge der Ausführung abhängt, sehr schwer verständlich sein.
 
@@ -37,7 +38,9 @@ Andersherum ausgedrückt, kann Code, dessen Verhalten sehr stark von der Reihenf
 
 Die Programmiersprache [**Elm**](https://elm-lang.org) ist eine **rein funktionale Programmiersprache**.
 Das heißt, die Ausführung eines Programms ist immer die Auswertung eines Ausdrucks.
-Neben Elm gibt es eigentlich nur noch eine etwas verbreitetere rein funktionale Programmiersprache, nämlich [Haskell](https://en.wikipedia.org/wiki/Haskell).
+Neben Elm gibt es eigentlich nur noch eine weitere rein funktionale Programmiersprache, die etwas verbreiteter ist, nämlich [Haskell](https://en.wikipedia.org/wiki/Haskell).
+Die anderen rein funktionalen Programmiersprachen, die es gibt, wie [Coq](https://en.wikipedia.org/wiki/Coq_(software)) oder [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), sind zwar schon vergleichsweise alt, ihre noch fortgeschritteneren Programmierkonzepte haben aber bisher noch keinen Einzug in Mainstream-Sprachen gefunden.
+
 Neben den rein funktionalen Programmiersprachen, gibt es aber noch eine ganze Reihe von Programmiersprachen, die grundlegend funktional sind, aber auch einzelne Sprachfeatures zur Verfügung stellen, die auf der Abarbeitung von Anweisungen basieren.
 Zu diesen Sprachen gehören etwa [Clojure](https://en.wikipedia.org/wiki/Clojure), [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)), [Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language)) und [F#]().
 Außerdem gibt es Hybridsprachen, welche die Ideen der funktionalen und der objektorientierten Sprachen kombinieren, etwa [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)) und [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)).
@@ -48,13 +51,13 @@ Im Wesentlichen basieren diese Technologien immer auf einer gewissen Form von Ab
 Ein Beispiel sind etwa Faltungen.
 Faltungen werden genutzt, um wiederkehrende Muster von Schleifen zu abstrahieren.
 Die eigentliche Schleifenlogik ist dann in Form der Faltung implementiert und Entwickler\*innen nutzen die Faltung, um eine konkrete Schleife auszudrücken.
-Dadurch ist der eigentliche Code deklarativer, da die Faltung mit entsprechenden Parametern aufgerufen wird, um zu beschreiben, welche Schleife durchgeführt wird.
+Dadurch ist der eigentliche Code deklarativer, da die Faltung mit entsprechenden Parametern aufgerufen wird, um zu beschreiben, welche Schleife durchgeführt werden soll.
 Es wird aber nicht mehr die Schleife selbst Schritt für Schritt beschrieben.
 
 Bei einer Faltung besteht die Abstraktion nur aus einer einzigen Funktion bzw. Methode.
 Bei anderen deklarativen Technologien wird eine ganze Gruppe von Funktionen bzw. Methoden genutzt, die sich kombinieren lassen, um eine Lösung für ein Problem zu beschreiben.
 Im Grunde schreibt man in diesem Fall einfach eine Bibliothek, die dafür sorgt, dass man abstrakter beschreiben kann, wie ein Problem gelöst wird, da die konkreten Schritte zur Lösung durch die Bibliothek versteckt werden.
-Man spricht in diesem Kontext auch von einer _Embedded Domain-Specific Language_ (eDSL) bzw. einer **eingebetteten domänenspezifischen Sprache**.
+Man spricht in diesem Kontext auch von einer _embedded Domain-Specific Language_ (eDSL) bzw. einer **eingebetteten domänenspezifischen Sprache**.
 
 Eine **domänenspezifische Sprache** ist eine Programmiersprache, die im Gegensatz zu einer *General-Purpose Language* nicht dazu gedacht ist, beliebige Arten von Programmen darin zu schreiben.
 Stattdessen ist die Sprache für einen sehr speziellen Anwendungsfall gedacht.

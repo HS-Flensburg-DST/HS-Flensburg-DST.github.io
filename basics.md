@@ -12,7 +12,7 @@ Projekt-Setup
 
 Zur Illustration der Beispiele verwenden wir das Kommando `elm repl`.
 Das Akronym *REPL* steht für **_Read Evaluate Print Loop_** und beschreibt eine textuelle, interaktive Eingabe, in der man einfache Programme eingeben (_Read_), die Ergebnisse des Programms ausrechnen (_Evaluate_) und das Ergebnis auf der Konsole ausgeben (_Print_) kann.
-Mit dem Begriff *loop* wird dabei ausgedrückt, dass dieser Vorgang wiederholt werden kann.
+Mit dem Begriff *Loop* wird dabei ausgedrückt, dass dieser Vorgang wiederholt werden kann.
 
 Wir werden die folgenden Programme immer in eine Datei mit der Endung `elm` schreiben.
 Um die Datei als Modul in der REPL importieren zu können, müssen wir den folgenden Kopf verwenden.
@@ -26,7 +26,8 @@ Später werden wir in den Klammern explizit die Definitionen auflisten, die unse
 
 Um unser Modul in der REPL nutzen zu können, müssen wir zuerst ein Elm-Projekt anlegen.
 Zu diesem Zweck muss der Aufruf `elm init` ausgeführt werden.
-Das Kommando `elm init` legt unter anderem eine Datei `elm.json` an, die unser Paket beschreibt.
+Das Kommando `elm init` legt unter anderem eine Datei `elm.json` an, die unsere Anwendung beschreibt.
+In der `elm.json` ist zum Beispiel angegeben, dass es sich um eine Anwendung und keine Bibliothek handelt, dass die Elm-Dateien im Ordner `src` liegen und welche Pakete unsere Anwendung als Abhängigkeiten nutzt.
 
 ``` json
 {
@@ -55,9 +56,10 @@ Das Kommando `elm init` legt unter anderem eine Datei `elm.json` an, die unser P
 }
 ```
 
-Dieser Aufruf installiert Basispakete, die bei der Arbeit mit Elm zur Verfügung stehen.
+Der Aufruf `elm init` installiert Basispakete, die bei der Arbeit mit Elm zur Verfügung stehen.
 Das Paket `elm/core` stellt zum Beispiel grundlegende Datenstrukturen wie Listen und Funktionen darauf zur Verfügung und `elm/html` stellt Kombinatoren zur Verfügung, um HTML-Seiten zu erzeugen.
-Unter <https://package.elm-lang.org> kann man die Dokumentationen zu diesen Paketen und vielen anderen einsehen.
+
+{% include callout-important.html content="Unter <https://package.elm-lang.org> kann man die Dokumentationen zu den Elm-Paketen `elm/core`, `elm/html` und vielen anderen einsehen." %}
 
 Wir legen die Datei mit unserem Modul im `src`-Verzeichnis ab, das `elm init` erstellt hat.
 Wir können dann das Modul laden, indem wir `import Test exposing (..)` in der REPL eingeben.
@@ -85,7 +87,12 @@ secretNumber =
     42
 ```
 
-Dabei gibt die erste Zeile den Typ der Variable an, in diesem Fall also ein Integer und die zweite Zeile ordnet der Variable einen Wert zu.
+Dabei gibt die erste Zeile den Typ der Variable an, in diesem Fall also ein Integer und die zweite und dritte Zeile ordnen der Variable einen Wert zu.
+Wir nutzen hier um im Folgenden immer [`elm-format`](https://github.com/avh4/elm-format) um Elm-Programme zu formatieren, damit unsere Programme immer einheitlich formatiert sind.
+Dieser _Code Formatter_ sorgt dafür, dass der Wert der Variable in die nächste Zeile geschrieben wird.
+Wir erhalten aber auch ein valides Elm-Programm, wenn wir stattdessen `secretNumber = 42` schreiben.
+
+{% include callout-info.html content="In Haskell wird statt des einfachen Doppelpunktes `:` der doppelte Doppelpunkt `::` verwendet, um den Typ einer Definition anzugeben." %}
 
 In einer rein funktionalen Programmiersprache sind Variablen nicht veränderbar wie in einer imperativen Sprache, sondern sind lediglich Abkürzungen für komplexere Ausdrücke.
 In diesem Fall wird die Variable sogar nicht als Abkürzung verwendet, sondern nur, um dem Wert einen konkreten Namen zu geben und diesen an verschiedenen Stellen verwenden
@@ -107,35 +114,35 @@ Wir haben den Datentyp `Int` bereits kennengelernt.
 Daneben gibt es noch die folgenden Grunddatentypen.
 
 ``` elm
-f : Float
-f =
+float : Float
+float =
     4.567
 
 
-b1 : Bool
-b1 =
+bool1 : Bool
+bool1 =
     True
 
 
-b2 : Bool
-b2 =
+bool2 : Bool
+bool2 =
     False
 
 
-c1 : Char
-c1 =
+char1 : Char
+char1 =
     'a'
 
 
-c2 : Char
-c2 =
+char2 : Char
+char2 =
     ' '
 
 
-{-| This definition demonstrates literal strings
+{-| This comment illustrates how to attach a comment to a definition
 -}
-s : String
-s =
+string : String
+string =
     "Hello World!"
 ```
 
@@ -146,7 +153,7 @@ Diese Art von Kommentar wird einer Definition zugeordnet.
 Wenn wir Elm-Programme schreiben, werden wir das Programm [`elm-format`](https://github.com/avh4/elm-format) verwenden, um den Quellcode zu formatieren.
 Auf diese Weise ersparen wir uns das manuelle Formatieren des Quellcodes.
 Bei den Kommentaren, die wir bisher kennengelernt haben, wird durch `elm-format` eine Leerzeile zwischen Kommentar und Definition hinzugefügt.
-Da ein Doc-Kommentar sich auf eine Definition bezieht, fügt `elm-format` zwischen den Kommentar `This definition demonstrates literal strings` und die Definition von `s` keine Leerzeile ein.
+Da ein Doc-Kommentar sich auf eine Definition bezieht, fügt `elm-format` zwischen den Kommentar `This comment illustrates how to attach a comment to a definition` und die Definition von `s` keine Leerzeile ein.
 
 
 ### Arithmetische Ausdrücke
@@ -159,19 +166,19 @@ Man sagt, dass Elm den Typ inferiert und spricht von [**Typinferenz**](https://e
 Die folgenden Definitionen zeigen einige Beispiele für arithmetische Ausdrücke.
 
 ``` elm
-ex1 =
+arith1 =
     1 + 2
 
 
-ex2 =
+arith2 =
     19 - 25
 
 
-ex3 =
+arith3 =
     2.35 * 2.3
 
 
-ex4 =
+arith4 =
     2.5 / 23.2
 ```
 
@@ -179,7 +186,7 @@ Elm erlaubt es nicht, Zahlen unterschiedlicher Art zu kombinieren.
 So liefert die folgende Definition zum Beispiel einen Fehler.
 
 ``` elm
-typeError = secretNumber + f
+typeError = secretNumber + float
 ```
 
 Wir können Zahlen nur mit `+` addieren, wenn sie den gleichen Typ haben.
@@ -193,8 +200,8 @@ Um einmal zu illustrieren, dass Elm sich sehr viel Mühe bei **Fehlermeldungen**
 I need both sides of (+) to be the exact same type.
 Both Int or both Float.
 
-15|     secretNumber + f
-        ^^^^^^^^^^^^^^^
+15|     secretNumber + float
+        ^^^^^^^^^^^^^^^^^^^^
 But I see an Int on the left and a Float on the right.
 
 Use toFloat on the left (or round on the right) to make both sides match!
@@ -205,18 +212,21 @@ not implicitly convert Ints to Floats.
 
 Wir wollen uns also an den Rat halten und die Funktion `toFloat` verwenden, um den Wert vom Typ `Int` in einen Wert vom Typ `Float` umzuwandeln.
 Bisher haben wir nur gesehen, wie binäre Infixoperatoren, wie `+` und `*` verwendet werden.
-Um eine Funktion, wie `toFloat` in Elm anzuwenden, schreiben wir den Namen der Funktion, dann ein Leerzeichen und dann das Argument, auf das wir die Funktion anwenden wollen.
+
+{% include callout-important.html content="Um eine Funktion, wie `toFloat` in Elm anzuwenden, schreiben wir den Namen der Funktion, dann ein Leerzeichen und dann das Argument, auf das wir die Funktion anwenden wollen." %}
+
 Um den Wert der Variable `secretNumber` also in einen `Float` umzuwandeln, schreiben wir `toFloat secretNumber`.
 Dieser Ausdruck wendet die Funktion `toFloat` auf das Argument `secretNumber` an.
+
 Im Unterschied zu vielen anderen Programmiersprachen, wie Java, C# oder JavaScript werden in Elm die Argumente einer Funktion/Methode nicht geklammert.
 In JavaScript schreibt man zum Beispiel `toFloat(secretNumber)`, um eine Funktion `toFloat` auf ein Argument `secretNumber` anzuwenden.
-Wir werden im Kapitel [Funktionen höherer Ordnung](recursion.md) genauer lernen, welchen Hintergrund der Unterschied in der Schreibweise von **Funktionsanwendungen** hat.
+Wir werden im Kapitel [Funktionen höherer Ordnung](higher-order.md) genauer lernen, welchen Hintergrund der Unterschied in der Schreibweise von **Funktionsanwendungen** hat.
 
-Um unser konkretes Problem zu lösen und die Zahlen `secretNumber` und `f` zu addieren, können wir die folgende Definition nutzen.
+Um unser konkretes Problem zu lösen und die Zahlen `secretNumber` und `float` zu addieren, können wir die folgende Definition nutzen.
 Das Ergebnis dieser Addition ist dann wieder vom Typ `Float`, das heißt, die Variable `convert` hat den Typ `Float`.
 
 ``` elm
-convert = toFloat secretNumber + f
+convert = toFloat secretNumber + float
 ```
 
 Im Unterschied zu anderen Sprachen führt der Operator `/` nur Divisionen
@@ -229,56 +239,59 @@ Zahlen zu dividieren, muss der Operator `//` verwendet werden, der eine
 
 ### Boolesche Ausdrücke
 
-Durch Elms Typinferenz müssen wir die Typen von Definitionen zwar nicht angeben, es ist aber guter Stil, die Typen dennoch explizit anzugeben.
+{% include callout-important.html content="Durch Elms Typinferenz müssen wir die Typen von Definitionen zwar nicht angeben, es ist aber guter Stil, die Typen dennoch explizit anzugeben." %}
+
+Die Typangaben fungieren als eine Art überprüfte Dokumentation und helfen Leser\*innen, sich schneller im Code zurechzufinden.
 Daher werden wir im folgenden bei allen Definitionen immer explizit Typen angeben.
-Diese Typen helfen den Leser\*innen das Programm zu verstehen.
-Später werden wir in komplexeren Beispielen sehen, dass wir trotzdem im Vergleich zu Sprachen wie Java nur eine geringe Anzahl an Stellen mit einem Typ versehen müssen.
+Im Vergleich zu Programmiersprachen wie Java müssen wir dennoch wesentlich weniger Stellen mit Typinformationen versehen, da wir uns durch die Typinferenz wiederholende Typangaben sparen können.
 
 Elm stellt die üblichen booleschen Operatoren für Konjunktion und Disjunktion zur Verfügung.
 Die Negation eines booleschen Ausdrucks wird in Elm durch eine Funktion `not` durchgeführt.
 
 ``` elm
-ex9 : Bool
-ex9 =
+bool3 : Bool
+bool3 =
     False || True
 
 
-ex10 : Bool
-ex10 =
-    not (b1 && True)
+bool4 : Bool
+bool4 =
+    not (bool1 && True)
 ```
 
-Im Beispiel `ex10` sehen wir auch gleich eine weitere Besonderheit bei der **Funktionsanwendung** in Elm.
-Während das Argument bei der Anwendung einer Funktion auf ein Argument an sich nicht geklammert wird, müssen wir das Argument aber klammern, wenn es sich selbst um das Ergebnis einer Anwendung handelt.
-In diesem Beispiel wollen wir etwa das Ergebnis der Berechnung `b1 && True` negieren.
-Daher klammern wir den Ausdruck `b1 && True` und übergeben so das Ergebnis dieser Berechnung an die Funktion `not`.
-Wir könnten auch `(not b1) && True` schreiben.
-In diesem Fall würden wir aber das Ergebnis der Berechnung `not b1` als erstes Argument an `&&` übergeben.
+Im Beispiel `bool4` sehen wir auch gleich eine weitere Besonderheit bei der Funktionsanwendung in Elm.
+
+{% include callout-important.html content="Während das Argument bei der Anwendung einer Funktion auf ein Argument an sich nicht geklammert wird, müssen wir das Argument aber klammern, wenn es sich selbst um das Ergebnis einer Anwendung handelt." %}
+
+In diesem Beispiel wollen wir etwa das Ergebnis der Berechnung `bool1 && True` negieren.
+Daher klammern wir den Ausdruck `bool1 && True` und übergeben so das Ergebnis dieser Berechnung an die Funktion `not`.
+Wir könnten auch `(not bool1) && True` schreiben.
+In diesem Fall würden wir aber das Ergebnis der Berechnung `not bool1` als erstes Argument an `&&` übergeben.
 
 Neben den booleschen Operatoren gibt es die üblichen **Vergleichsoperatoren** `==` und `/=`, so wie `<`,
 `<=`, `>` und `>=`.
 Die Funktion `==` führt immer einen Wert-Vergleich und keinen Referenz-Vergleich durch.
 Das heißt, die Funktion `==` überprüft, ob die beiden Argumente die gleiche Struktur haben.
-Das Konzept eines Referenz-Vergleichs existiert in einer funktionalen Sprache wie Elm nicht.
+Das Konzept eines Referenz-Vergleichs existiert in einer rein funktionalen Sprache wie Elm nicht.
 
 ``` elm
-ex11 : Bool
-ex11 =
+bool5 : Bool
+bool5 =
     'a' == 'a'
 
 
-ex12 : Bool
-ex12 =
+bool6 : Bool
+bool6 =
     16 /= 3
 
 
-ex13 : Bool
-ex13 =
+bool7 : Bool
+bool7 =
     5 > 3 && 'p' <= 'q'
 
 
-ex14 : Bool
-ex14 =
+bool8 : Bool
+bool8 =
     "Elm" > "C++"
 ```
 
@@ -294,10 +307,10 @@ Wie auch in anderen Programmiersprachen üblich binden die **relationalen Operat
 Daher steht der Ausdruck `5 > 3 && 'p' <= 'q'` ohne Klammern für den Ausdruck `(5 > 3) && ('p' <= 'q')`.
 
 Wenn Code mit Operatoren mehrzeilig ist, formatiert `elm-format` den Code so, dass die Operatoren am Beginn der jeweiligen Zeile stehen.
-Das Beispiel `ex13` formatiert `elm-format` zum Beispiel wie folgt.
+Das Beispiel `bool7` formatiert `elm-format` zum Beispiel wie folgt.
 
 ```elm
-ex13 =
+bool7 =
     5
         > 3
         && 'p'
@@ -307,19 +320,20 @@ ex13 =
 Wenn ein Ausdruck mit Operatoren so lang ist, dass er in mehrere Zeile geschrieben werden sollte, können wir explizit Klammern setzen, um eine etwas lesbarere Formatierung zu erhalten.
 
 ```elm
-ex13 =
+bool7 =
     (5 > 3)
         && ('p' <= 'q')
 ```
 
-Die Präzedenz einer Funktion ist 10, das heißt, eine Funktionsanwendung bindet immer stärker als jeder Infixoperator.
+{% include callout-important.html content="Die Präzedenz einer Funktion ist 10, das heißt, eine Funktionsanwendung bindet immer stärker als jeder Infixoperator." %}
+
 Der Ausdruck `not True || False` steht daher zum Beispiel für `(not True) || False` und nicht etwa für `not (True || False)`.
 Wir werden später noch weitere Beispiele für diese Regel sehen.
 
 Neben der Bindungsstärke wird bei Operatoren noch definiert, ob diese **links- oder rechts-assoziativ** sind.
 In Elm (wie in vielen anderen Sprachen) gibt es links- und rechts-assoziative Operatoren.
 Dies gibt an, wie ein Ausdruck der Form *x* ∘ *y* ∘ *z* interpretiert wird.
-Falls der Operator ∘ linksassoziativ ist, gilt *x* ∘ *y* ∘ *z* = (*x*∘*y*) ∘ *z*, falls er rechts-assoziativ ist, gilt *x* ∘ *y* ∘ *z* = *x* ∘ (*y*∘*z*).
+Falls der Operator ∘ linksassoziativ ist, gilt *x* ∘ *y* ∘ *z* = (*x* ∘ *y*) ∘ *z*, falls er rechts-assoziativ ist, gilt *x* ∘ *y* ∘ *z* = *x* ∘ (*y* ∘ *z*).
 Das heißt, im Unterschied zur Bindungsstärke wird die Assoziativität genutzt, um auszudrücken, wie ein Ausdruck geklammert ist, wenn er mehrfach den gleichen Operator enthält.
 Im Kapitel [Funktionen höherer Ordnung](recursion.md) werden wir sehen, dass für einige Konzepte der Programmiersprache Elm, die Assoziativität eine entscheidende Rolle spielt.
 
@@ -363,8 +377,7 @@ dass die Funktion `items` einen Wert vom Typ `Int` nimmt und einen Wert
 vom Typ `String` liefert.
 Zwischen den Typ des Arguments und den Typ des Ergebnisses schreiben wir in Elm einen Pfeil.
 Der Parameter der Funktion `items` heißt
-`quantity` und die Funktion prüft, ob dieser Parameter gleich `0` ist,
-gleich `1` ist oder einen sonstigen Wert hat.
+`quantity` und die Funktion prüft, ob dieser Parameter gleich `1` ist oder einen sonstigen Wert hat.
 Mit dem Operator `++` hängt man zwei Zeichenketten hintereinander.
 Die Funktion `String.fromInt` wandelt einen Wert vom Typ `Int` in den entsprechenden `String` um.
 
@@ -428,17 +441,21 @@ items quantity =
 Die Fälle in einem `case`-Ausdruck werden von oben nach unten geprüft.
 Wenn wir zum Beispiel die Anwendung `items 0` auswerten, so passt die erste Regel und wir erhalten `"Kein Gegenstand"` als Ergebnis.
 Werten wir dagegen `items 3` aus, so passen die ersten beiden Regeln nicht.
-Die dritte Regel ist eine *Default*-Regel, die immer passt und daher nur als letzte Regel genutzt werden darf.
+Die dritte Regel mit dem Unterstrich ist eine *Default*-Regel, die immer passt und daher nur als letzte Regel genutzt werden darf.
 Das heißt, wenn wir die Anwendung `items 3` auswerten, wird anschließend der Ausdruck `String.fromInt 3 ++ " Gegenstände"` ausgewertet.
 Die Auswertung dieses Ausdrucks liefert schließlich `"3 Gegenstände"` als Ergebnis.
 
-Man bezeichnet das Prüfen eines konkreten Wertes gegen die Angabe auf der linken Seite einer `case`-Regel als _Pattern Matching_.
+Man bezeichnet das Prüfen eines konkreten Wertes gegen die Angabe auf der linken Seite einer `case`-Regel als **_Pattern Matching_**.
 Das heißt, wenn wir den Ausdruck `items 3` auswerten, führt die Funktion _Pattern Matching_ durch, da überprüft wird, welche der Regeln in der Funktion auf den Wert von `quantity` passt.
-Die Konstrukte auf der linken Seite der Regel, also in diesem Fall `0`, `1` und `_` bezeichnet man als *Pattern*, also als Muster.
+Die Konstrukte auf der linken Seite der Regel, also in diesem Fall `0`, `1` und `_` bezeichnet man als **_Pattern_**, also als **Muster**.
+Der Ausdruck, über den wir eine Fallunterscheidung durchführen -- in diesem Fall also die Variable `quantity` -- wird als **_Scrutinee_** bezeichnet.
+Dieses Wort bedeutet so viel wie "Der Geprüfte" und stammt vom Verb _scrutinize_ (genau untersuchen, genau prüfen).
 
-Wir nutzen _Pattern Matching_ auf Zahlen hier als einfaches und intuitives Beispiel.
-In vielen Fällen ist _Pattern Matching_ für eine Funktion, die einen `Int` verarbeitet, keine gute Lösung, da nicht auf negative Zahlen geprüft werden kann.
-In der Funktion `items` landen negativen Argumente zum Beispiel im dritten Fall, was nicht unbedingt gewünscht ist.
+{% include callout-important.html content="Wir nutzen _Pattern Matching_ auf Zahlen hier als einfaches und intuitives Beispiel.
+In vielen Fällen ist _Pattern Matching_ für eine Funktion, die einen `Int` verarbeitet, keine gute Lösung, da nicht auf negative Zahlen geprüft werden kann." %}
+
+In der Funktion `items` landen negative Argumente zum Beispiel im dritten Fall, was nicht unbedingt gewünscht ist.
+Daher sollte man zur Prüfung eines Wertes vom Typ `Int` einen `if`-Ausdruck nutzen.
 
 An dieser Stelle soll noch erwähnt werden, dass wir eine Fallunterscheidung nicht nur über den Wert einer Variable durchführen können, sondern über den Wert eines beliebigen Ausdrucks.
 Das heißt, wir können auch die folgende nicht sehr sinnvolle Funktion definieren.
@@ -458,17 +475,17 @@ items quantity =
 ```
 
 Diese Funktion verhält sich genau so, wie die zuvor definierte Funktion.
+Statt der Addition können wir für den _Scrutinee_ einen beliebigen Ausdruck nutzen.
+Zum Beispiel könnten wir auch eine Fallunterscheidung über das Ergebnis eines `if`-Ausdrucks durchführen.
 Wir werden später Anwendungsfälle kennenlernen, bei denen es sinnvoll ist, eine Fallunterscheidung über einen komplexen Ausdruck durchzuführen.
-
-{% include callout.html content="Wenn man in einer Anwendung eine Fallunterscheidung über eine Zahl durchführen möchte, sollte man in den meisten Fällen statt eines `case`-Ausdrucks geschachtelte `if`-Ausdrücke nutzen. Häufig möchte man bei der Verzweigung über eine Zahl nicht nur feste Zahlen behandeln, sondern Fälle wie \"ist negativ\". Solche Fälle lassen sich in einem `case`-Ausdruck nicht darstellen." %}
-
 
 
 ### Mehrstellige Funktionen
 
 Bisher haben wir nur Funktionen kennengelernt, die ein einzelnes Argument erhalten.
 Um eine mehrstellige Funktion zu definieren, werden die Parameter der Funktion einfach durch Leerzeichen getrennt aufgelistet.
-Wir können zum Beispiel wie folgt eine Funktion definieren, die den Preis eines Online-Warenkorbs beschreibt.
+Wir können zum Beispiel wie folgt eine Verallgemeinerung der Funktion `items` definieren.
+Die Funktion `pluralize` nimmt die Singular- und die Pluralform eines Wortes und eine Anzahl und verwendet je nach Anzahl die Singular- oder Pluralform.
 
 ``` elm
 pluralize : String -> String -> Int -> String
@@ -500,11 +517,13 @@ pluralize "Gegenstand" "Gegenstände" (1 + 2)
 ```
 
 Diese Schreibweise stellt für viele Nutzer\*innen, die Programmiersprachen wie Java gewöhnt sind, häufig eine große Hürde dar.
-Im Grunde muss man sich bei der Anwendung einer Funktion an Hand der Klammern und der Leerzeichen nur überlegen, wie viele Argumente man bei einer Funktionsanwendung an eine Funktion übergibt.
-Diese Anzahl muss man dann mit der Anzahl der Parameter der Funktion vergleichen.
+
+{% include callout-important.html content="Bei der Anwendung einer Funktion kann man sich anhand der Klammern und der Leerzeichen überlegen, wie viele Argumente man bei einer Funktionsanwendung an eine Funktion übergibt.
+Diese Anzahl kann man dann mit der Anzahl der Parameter der Funktion vergleichen." %}
+
 Wir betrachten zum Beispiel die Anwendung `pluralize "Gegenstand" "Gegenstände" 1 + 2`.
-Nach der Leerzeichen- und Klammerregel erhält die Funktion `pluralize` hier vier Argumente, nämlich `"Gegenstand"`, `"Gegenstände"`, `1` und `2`, denn diese Argumente sind alle durch Leerzeichen getrennt und keines der Argumente ist von Klammern umschlossen.
-Die Funktion `pluralize` soll aber nur zwei Argumente erhalten, daher fehlen an dieser Stelle Klammern.
+Nach der Leerzeichen- und Klammerregel erhält die Funktion `pluralize` hier fünf Argumente, nämlich `"Gegenstand"`, `"Gegenstände"`, `1`, `+` und `2`, denn diese Argumente sind alle durch Leerzeichen getrennt und keines der Argumente ist von Klammern umschlossen.
+Die Funktion `pluralize` soll aber nur drei Argumente erhalten, daher fehlen an dieser Stelle Klammern.
 Wenn wir dagegen die Anwendung `pluralize "Gegenstand" "Gegenstände" (1 + 2)` betrachten, dann werden drei Argumente an `pluralize` übergeben, nämlich `"Gegenstand"`, `"Gegenstände"` und `(1 + 2)`.
 
 
@@ -513,7 +532,7 @@ Weitere Datentypen
 
 In diesem Abschnitt wollen wir die Verwendung einiger einfacher Datentypen vorstellen, die wir zur Implementierung unserer ersten Anwendung benötigen.
 
-### Typ-Synonyme
+### Typsynonyme
 
 In Elm kann ein neuer Typ eingeführt werden, indem ein neuer Name für einen bereits bestehenden Typ definiert wird.
 Der folgende Code führt zum Beispiel den Namen `Width` als Synonym für den Typ `Int` ein.
@@ -524,12 +543,16 @@ type alias Width =
     Int
 ```
 
+{% include callout-info.html content="In Haskell wird statt der Schlüsselwörter `type alias` nur das Schlüsselwort `type` verwendet, um ein Typsynonym zu definieren." %}
+
 Ein Typsynonym wird verwendet, um einem komplexen Typ einen kürzeren Namen zu geben.
 Wir werden diesen Effekt sehen, wenn wir Recordtypen kennenlernen.
-Ein Typsynonym wie `Width` ist eigentlich schlechter Programmierstil, da wir ein Typsysnonym für einen einfachen Typ einführen.
+
+{% include callout-important.html content="Ein Typsynonym wie `Width` ist eigentlich schlechter Programmierstil, da wir ein Typsynonym für einen einfachen Typ einführen.
+Wir werden zu Anfang aus didaktischen Gründen diese Form eines Typsynonyms nutzen, später dann aber darauf verzichten." %}
+
 Bei dieser Modellierung können wir weiterhin jeden Wert vom Typ `Int` als `Width` verwenden, auch wenn es sich gar nicht um eine Breite handelt.
 Wir werden später sehen, wie wir diese Fehlnutzung besser verhindern können.
-Wir werden zu Anfang aus didaktischen Gründen diese Form eines Typsynonyms nutzen, später dann aber darauf verzichten.
 
 
 ### Aufzählungstypen
@@ -545,8 +568,10 @@ type Key
     | Down
 ```
 
+{% include callout-info.html content="In Haskell wird statt des Schlüsselwortes `type` das Schlüsselwort `data` verwendet, um einen Aufzählungstyp zu definieren." %}
+
 Wir können für den Datentyp `Key` Funktionen mithilfe von _Pattern Matching_ definieren.
-Bei den einzelnen Werten des Typs spricht man auch von Konstruktoren.
+Bei den einzelnen Werten des Typs spricht man auch von **Konstruktoren**.
 Das heißt, `Left` und `Up` sind zum Beispiel Konstruktoren des Datentyps `Key`.
 
 Die folgende Funktion verwendet _Pattern Matching_ um zu testen, ob es sich um eine der horizontalen Richtungstasten handelt.
@@ -567,14 +592,14 @@ isHorizontal key =
 
 Der **Unterstrich** ist ein _Default_-Fall, der für alle Konstruktoren von `Key` passt.
 Das heißt, der Fall mit dem Unterstrich (_Underscore Pattern_) passt für alle möglichen Fälle, die `key` noch annehmen kann.
-Im Fall der Funktion `isHorizontal` wird der Unterstrich-Fall zum Beispiel verwendet, wenn `key` den Wert `Up` oder den Wert `Down` hat.
+Im Fall der Funktion `isHorizontal` wird der Unterstrichfall zum Beispiel verwendet, wenn `key` den Wert `Up` oder den Wert `Down` hat.
 
 Wir können diese Funktion auch definieren, indem wir im _Pattern Matching_ alle Konstruktoren aufzählen und auf den Unterstrich verzichten.
-Das heißt, die folgende Funktion `isHorizontalAll` verhält sich genau so wie die Funktion `isHorizontal`.
+Das heißt, die folgende Funktion `isHorizontalComplete` verhält sich genau so wie die Funktion `isHorizontal`.
 
 ``` elm
-isHorizontalAll : Key -> Bool
-isHorizontalAll key =
+isHorizontalComplete : Key -> Bool
+isHorizontalComplete key =
     case key of
         Left ->
             True
@@ -591,13 +616,14 @@ isHorizontalAll key =
 
 Die Verwendung des Unterstrichs ist zwar praktisch, sollte aber mit Bedacht eingesetzt werden.
 Wenn wir einen weiteren Konstruktor zum Datentyp `Key` hinzufügen, würde die Funktion `isHorizontal` zum Beispiel weiterhin funktionieren.
-Bei der Definition `isHorizontalAll` erhalten wir vom Elm-Compiler dagegen in diesem Fall einen Fehler, da einer der Fälle nicht abgedeckt ist.
+Bei der Definition `isHorizontalComplete` erhalten wir vom Elm-Compiler dagegen in diesem Fall einen Fehler, da einer der Fälle nicht abgedeckt ist.
 Das heißt, wir erhalten einen Fehler zur Kompilierzeit, also bevor der Nutzer die Anwendung verwendet.
 Es ist besser, wenn der Compiler einen Fehler liefert, da sich sonst, ohne dass wir es bemerken, Fehler in der Anwendung einschleichen können, die schwer zu finden sind.
-Daher sollte man ein Unterstrich\-_Pattern_ nur verwenden, wenn man damit viele Fälle abdecken kann und somit den Code stark vereinfacht.
-Ein Beispiel wäre etwa die Funktion `items`, die wir mithilfe von _Pattern Matching_ definiert haben.
-In dieser Funktion müssen wir einen Unterstrich verwenden, da es zu
-viele mögliche Werte des Typs `Int` gibt, um sie alle explizit aufzuzählen.
+
+{% include callout-important.html content="Man sollte ein Unterstrich\-_Pattern_ nur verwenden, wenn man damit viele Fälle abdecken kann und somit den Code stark vereinfacht." %}
+
+Ein Beispiel ist etwa die Funktion `items`, die wir mithilfe von _Pattern Matching_ definiert haben.
+In dieser Funktion müssen wir einen Unterstrich verwenden, da es zu viele mögliche Werte des Typs `Int` gibt, um sie alle explizit aufzuzählen.
 Im Fall von `isHorizontal` sparen wir durch den Unterstrich aber nur eine einzige Regel.
 In solchen Fällen sollte man auf den Unterstrich verzichten und lieber alle Fälle explizit auflisten.
 
@@ -622,7 +648,7 @@ toString key =
 
 ### Records
 
-Da Elm als JavaScript-Ersatz gedacht ist, unterstützt es auch Record-Typen.
+Da Elm als JavaScript-Ersatz gedacht ist, unterstützt es auch Recordtypen.
 Wir können zum Beispiel eine Funktion, die für einen Nutzer testet, ob er volljährig ist, wie folgt definieren.
 
 ``` elm
@@ -637,7 +663,7 @@ Der Ausdruck `user.age` ist eine Kurzform für `.age user`, das heißt, `.age` i
 Das heißt, hinter dem Ausdruck `user.age` steht eigentlich auch nur eine Funktionsanwendung, nur dass es eine etwas vereinfachte Syntax für diesen Aufruf gibt, die näher an der Syntax ist, die wir aus anderen Sprachen gewohnt sind.
 
 Es ist recht umständlich, den Typ des Nutzers in einem Programm bei jeder Funktion explizit anzugeben.
-Um unser Beispiel leserlicher zu gestalten, können wir das folgende Typsynonym für unseren Record-Typ einführen.
+Um unser Beispiel leserlicher zu gestalten, können wir das folgende Typsynonym für unseren Recordtyp einführen.
 
 ``` elm
 type alias User =
@@ -651,7 +677,7 @@ hasFullAge user =
     user.age >= 18
 ```
 
-Das heißt, wir führen den Namen `User` als Kurzschreibweise für einen Record ein und nutzen diesen Typ dann an allen Stellen, an denen wir zuvor den ausführlichen Record-Typ genutzt hätten.
+Das heißt, wir führen den Namen `User` als Kurzschreibweise für einen Record ein und nutzen diesen Typ dann an allen Stellen, an denen wir zuvor den ausführlichen Recordtyp genutzt hätten.
 
 Es gibt eine spezielle Syntax, um initial einen Record zu erzeugen.
 
@@ -671,13 +697,14 @@ maturing user =
     { user | age = 18 }
 ```
 
-Da Elm eine rein funktionale Programmiersprache ist, wird hier der Record nicht wirklich abgeändert, sondern ein neuer Record mit anderen Werten erstellt.
+{% include callout-important.html content="Da Elm eine rein funktionale Programmiersprache ist, wird hier der Record nicht wirklich abgeändert, sondern ein neuer Record mit anderen Werten erstellt." %}
+
 Das heißt, die Funktion `maturing` erstellt einen neuen Record, dessen Einträge `firstName` und `lastName` die gleichen Werte haben wie die entsprechenden Einträge von `user` und dessen Eintrag `age` auf `18` gesetzt ist.
 Dieses Beispiel demonstriert eine sehr einfache Form von deklarativer Programmierung.
 In einem sehr imperativen Ansatz, müssten wir den Code, um den neuen Record zu erzeugen und die Felder `firstName` und `lastName` zu kopieren, explizit schreiben.
 In einem deklarativeren Ansatz verwenden wir stattdessen eine spezielle Syntax oder eine vordefinierte Funktion, um das gleiche Ziel zu erreichen.
 
-Wir können das Verändern eines Record-Eintrags und das Lesen eines Eintrags natürlich auch kombinieren.
+Wir können das Verändern eines Recordeintrags und das Lesen eines Eintrags natürlich auch kombinieren.
 Wir können zum Beispiel die folgende Definition verwenden, um einen Benutzer altern zu lassen.
 
 ``` elm
@@ -695,7 +722,7 @@ japanese user =
 ```
 
 Zu guter Letzt können wir auch _Pattern Matching_ verwenden, um auf die Felder eines Records zuzugreifen.
-Zu diesem Zweck müssen wir die Variablen im _Pattern_ nennen wie die Felder des entsprechenden Record-Typs.
+Zu diesem Zweck müssen wir die Variablen im _Pattern_ nennen wie die Felder des entsprechenden Recordtyps.
 
 ``` elm
 fullName : User -> String
@@ -754,7 +781,7 @@ rotate { angle, point } =
 Wir können diese Implementierung aber noch in einem weiteren Aspekt verbessern.
 Aktuell arbeitet unsere Anwendung mit Werten vom Typ `String`.
 Das heißt, wir können auch `"a"` als Winkel an die Funktion `rotate` übergeben und müssen dann erst observieren, dass die Anwendung nicht das gewünschte Ergebnis anzeigt.
-Um eine offensichtlich falsche Verwendung wie diese zu verhindern, können wir statt des Typs `String` einen Datentyp mit mehr Information nutzen.
+Um eine offensichtlich falsche Verwendung wie diese zu verhindern, können wir statt des Typs `String` einen Datentyp mit mehr Struktur nutzen.
 
 ```elm
 type alias Point =
@@ -773,7 +800,7 @@ rotate { angle, point } =
 ```
 
 Wenn wir nun versuchen würden, den `String` `"a"` als Winkel an die Funktion `rotate` zu übergeben, würden wir direkt beim Übersetzen des Codes einen Fehler vom Compiler erhalten.
-Grundsätzlich sind Fehler zur _Compile Time_ besser als Fehler zur _Run Time_, da Fehler zur _Compile Time_ nicht bei Kund\*innen auftreten können.
+Grundsätzlich sind Fehler zur Kompilierzeit (_Compile Time_) besser als Fehler zur Laufzeit (_Run Time_), da Fehler zur Kompilierzeit nicht bei Kund\*innen auftreten können.
 
 
 ### Listen
@@ -782,6 +809,8 @@ Elm stellt einen vordefinierten Datentyp für Listen zur Verfügung.
 Wir werden hier die Details dieses Datentyps erst einmal ignorieren und uns vor allem damit beschäftigen, wie man eine Liste konstruiert.
 Der Datentyp heißt `List` und erhält nach einem Leerzeichen den Typ der Elemente in der Liste.
 Das heißt, wir nutzen den Typ `List Int` für eine Liste von Zahlen.
+
+{% include callout-info.html content="In Haskell nutzt der Listendatentyp eine spezielle Syntax und statt `List Int` schreiben wir `[Int]`." %}
 
 Listen werden in Elm mit eckigen Klammern konstruiert und die Elemente der Liste werden durch Kommata getrennt.
 Das heißt, die folgende Definition enthält eine konstante Liste, welche die ersten fünf ganzen Zahlen enthält.
@@ -795,6 +824,9 @@ list =
 Eine leere Liste stellt man einfach durch zwei eckige Klammern dar, also als `[]`.
 Der Infixoperator `::` hängt vorne an eine Liste ein zusätzliches Element an.
 Das heißt, der Ausdruck `1 :: [ 2, 3 ]` liefert die Liste `[ 1, 2, 3 ]`.
+
+{% include callout-info.html content="In Haskell wird statt des doppelten Doppelpunktes `::` der einfache Doppelpunkt `:` für die Konstruktion einer Liste verwendet." %}
+
 Der Infixoperator `++` hängt zwei Listen hintereinander.
 Das heißt, der Ausdruck `[ 1, 2 ] ++ [ 3, 4 ]` liefert die Liste `[ 1, 2, 3, 4 ]`.
 Dabei ist immer zu beachten, dass in einer funktionalen Programmiersprache Datenstrukturen nicht verändert werden.
