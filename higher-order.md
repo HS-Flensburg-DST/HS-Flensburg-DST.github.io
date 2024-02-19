@@ -253,6 +253,9 @@ Im Fall von `viewUsers` verwerfen wir zum Beispiel einige der Komponenten, was i
 Im Unterschied zur Definition mithilfe einer Lambda-Funktion, können wir der Funktion `viewUser` bei der Verwendung eines `let`-Ausdrucks einen Namen geben, der Entwickler\*innen ggf. hilft, den Code zu verstehen.
 Im Allgemeinen verwendet man meistens eine Lambda-Funktion, solange die Funktion recht einfach ist und nutzt einen `let`-Ausdruck sobald die Funktion etwas komplizierter wird.
 
+{% include callout-info.html content="In Elm ist es im Gegensatz zu Haskell nicht möglich, Infixoperatoren partiell zu applizieren.
+Das heißt, während man in Haskell mit dem Ausdruck `(1 +)` eine Funktion definiert, die ein Argument nimmt und dieses Argument um eins erhöht, ist dies in Elm nicht möglich." %}
+
 
 Funktionskomposition
 --------------------
