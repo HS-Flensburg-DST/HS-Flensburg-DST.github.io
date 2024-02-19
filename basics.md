@@ -416,7 +416,6 @@ items quantity =
 ```
 
 
-
 ### Fallunterscheidungen
 
 In Elm können Funktionen mittels `case`-Ausdruck (Fallunterscheidung) definiert werden.
@@ -478,6 +477,31 @@ Diese Funktion verhält sich genau so, wie die zuvor definierte Funktion.
 Statt der Addition können wir für den _Scrutinee_ einen beliebigen Ausdruck nutzen.
 Zum Beispiel könnten wir auch eine Fallunterscheidung über das Ergebnis eines `if`-Ausdrucks durchführen.
 Wir werden später Anwendungsfälle kennenlernen, bei denen es sinnvoll ist, eine Fallunterscheidung über einen komplexen Ausdruck durchzuführen.
+
+Wenn man eine Programmiersprache lernt, sieht man häufig nur bestimmte Formen von Beispielen.
+Die meisten Beispiele für `case`-Ausdrücke in Elm haben etwa eine Variable als _Scrutinee_.
+Um wirklich zu verstehen, welche Formen von Programmen erlaubt sind, reichen daher einzelne Beispielprogramme nicht aus.
+Um ein tieferes Verständnis für den Aufbau von Programmen zu erhalten, kann es daher hilfreich sein, sich eine Grammatik für die Sprache anzuschauen.
+Im Folgenden ist ein Auszug aus einer Grammatik für Elm in [_Extended Backus-Naur form_](https://en.wikipedia.org/wiki/Extended_Backus–Naur_form) angegeben.
+
+```elm
+expression = literal ;
+           | identifier ;
+           | expression expression ;
+           | "(" expression ")" ;
+           | expression operator expression ;
+           | "if" expression "then" expression "else" expression ;
+           | "case" expression "of" "{" pattern "->" expression { pattern "->" expression } "}" ;
+           | "let" declarations "in" expression ;
+           | "(" expression "," expression { "," expression } ")", ;
+           | "[" [ expression { "," expression } ] "]" ;
+           | "{" [ field_expression, { "," field_expression } ] "}" ;
+           | ...
+```
+
+Man kann an dieser Grammatik erkennen, dass die _Scrutinee_ des `case`-Ausdrucks eine `expression` ist.
+Außerdem kann man andeutungsweise erkennen, was in Elm ein Ausdruck ist, nämlich ein Literal, ein Bezeichner, eine Funktionsanwendung, ein geklammerter Ausdruck, die Anwendung eines Operators, ein `if`-Ausdruck, ein `case`-Ausdruck etc.
+Das heißt, all diese Konstrukte können als _Scrutinee_ verwendet werden.
 
 
 ### Mehrstellige Funktionen
@@ -627,23 +651,65 @@ In dieser Funktion müssen wir einen Unterstrich verwenden, da es zu viele mögl
 Im Fall von `isHorizontal` sparen wir durch den Unterstrich aber nur eine einzige Regel.
 In solchen Fällen sollte man auf den Unterstrich verzichten und lieber alle Fälle explizit auflisten.
 
-Als weiteres Beispiel für _Pattern Matching_ führt die folgende Funktion vollständiges _Pattern Matching_ durch und liefert zu einer Richtung eine entsprechende Zeichenkette zurück.
+Als weiteres Beispiel für _Pattern Matching_ betrachten wir einen Datentyp für Monate, der im Elm-Paket [elm-time](https://package.elm-lang.org/packages/elm/time/latest) verwendet wird.
 
-``` elm
-toString : Key -> String
-toString key =
-    case key of
-        Left ->
-            "Left"
+```elm
+type Month
+    = Jan
+    | Feb
+    | Mar
+    | Apr
+    | May
+    | Jun
+    | Jul
+    | Aug
+    | Sep
+    | Oct
+    | Nov
+    | Dec
+```
 
-        Right ->
-            "Right"
+Wenn wir mit dem Paket [elm-time](https://package.elm-lang.org/packages/elm/time/latest) arbeiten, können wir wie folgt eine Funktion definieren, die für einen Monat einen für deutsche Nutzer\*innen lesbaren Namen liefert.
 
-        Up ->
-            "Up"
+```elm
+monthToString : Month -> String
+monthToString month =
+    case month of
+        Jan ->
+            "Januar"
 
-        Down ->
-            "Down"
+        Feb ->
+            "Februar"
+
+        Mar ->
+            "März"
+
+        Apr ->
+            "April"
+
+        May ->
+            "Mai"
+
+        Jun ->
+            "Juni"
+
+        Jul ->
+            "Juli"
+
+        Aug ->
+            "August"
+
+        Sep ->
+            "September"
+
+        Oct ->
+            "Oktober"
+
+        Nov ->
+            "November"
+
+        Dec ->
+            "Dezember"
 ```
 
 ### Records
@@ -831,6 +897,27 @@ Der Infixoperator `++` hängt zwei Listen hintereinander.
 Das heißt, der Ausdruck `[ 1, 2 ] ++ [ 3, 4 ]` liefert die Liste `[ 1, 2, 3, 4 ]`.
 Dabei ist immer zu beachten, dass in einer funktionalen Programmiersprache Datenstrukturen nicht verändert werden.
 Das heißt, der Operator `::` liefert eine neue Liste und verändert nicht etwa sein Argument.
+
+Listen können häufig genutzt werden, um repetitiven Code besser zu strukturieren.
+Als Beispiel betrachten wir die Verwendung der Funktion `String.concat : [String] -> String`.
+Diese Funktion erhält eine Liste von `String`s und hängt diese alle aneinander.
+Wir können diese Funktion zum Beispiel wie folgt nutzen, um die Definition von `rotate` erweiterbarer zu gestalten.
+
+```elm
+rotate : { angle : Float, point : Point } -> String
+rotate { angle, point } =
+    String.concat
+        [ "rotate("
+        , String.fromFloat angle
+        , ","
+        , String.fromFloat point.x
+        , ","
+        , String.fromFloat point.y
+        , ")"
+        ]
+```
+
+
 
 <div class="nav">
     <ul class="nav-row">

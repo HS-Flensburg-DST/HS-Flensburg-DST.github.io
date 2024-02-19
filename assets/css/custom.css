@@ -182,13 +182,13 @@ a:visited {
 }
 
 /* Colors of code blocks */
-code {
+pre {
     background-color: color-mix(in srgb, #aaddf9 20%, white);
+    border: 1px solid color-mix(in srgb, #aaddf9 60%, white);
 }
 
-pre,
 code {
-    border: 1px solid color-mix(in srgb, #aaddf9 60%, white);
+    background-color: color-mix(in srgb, #aaddf9 20%, white);
 }
 
 .highlighter-rouge .highlight {
