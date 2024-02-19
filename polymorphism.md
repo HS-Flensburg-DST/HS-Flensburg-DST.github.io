@@ -98,7 +98,40 @@ Daher wissen wir durch das Typsystem, an welchen Stellen eine Art von "Null-Refe
 Null-Referenzen sind in der Programmierung ein Problem, da sie für viele Laufzeitfehler und damit für Schaden in der Industrie sorgen.
 Der Erfinder der Null-Referenz, Tony Hoare[^3], bezeichnet die Erfindung der Null-Referenz als seinen Milliarden-Dollar-Fehler[^4], da Null-Referenzen die Industrie vermutlich bereits mehrere Milliarden Dollar gekostet haben.
 
-Häufig möchten wir im Fehlerfall noch einen Grund für das Fehlschlagen der Operation zur Verfügung stellen.
+Als weiteres Beispiel für die Verwendung des `Maybe`-Datentyps wollen wir uns noch einmal die Funktion `rotate` anschauen, die wir im Kapitel [Records](basics.md#records) definiert haben.
+Wenn wir uns die Spezifikation dieser Eigenschaft unter <https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform#rotate> anschauen, können wir sehen, dass die Angabe des Punktes optional ist.
+Daher können wir unsere Definition wie folgt erweitern.
+
+```elm
+type alias Point =
+    { x : Float, y : Float }
+
+
+rotate : { angle : Float, maybePoint : Maybe Point } -> String
+rotate { angle, maybePoint } =
+    String.concat
+        [ "rotate("
+        , String.fromFloat angle
+        , case maybePoint of
+            Nothing ->
+                ""
+
+            Just point ->
+                String.concat
+                    [ ","
+                    , String.fromFloat point.x
+                    , ","
+                    , String.fromFloat point.y
+                    ]
+        , ")"
+        ]
+```
+
+Dieses Beispiel illustriert, dass ähnlich wie bei der Null-Referenz der Datentyp `Maybe` verwendet wird, um verschiedene Arten von fehlenden Werten zu modellieren.
+In der Definition von `rotate` nutzen wir den `Maybe`-Datentyp zur Modellierung von optionalen Informationen.
+Im Gegensatz dazu haben wir den `Maybe`-Datentyp im Fall von `parseMonth` genutzt, um einen Fehlerfall zu modellieren.
+
+Wenn man in einer Anwendung einen Fehlerfall modelliert, möchte man häufig noch einen Grund für das Fehlschlagen der Operation zur Verfügung stellen.
 Für diesen Zweck wird der Datentyp `Result` genutzt.
 Der Datentyp `Result` ist dabei wie folgt definiert.
 
