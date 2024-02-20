@@ -428,6 +428,20 @@ Dadurch muss das erste Argument von `withDefault` ebenfalls den Typ `Int` haben.
 Der Aufruf `withDefault 1 (parseMonth "a")` ist also typkorrekt.
 Da wir für die Typvariable `a` den Typ `Int` gewählt haben, wissen wir außerdem, dass der Aufruf einen `Int` als Ergebnis liefert.
 
+In einer Typinferenz oder Typprüfung wird der Prozess, den wir hier händisch durchgeführt haben, durch einen Algorithmus durchgeführt, der [**Unifikation**](https://en.wikipedia.org/wiki/Unification_(computer_science)) genannt wird.
+Bei der Unifikation werden Gleichungen aufgestellt, die Typen gleichsetzen.
+Diese Typen enthalten zum Teil Typvariablen.
+Die Unifikation sucht nun nach einer Ersetzung der Typvariablen, so dass die Gleichungen erfüllt sind.
+Durch den Aufruf `withDefault 1 (parseMonth "a")` würden wir zum Beispiel die Gleichung `a = Int` durch das erste Argument und `Result x a = Result Error Int` durch das zweite Argument des Aufrufs erhalten.
+Aus der Gleichung `Result x a = Result Error Int` leitet der Unifikationsalgorithmus die Gleichungen `x = Error` und `a = Int` ab.
+Das heißt, wir erhalten insgesamt die Gleichungen `a = Int`, `x = Error` und `a = Int`.
+Die Unifikation liefert am Ende Ersetzungen der Typvariablen.
+Das heißt, die Gleichung `a = Int` sagt, dass wir die Typvariable `a` durch den Typ `Int` ersetzen müssen, damit unser Funktionsaufruf typkorrekt ist.
+Um zu überprüfen, ob die berechnete Substitution Widersprüche enthält, werden die Ersetzungen bei der Unifikation direkt angewendet.
+In unserem Beispiel würden wir zum Beispiel die Ersetzung `a = Int` auf die Gleichungen `a = Int` und `x = Error` anwenden.
+Wir erhalten dadurch die Gleichungen `Int = Int` und `x = Error`.
+Diese Gleichungen enthalten keinen Widerspruch, die Unifikation war also erfolgreich.
+
 Wenn wir den Aufruf `withDefault False (parseMonth "a")` in der REPL ausführen, erhalten wir dagegen einen Fehler.
 
 ```
@@ -453,11 +467,22 @@ Hint: Elm does not have "truthiness" such that ints and strings and lists are
 automatically converted to booleans. Do that conversion explicitly!
 ```
 
+Um zu illustrieren, warum dieser Aufruf einen Typfehler liefert, wenden wir eine Unifikation auf den Funktionsaufruf an.
+Durch den Aufruf `withDefault False (parseMonth "a")` erhalten wir die Gleichung `a = Bool` durch das erste Argument und `Result x a = Result Error Int` durch das zweite Argument des Aufrufs.
+Aus der Gleichung `Result x a = Result Error Int` leitet der Unifikationsalgorithmus die Gleichungen `x = Error` und `a = Int` ab.
+Das heißt, wir erhalten insgesamt die Gleichungen `a = Bool`, `x = Error` und `a = Int`.
+Wir wenden nur die Ersetzung `a = Int` auf die Gleichungen `a = Bool` und `x = Error` an und erhalten `Bool = Int` und `x = Error`.
+Diese Gleichungen enthalten einen Widerspruch, da die Typen `Bool` und `Int` niemals gleich sein können.
+Daher liefert uns die Unifikation in diesem Fall einen Fehler.
+
 Wenn wir eine polymorphe Funktion verwenden, wählen wir für die Typvariablen konkrete Typen.
 Wir müssen aber für die gleiche Typvariable immer die gleiche Wahl treffen.
 Das heißt, die drei Vorkommen von `a` in der Signatur von `withDefault` müssen alle durch den gleichen konkreten Typ ersetzt werden.
 Wenn wir die Funktion `withDefault` auf die Argumente `False` und `parseMonth "a"` anwenden, würden wir das erste `a` aber durch `Bool` und das zweite `a` durch `Int` ersetzen.
-Dies ist nicht erlaubt und wir erhalten einen Fehler. Die Fehlermeldung schlägt vor, dass wir für beide Vorkommen den Typ `Bool` wählen und erwartet daher als zweites Argument einen Wert vom Typ `Result Error Bool`.
+Dies ist nicht erlaubt und wir erhalten einen Fehler.
+Die Fehlermeldung schlägt vor, dass wir für beide Vorkommen den Typ `Bool` wählen und erwartet daher als zweites Argument einen Wert vom Typ `Result Error Bool`.
+Alternativ könnte die Fehlermeldung auch vorschlagen, dass wir für beide Vorkommen den Typ `Int` wählen.
+Dieses Beispiel illustriert bereits, dass es schwierig ist, für Typfehler bei polymorphen Funktionen gute Fehlermeldungen zu liefern, da es mehrere Möglichkeiten gibt, das Problem zu beheben.
 
 Da die vordefinierten Listen in Elm polymorph sind, können wir auch Funktionen definieren, die auf allen Arten von Listen arbeiten, unabhängig davon, welchen Typ die Elemente der Liste haben.
 Wir schauen uns einmal die Längenfunktion auf Listen an, die wie folgt definiert ist.
