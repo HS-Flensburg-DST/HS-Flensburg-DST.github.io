@@ -273,11 +273,11 @@ Die Anwendung wird für den Zähler später die API anfragen, um zu prüfen, ob 
 
 ``` elm
 type Msg
-    = Counter Change
-    | Response (Result Http.Error IsEven)
+    = Clicked Button
+    | Received (Result Http.Error IsEven)
 
 
-type Change
+type Button
     = Increase
     | Decrease
 ```
@@ -341,20 +341,20 @@ Wenn eine der Aktionen `Increase` und `Decrease` durchgeführt wird, wird eine n
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Counter change ->
-            let newCounter = updateCounter model.number change
+        Clicked button ->
+            let newCounter = updateCounter model.number button
             in
             ( { model | number = newCounter, data = Loading }
             , isEvenCmd newCounter )
 
-        Response result ->
+        Received result ->
             ( { model | data = Data.fromResult result }
             , Cmd.none )
 
 
-updateCounter : Int -> Change -> Int
-updateCounter counter change =
-    case change of
+updateCounter : Int -> Button -> Int
+updateCounter counter button =
+    case button of
         Decrease ->
             counter - 1
 
@@ -370,9 +370,9 @@ view : Model -> Html Msg
 view model =
     div []
         [ div []
-            [ button [ onClick (Counter Decrease) ] [ text "-" ]
+            [ button [ onClick (Clicked Decrease) ] [ text "-" ]
             , text (String.fromInt model.number)
-            , button [ onClick (Counter Increase) ] [ text "+" ]
+            , button [ onClick (Clicked Increase) ] [ text "+" ]
             ]
         , viewData model.data
         ]
