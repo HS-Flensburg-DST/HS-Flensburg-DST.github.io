@@ -293,12 +293,35 @@ isEvenDecoder =
 ```
 
 Mithilfe des Konstruktors `Response` des Datentyps `Msg` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
+Statt die URL stringbasiert zusammenzusetzen, nutzen wir die Funktionen aus dem Paket `elm/url`.
+Daher installieren wir dieses Paket zunächst mittels `elm install elm/url`.
+Wir importieren dann das Modul `Url.Builder`.
+Dieses Modul stellt eine Funktion `crossOrigin : String -> List String -> List QueryParameter -> String` zur Verfügung.
+Mit dieser Funktion können wir eine URL bauen.
+Das erste Argument der Funktion `crossOrigin` ist die Basis-URL der Anfrage.
+Um solche Informationen zu speichern, legen wir ein Modul `Env` an.
+In diesem Modul können wir später zum Beispiel auch Informationen wie API-Schlüssel hinterlegen.
+Wir fügen dieses Modul nicht zur Versionskontrolle hinzu.
+Auf diese Weise können wir später auf dem Produktiv-Server andere Daten für diese Komponenten verwenden als in unserer Entwicklungsumgebung.
+Als weiteren Benefit erhalten wir durch die Nutzung eines Elm-Moduls einen Fehler vom Compiler, wenn die Datei nicht existiert.
+Das heißt, es kann nicht passieren, dass unsere Anwendung abstürzt, da die entsprechende Konfigurationsdatei fehlt.
+
+```elm
+module Env exposing (baseURL)
+
+
+baseURL : String
+baseURL =
+    "https://api.isevenapi.xyz"
+```
+
+In unserer Anwendung können wir nun wie folgt eine URL für unsere Anfrage konstruieren.
 
 ``` elm
 isEvenCmd : Int -> Cmd Msg
 isEvenCmd no =
     Http.get
-        { url = "https://api.isevenapi.xyz/api/iseven/" ++ String.fromInt no
+        { url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt no ] []
         , expect = Http.expectJson Response isEvenDecoder
         }
 ```
