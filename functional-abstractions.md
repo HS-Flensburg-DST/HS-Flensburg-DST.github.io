@@ -394,6 +394,51 @@ Der `let`-Ausdruck liefert einen Wert vom Typ `Int`.
 Daher können wir den `let`-Ausdruck mit der Zahl `23` multiplizieren.
 Wir müssen hier den `let`-Ausdruck klammern, da andernfalls der Wert der Variable `x` mit `23` multipliziert wird.
 
+Wenn man einen `let`-Ausdruck nutzt, sollte man darauf achten, dass Berechnungen nicht unnötig durchgeführt werden.
+Wir betrachten etwa das folgende Beispiel
+
+```elm
+unnecessaryCalculation : Bool -> Int
+unnecessaryCalculation decision =
+    let
+        result =
+            expensiveCalculation
+    in
+    if decision then
+        42
+
+    else
+        result
+```
+
+Der Ausdruck `expensiveCalculation` wird immer berechnet, auch wenn die Variable `decision` den Wert `False` hat.
+Falls die Variable `decision` den Wert `False` hat, benötigen wir den Wert von `result` aber gar nicht.
+Daher sollte man _Scope_ eines `let`-Ausdrucks so klein halten, wie möglich.
+Im Beispiel `unnecessaryCalculation` ist die Variable `result` zum Beispiel im gesamten `if`-Ausdruck sichtbar.
+Wir benötigen die Variable `result` aber nur im `else`-Fall des `if`-Ausdrucks.
+Daher können wir den `let`-Ausdruck in den `else`-Fall des `if`-Ausdrucks ziehen.
+Wir erhalten dann die folgende Definition.
+
+```elm
+noUnnecessaryCalculation : Bool -> Int
+noUnnecessaryCalculation decision =
+    if decision then
+        42
+
+    else
+        let
+            result =
+                expensiveCalculation
+        in
+        result
+```
+
+In diesem artifiziellen Beispiel stellt sich nun allerdings die Frage, warum wir überhaupt die Variable `result` mithilfe eines `let`-Ausdrucks definieren.
+Davon abgesehen kann ein entsprechendes Problem auch in einer imperativen Programmiersprache observiert werden, wenn wir eine Variable definieren, obwohl sie gar nicht in allen Fällen benötigt wird.
+Auch in diesem Fall können wir den _Scope_ der Variable verkleinern, um dieses Problem zu beheben.
+
+{% include callout-info.html content="In Haskell tritt dieses Problem nicht auf, da Haskell eine nicht-strikte Auswertung nutzt und daher den Wert von `result` erst berechnet, wenn er benötigt wird. Elm nutzt dagegen eine strikte Auswertung wie viele andere Programmiersprachen." %}
+
 Wenn eine Funktion wie `viewUser` nur in der Anwendung der Funktion `map` oder `filter` verwendet wird, nutzt man gern wie folgt eine lokale Definition.
 
 ``` elm
