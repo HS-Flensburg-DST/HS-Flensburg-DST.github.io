@@ -105,6 +105,10 @@ custom_css: toc
 
 - 11.2. [HTTP-Anfragen](commands.md#http-anfragen)
 
+    - 11.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
+
+    - 11.2.2. [Weitere Aspekte](commands.md#weitere-aspekte)
+
 ### 12. [Strukturierung einer Anwendung](structure.md)
 
 - 12.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)

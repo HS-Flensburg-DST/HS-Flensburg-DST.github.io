@@ -208,6 +208,9 @@ Um eine HTTP-Anfrage zu senden, müssen wir zunächst mit dem folgenden Kommando
 elm install elm/http
 ```
 
+
+### Grundlegendes Beispiel
+
 Wir wollen eine einfache Anwendung entwickeln, die eine bestehende API anfragt.
 Die Route <a href="https://api.isevenapi.xyz/api/iseven/{number}" class="uri">https://api.isevenapi.xyz/api/iseven/{number}</a>[^1] liefert für jede Zahl `number`, ob die Zahl gerade ist.
 Für die Zahl `3` erhalten wir als Ergebnis zum Beispiel das folgende JSON-Objekt.
@@ -273,11 +276,11 @@ Die Anwendung wird für den Zähler später die API anfragen, um zu prüfen, ob 
 
 ``` elm
 type Msg
-    = Clicked Button
+    = Counter Orientation
     | Received (Result Http.Error IsEven)
 
 
-type Button
+type Orientation
     = Increase
     | Decrease
 ```
@@ -292,8 +295,8 @@ isEvenDecoder =
         (Decode.field "ad" Decode.string)
 ```
 
-Mithilfe des Konstruktors `Response` des Datentyps `Msg` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
-Statt die URL stringbasiert zusammenzusetzen, nutzen wir die Funktionen aus dem Paket `elm/url`.
+Mithilfe des Konstruktors `Received` des Datentyps `Msg` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
+Statt die URL string-basiert zusammenzusetzen, nutzen wir die Funktionen aus dem Paket `elm/url`.
 Daher installieren wir dieses Paket zunächst mittels `elm install elm/url`.
 Wir importieren dann das Modul `Url.Builder`.
 Dieses Modul stellt eine Funktion `crossOrigin : String -> List String -> List QueryParameter -> String` zur Verfügung.
@@ -322,7 +325,7 @@ isEvenCmd : Int -> Cmd Msg
 isEvenCmd no =
     Http.get
         { url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt no ] []
-        , expect = Http.expectJson Response isEvenDecoder
+        , expect = Http.expectJson Received isEvenDecoder
         }
 ```
 
@@ -364,8 +367,8 @@ Wenn eine der Aktionen `Increase` und `Decrease` durchgeführt wird, wird eine n
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Clicked button ->
-            let newCounter = updateCounter model.number button
+        Counter orientation ->
+            let newCounter = updateCounter orientation model.number
             in
             ( { model | number = newCounter, data = Loading }
             , isEvenCmd newCounter )
@@ -375,9 +378,9 @@ update msg model =
             , Cmd.none )
 
 
-updateCounter : Int -> Button -> Int
-updateCounter counter button =
-    case button of
+updateCounter : Orientation -> Int -> Int
+updateCounter orientation counter =
+    case orientation of
         Decrease ->
             counter - 1
 
@@ -393,9 +396,9 @@ view : Model -> Html Msg
 view model =
     div []
         [ div []
-            [ button [ onClick (Clicked Decrease) ] [ text "-" ]
+            [ button [ onClick (Counter Decrease) ] [ text "-" ]
             , text (String.fromInt model.number)
-            , button [ onClick (Clicked Increase) ] [ text "+" ]
+            , button [ onClick (Counter Increase) ] [ text "+" ]
             ]
         , viewData model.data
         ]
@@ -426,6 +429,114 @@ main =
 
 Die Funktion `viewData` nutzt einfachheitshalber hier die Funktion `Debug.toString`.
 Diese Funktion kann einen beliebigen Elm-Wert in einen `String` umwandeln und ist eigentlich nur zum Debugging einer Anwendung gedacht.
+
+
+### Weitere Aspekte
+
+In diesem Abschnitt wollen wir noch ein paar Aspekte diskutieren, die über eine erste Verwendung einer HTTP-Anfrage hinausgehen.
+Die Funktion `get` in der Bibliothek `elm/http` ist wie folgt implementiert.
+
+```elm
+get : { url : String, expect : Expect msg } -> Cmd msg
+get r =
+  request
+    { method = "GET"
+    , headers = []
+    , url = r.url
+    , body = emptyBody
+    , expect = r.expect
+    , timeout = Nothing
+    , tracker = Nothing
+    }
+```
+
+Das heißt, `get` ruft eine allgemeinere Funktion `request` auf, die weitere Informationen erhält.
+Der Funktion `request` können wir zum Beispiel noch _Request Header_ übergeben.
+Wir wollen an dieser Stelle das Feld `timeout` näher betrachten.
+Der Wert `Nothing` besagt, dass wir keinen _Timeout_ für die Anfrage setzen wollen.
+Das heißt, wir sind grundsätzlich bereit, beliebig lange auf das Ergebnis der Anfrage zu warten.
+In vielen Fällen sind wir das aber nicht.
+Zum einen kann eine Anfrage, die nicht beantwortet wird, die gesamte Anwendung lahmlegen, da der Zustandsautomat der Elm-Anwendung nicht in den nächsten Zustand wechseln kann.
+Außerdem bekommen Nutzer\*innen schnell den Eindruck, dass die Anwendung nicht mehr korrekt funktioniert, wenn im Hintergrund auf das Ergebnis einer Anfrage gewartet wird und ansonsten nichts weiter passiert.
+Daher ist es in den allermeisten Fällen besser, einen _Timeout_ zu setzen.
+Das Feld `timeout` erwartet einen Wert vom Typ `Maybe Float`, bei dem wir die Zeit in Millisekunden angeben, bis die Anfrage abgebrochen wird.
+
+Wir ersetzen daher unser Kommando durch die folgende Definition.
+
+``` elm
+isEvenCmd : Int -> Cmd Msg
+isEvenCmd no =
+    Http.request
+        { method = "GET"
+        , headers = []
+        , url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt no ] []
+        , body = Http.emptyBody
+        , expect = Http.expectJson Received isEvenDecoder
+        , timeout = Just 5000
+        , tracker = Nothing
+        }
+```
+
+Das heißt, unsere Anfrage wird spätestens nach 5 Sekunden beendet.
+Die Funktionalität unserer gesamten Anwendung basiert auf der Anfrage.
+Daher stellen wir Nutzer\*innen die Möglichkeit zur Verfügung, die Anfrage zu wiederholen, indem wir einen entsprechenden Knopf anzeigen.
+Da der Datentyp `Error`, den wir von einer fehlschlagenden Anfrage zurückerhalten, einfach ein algebraischer Datentyp ist, können wir den Fall, dass ein _Timeout_ aufgetreten ist, wie folgt gesondert behandeln.
+
+```elm
+viewData : Data IsEvenInfo -> Html msg
+viewData data =
+    case data of
+        Loading ->
+            text "Loading ..."
+
+        Success info ->
+            viewIsEvenInfo info
+
+        Failure Timeout ->
+            div []
+                [ text "The request did not finish in time."
+                , button [ onClick TryAgain ] [ text "Try again" ]
+                ]
+
+        Failure error ->
+            text ("The following error occurred:\n" ++ Debug.toString error)
+```
+
+Wenn die Anfrage mit einem _Timeout_ fehlschlägt, bieten wir Nutzer\*innen an, die Anfrage zu wiederholen.
+Um die Anfrage zu wiederholen, müssen wir noch den entsprechenden Fall zum Datentyp `Msg` hinzufügen und in der `update`-Funktion behandeln.
+
+``` elm
+type Msg
+    = Counter Orientation
+    | Received (Result Http.Error IsEven)
+    | TryAgain
+
+
+type Orientation
+    = Increase
+    | Decrease
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Counter orientation ->
+            let newCounter = updateCounter orientation model.number
+            in
+            ( { model | number = newCounter, data = Loading }
+            , isEvenCmd newCounter )
+
+        Received result ->
+            ( { model | data = Data.fromResult result }
+            , Cmd.none )
+
+        TryAgain ->
+            ( model
+            , isEvenCmd model.number )
+```
+
+Wenn wir die Nachricht `TryAgain` erhalten, behalten wir das bestehende Modell bei und führen noch einmal die Anfrage mit der aktuellen Zahl durch.
+
 
 [^1]: <https://github.com/public-apis/public-apis#science--math>
 
