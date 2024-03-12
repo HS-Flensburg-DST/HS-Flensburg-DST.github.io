@@ -15,6 +15,8 @@ Auf dieser Seite werden einige der Programmierregeln erläutert, die durch den L
 
     2. [RemoveCodeDuplication](#removecodeduplication)
 
+    3. [NoUnnecessaryReconstruction](#nounnecessaryreconstruction)
+
 <br/>
 
 ## Name einer Regel
@@ -114,3 +116,43 @@ heatMapColor value =
 ```
 
 In dieser Implementierung ist sofort ersichtlich, dass nur die Farbe des Quadrates vom Zahlenwert abhängt, die Form der Graphik sich aber nie ändert.
+
+
+### NoUnnecessaryReconstruction
+
+Diese Regel identifiziert Fälle in Elm, in denen ein Wert unnötigerweise zerlegt und anschließend wieder identisch zusammengebaut wird.
+Wir betrachten die folgende nicht sehr sinnvolle Funktion.
+
+```elm
+padLeftOne : Char -> List Char -> List Char
+padLeftOne newChar list =
+    case list of
+        [] ->
+            [ newChar ]
+
+        char :: chars ->
+            char :: chars
+```
+
+Wir führen _Pattern Matching_ auf der Variable `list` durch und Zerlegen den Wert im Fall von `::` in die Komponenten `char` und `chars`.
+Anschließend wird durch den Ausdruck `char :: chars` eine Liste konstruiert.
+Diese neue Liste ist identisch zur Liste, die wir zuvor zerlegt haben.
+Das heißt, wir zerlegen durch das _Pattern Matching_ den Wert, der in der Variable `list` steht zuerst in seine Einzelteile, nur um ihn anschließend wieder direkt identisch zu konstruieren.
+In diesem Beispiel würde die Regel `NoUnnecessaryReconstruction` feuern.
+Anstatt die Liste `char :: chars` neu zu konstruieren, können wir einfach `list` als Resultat zurückgeben.
+
+```elm
+padLeftOne : Char -> List Char -> List Char
+padLeftOne newChar list =
+    case list of
+        [] ->
+            [ newChar ]
+
+        _ :: _ ->
+            list
+```
+
+Diese Änderung spart einen Arbeitsschritt, nämlich das Konstruieren der Liste und Speicher, da für die neu konstruierte Liste Speicher benötigt wird.
+Wichtiger ist allerdings, dass der Code durch die Änderungen genauer sein Verhalten widerspiegelt.
+Die neue Definition drückt expliziter aus, dass wir im Fall der nicht-leeren Liste, die Liste belassen wie sie ist.
+Diese Information war in der Originalvariante impliziter enthalten.
