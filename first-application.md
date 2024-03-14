@@ -247,7 +247,12 @@ main =
 
 Da wir einen Zähler implementieren wollen, ist unser Zustand vom Typ `Int`.
 Initial hat unser Zustand den Wert `0`.
-Um die Nachrichten darzustellen, die Nutzer\*innen auswählen können, definieren wir einen Aufzählungstyp.
+Um die Nachrichten darzustellen, die Nutzer\*innen auswählen können, definieren wir den Aufzählungstyp `Msg`.
+
+{% include callout-important.html content="
+Es ist gute Praxis für die Benennung der Nachrichten ein Verb im Imperativ und ein Nomen zu nutzen, um zu beschreiben, welche Aktion die Nachricht auslösen soll.
+" %}
+
 Die Funktion `update` verarbeitet einen Zustand und eine Nachricht und liefert einen neuen Zustand.
 Die Funktion `view` liefert zu einem Zustand die HTML-Seite, die den Zustand repräsentiert.
 
