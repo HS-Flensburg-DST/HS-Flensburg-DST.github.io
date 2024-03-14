@@ -1,3 +1,5 @@
+{% assign cacheBust = site.time | date:'?v=%s' %}
+
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
@@ -5,9 +7,9 @@
 <meta name="msapplication-TileColor" content="#ffc40d">
 <meta name="theme-color" content="#ffffff">
 
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/custom.css">
+<link rel="stylesheet" href="{{ "/assets/css/custom.css" | relative_url | append: cacheBust }}">
 {% if page.custom_css %}
 {% for stylesheet in page.custom_css %}
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/{{ stylesheet }}.css">
+<link rel="stylesheet" href="{{ "/assets/css/" | append: stylesheet | append: ".css" | relative_url | append: cacheBust }}">
 {% endfor %}
 {% endif %}
