@@ -8,7 +8,7 @@ In diesem Kapitel werden wir eine erste Frontend-Anwendung mit Elm entwickeln.
 ## _Hallo Welt_-Anwendung
 
 Wir wollen mit einem _Hallo Welt_-Beispiel starten.
-Zu diesem Zweck schreiben wir das folgende Programm.
+Zu diesem Zweck schreiben wir den folgenden Inhalt in eine Datei `HelloWorld.elm`.
 
 ``` elm
 module HelloWorld exposing (main)
@@ -20,10 +20,21 @@ main =
     text "Hallo Welt"
 ```
 
-Das Modul `Html` stellt Funktionen zur Verfügung, um HTML-Seiten zu erzeugen.
+{% include callout-important.html content="Um unsere Anwendung zu testen, können wir den Befehl `elm reactor` verwenden, der einen lokalen Webserver startet." %}
+
+Unter der Adresse `localhost:8000` erhalten wir eine Auswahl aller Dateien, die sich in dem entsprechenden Verzeichnis befinden.
+Wenn wir die Datei auswählen, die unser `HelloWorld`-Beispiel enthält, erhalten wir die entsprechende HTML-Seite.
+Wenn wir die Seite im Browser neu laden, wird der Elm-Code neu in JavaScript-Code übersetzt und wir erhalten die aktualisierte Version der Anwendung.
+Die Eigenschaft, Änderungen eines Systems nutzen zu können, ohne das System stoppen und wieder starten zu müssen, bezeichnet man als **_Hot Reload_**.
+
+## Modulsystem
+
+Im Modul `HelloWorld` wird ein Modul `Html` importiert.
+Das Modul `Html`, stellt Funktionen zur Verfügung, um HTML-Seiten zu erzeugen.
 Die Bedeutung des Typs `Html msg`, der in der Konstante `main` verwendet wird, werden wir uns später anschauen.
 Die Funktion `text` ist im Modul `Html` definiert und nimmt einen `String` und liefert einen HTML-Textknoten.
 Unter <https://package.elm-lang.org/packages/elm/html/latest/Html> findet sich eine Beschreibung des Moduls `Html`.
+
 Wenn wir eine Definition aus dem Modul `Html` in unserem Modul verwenden wollen, müssen wir es in der Zeile `import Html exposing (Html, text)` in der Liste hinter `exposing` aufführen.
 Das heißt, statt wie zuvor `exposing (..)` zu nutzen, um alle Definitionen aus einem Modul zu importieren, listen wir hier importierte Definitionen explizit auf.
 Im obigen Beispiel importieren wir den Typ `Html` und die Funktion `text` aus dem Modul `Html`.
@@ -99,13 +110,6 @@ Bei einer Elm-Anwendung ist es guter Stil, Funktionen qualifiziert zu nutzen, al
 {% include callout-important.html content="Wenn ein Modul einen Datentyp mit identischem Namen zur Verfügung stellt, sollte man den Datentyp (samt Konstruktoren) aber unqualifiziert nutzen." %}
 
 Das heißt, wenn wir ein Modul `Color` in unserer Anwendung haben, das einen Datentyp `Color` definiert, sollten wir als Import `import Color exposing (Color(..))` nutzen.
-
-{% include callout-important.html content="Um unsere Anwendung zu testen, können wir den Befehl `elm reactor` verwenden, der einen lokalen Webserver startet." %}
-
-Unter der Adresse `localhost:8000` erhalten wir eine Auswahl aller Dateien, die sich in dem entsprechenden Verzeichnis befinden.
-Wenn wir die Datei auswählen, die unser `HelloWorld`-Beispiel enthält, erhalten wir die entsprechende HTML-Seite.
-Wenn wir die Seite im Browser neu laden, wird der Elm-Code neu in JavaScript-Code übersetzt und wir erhalten die aktualisierte Version der Anwendung.
-Die Eigenschaft, Änderungen eines Systems nutzen zu können, ohne das System stoppen und wieder starten zu müssen, bezeichnet man als **_Hot Reload_**.
 
 
 Elm-Architektur
