@@ -39,6 +39,8 @@ custom_css: toc
 
     - 2.5.4. [Listen](basics.md#listen)
 
+- 2.6. [Benennungsstil](basics.md#benennungsstil)
+
 ### 3. [Eine Erste Anwendung](first-application.md)
 
 - 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
@@ -116,6 +118,8 @@ custom_css: toc
 - 12.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
 
 - 12.3. [Modell strukturieren](structure.md#modell-strukturieren)
+
+- 12.4. [Fehlerbehandlung](structure.md#fehlerbehandlung)
 
 ### 13. [Abstraktionen](abstractions.md)
 

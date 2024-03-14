@@ -918,6 +918,31 @@ rotate { angle, point } =
 ```
 
 
+### Benennungsstil
+
+In Elm wird grundsätzlich _Caml Case_ verwendet.
+In der funktionalen Programmierung ist es nicht unüblich kurze Bezeichner für Variablen zu verwenden.
+Der folgende Code-Ausschnitt stammt zum Beispiel von der [offiziellen Seite zur Programmiersprache Haskell](https://www.haskell.org).
+
+```haskell
+primes = filterPrime [2..] where
+  filterPrime (p:xs) =
+    p : filterPrime [x | x <- xs, x `mod` p /= 0]
+```
+
+Hier werden die Variablennamen `p`, `xs` und `x` verwendet.
+Das `s` im Namen `xs` ist dabei die Pluralbildung in der englischen Sprache.
+Das heißt, eine Variable `xs` enthält normalerweise eine Datenstruktur, die mehrere `x` enthält.
+Im Fall von Haskell wird mit `xs` in den meisten Fällen eine Liste bezeichnet.
+
+Im Unterschied zu Haskell, ist im offiziellen [Elm Style Guide](https://elm-lang.org/docs/style-guide) die folgende Aussage zu finden.
+
+> **Be Descriptive.** One character abbreviations are rarely acceptable, especially not as arguments for top-level function declarations where you have no real context about what they are.
+
+Das heißt, Elm versucht explizit längere Variablennamen zu fördern.
+
+Unabhängig davon sollte man bei der Benennung die Größe des Gültigkeitsbereichs (_Scope_) einer Variable beachten.
+Das heißt, bei einer Variable, die einen sehr kleinen _Scope_ hat, kann ein Name wie `x` angemessen sein, während er es bei einer Variable mit größerem _Scope_ auf jeden Fall nicht ist.
 
 <div class="nav">
     <ul class="nav-row">

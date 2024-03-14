@@ -52,6 +52,12 @@ Daher importiert man in Elm-Anwendungen die Definitionen aus dem Modul `Html` h�
 Das heißt, wir schreiben `text` und nicht `Html.text`.
 Dagegen verwenden wir alle anderen importierten Definitionen immer qualifiziert." %}
 
+Eine ähnliche Empfehlung wird auch im offiziellen [Elm Style Guide](https://elm-lang.org/docs/style-guide) gegeben.
+
+> **Qualify variables.** Always prefer qualified names.
+> Set.union is always preferable to union.
+> In large files and in large projects, it becomes very very difficult to figure out where variables came from without this.
+
 Unter <https://package.elm-lang.org/packages/elm/core/latest/> finden sich Module, die der Elm-Compiler direkt mitbringt.
 Diese Module werden von jedem Elm-Modul implizit wie folgt importiert.
 
