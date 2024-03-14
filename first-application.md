@@ -203,17 +203,17 @@ init =
 
 
 type Msg
-    = Increase
-    | Decrease
+    = IncreaseCounter
+    | DecreaseCounter
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increase ->
+        IncreaseCounter ->
             model + 1
 
-        Decrease ->
+        DecreaseCounter ->
             model - 1
 
 
@@ -249,15 +249,15 @@ Dieses Konzept ist nicht auf die Elm-Architektur beschränkt, sondern lässt sic
 Dies gilt ganz allgemein für alle Programmiersprachen.
 
 Unserer Anwendung fehlt ein wichtiger Teil, nämlich die Möglichkeit, dass Nutzer\*innen mit der Anwendung interagieren.
-Zu diesem Zweck müssen wir nur zwei Knöpfe zu unserer Seite hinzufügen, die die Nachrichten `Increase` und `Decrease` an die Anwendung schicken.
+Zu diesem Zweck müssen wir nur zwei Knöpfe zu unserer Seite hinzufügen, die die Nachrichten `IncreaseCounter` und `DecreaseCounter` an die Anwendung schicken.
 
 ``` elm
 view : Model -> Html Msg
 view model =
     div []
         [ text (String.fromInt model)
-        , button [ onClick Increase ] [ text "+" ]
-        , button [ onClick Decrease ] [ text "-" ]
+        , button [ onClick IncreaseCounter ] [ text "+" ]
+        , button [ onClick DecreaseCounter ] [ text "-" ]
         ]
 ```
 
@@ -266,7 +266,7 @@ Wir nutzen hier einen `div`-_Tag_, um den Zähler und die beiden Knöpfe zusamme
 Wie Funktionen wie `div` genau funktionieren, werden wir in Kürze diskutieren.
 Das Modul `Html.Events` stellt die Funktion `onClick` zur Verfügung.
 Wir übergeben der Funktion die Nachricht, die wir bei einem Klick an die Anwendung schicken wollen.
-Wird der Knopf zum Erhöhen des Zählers verwendet, wird die Funktion `update` mit der Nachricht `Increase` und dem aktuellen Zustand aufgerufen.
+Wird der Knopf zum Erhöhen des Zählers verwendet, wird die Funktion `update` mit der Nachricht `IncreaseCounter` und dem aktuellen Zustand aufgerufen.
 Nach der Aktualisierung wird die Funktion `view` aufgerufen und die entsprechende HTML-Seite angezeigt.
 
 In diesem einfachen Beispiel können wir bereits den deklarativen Ansatz der Elm-Architektur erkennen.
@@ -420,10 +420,10 @@ Wir nutzen in unserer einfachen Zähleranwendung zum Beispiel die folgende Defin
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increase ->
+        IncreaseCounter ->
             Debug.log "Modell" (model + 1)
 
-        Decrease ->
+        DecreaseCounter ->
             model - 1
 ```
 
@@ -435,7 +435,7 @@ Wenn wir wiederholt auf den Knopf für das Erhöhen des Zählers drücken, erhal
     Modell: 3
 
 Da wir an `Debug.log` den Wert `model + 1` übergeben, wird in der Konsole jeweils der Wert angezeigt, den der Zähler nach der Erhöhung hat.
-Wenn wir auf den Knopf für das Verringern des Zählers drücken, erhalten wir keine Ausgabe, da der Aufruf von `Debug.log` nur ausgeführt wird, wenn die Nachricht `Increase` lautet.
+Wenn wir auf den Knopf für das Verringern des Zählers drücken, erhalten wir keine Ausgabe, da der Aufruf von `Debug.log` nur ausgeführt wird, wenn die Nachricht `IncreaseCounter` lautet.
 
 <div class="nav">
     <ul class="nav-row">

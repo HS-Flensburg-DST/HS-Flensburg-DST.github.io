@@ -66,17 +66,17 @@ init =
 
 
 type Msg
-    = Increase
-    | Decrease
+    = IncreaseCounter
+    | DecreaseCounter
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increase ->
+        IncreaseCounter ->
             model + 1
 
-        Decrease ->
+        DecreaseCounter ->
             model - 1
 
 

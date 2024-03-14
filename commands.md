@@ -53,7 +53,7 @@ Die Anwendung soll nur in der Lage sein, einen Würfel zu würfeln, daher benöt
 
 ``` elm
 type Msg
-    = Roll
+    = RollDie
 ```
 
 Mithilfe eines Knopfes können wir diese Nachricht an die Anwendung schicken.
@@ -68,7 +68,7 @@ view model =
 
               Just side ->
                   text (toString side)
-        , button [ onClick Roll ] [ text "Roll" ]
+        , button [ onClick RollDie ] [ text "Roll" ]
         ]
 ```
 
@@ -86,8 +86,8 @@ Wir benötigen also noch eine Nachricht und erweitern unseren Datentyp `Msg` wie
 
 ``` elm
 type Msg
-    = Roll
-    | Rolled Side
+    = RollDie
+    | RolledDie Side
 ```
 
 Außerdem benötigen wir einen Generator, der zufällig eine Seite liefert.
@@ -112,10 +112,10 @@ Mithilfe des Generators, der gleichverteilt Würfelseiten liefern kann, können 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Roll ->
-            ( model, Random.generate Rolled die )
+        RollDie ->
+            ( model, Random.generate RolledDie die )
 
-        Rolled side ->
+        RolledDie side ->
             ( Just side, Cmd.none )
 ```
 
@@ -276,8 +276,8 @@ Die Anwendung wird für den Zähler später die API anfragen, um zu prüfen, ob 
 
 ``` elm
 type Msg
-    = Counter Orientation
-    | Received (Result Http.Error IsEven)
+    = ChangeCounter Orientation
+    | ReceivedResponse (Result Http.Error IsEven)
 
 
 type Orientation
@@ -295,7 +295,7 @@ isEvenDecoder =
         (Decode.field "ad" Decode.string)
 ```
 
-Mithilfe des Konstruktors `Received` des Datentyps `Msg` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
+Mithilfe des Konstruktors `ReceivedResponse` des Datentyps `Msg` können wir die folgende Funktion definieren, die eine Zahl erhält und ein Kommando liefert, das eine entsprechende Anfrage stellt.
 Statt die URL string-basiert zusammenzusetzen, nutzen wir die Funktionen aus dem Paket `elm/url`.
 Daher installieren wir dieses Paket zunächst mittels `elm install elm/url`.
 Wir importieren dann das Modul `Url.Builder`.
@@ -325,7 +325,7 @@ isEvenCmd : Int -> Cmd Msg
 isEvenCmd no =
     Http.get
         { url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt no ] []
-        , expect = Http.expectJson Received isEvenDecoder
+        , expect = Http.expectJson ReceivedResponse isEvenDecoder
         }
 ```
 
@@ -367,13 +367,13 @@ Wenn eine der Aktionen `Increase` und `Decrease` durchgeführt wird, wird eine n
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Counter orientation ->
+        ChangeCounter orientation ->
             let newCounter = updateCounter orientation model.number
             in
             ( { model | number = newCounter, data = Loading }
             , isEvenCmd newCounter )
 
-        Received result ->
+        ReceivedResponse result ->
             ( { model | data = Data.fromResult result }
             , Cmd.none )
 
@@ -471,7 +471,7 @@ isEvenCmd no =
         , headers = []
         , url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt no ] []
         , body = Http.emptyBody
-        , expect = Http.expectJson Received isEvenDecoder
+        , expect = Http.expectJson ReceivedResponse isEvenDecoder
         , timeout = Just 5000
         , tracker = Nothing
         }
@@ -507,9 +507,9 @@ Um die Anfrage zu wiederholen, müssen wir noch den entsprechenden Fall zum Date
 
 ``` elm
 type Msg
-    = Counter Orientation
-    | Received (Result Http.Error IsEven)
-    | TryAgain
+    = ChangeCounter Orientation
+    | ReceivedResponse (Result Http.Error IsEven)
+    | RetryRequest
 
 
 type Orientation
@@ -520,22 +520,22 @@ type Orientation
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Counter orientation ->
+        ChangeCounter orientation ->
             let newCounter = updateCounter orientation model.number
             in
             ( { model | number = newCounter, data = Loading }
             , isEvenCmd newCounter )
 
-        Received result ->
+        ReceivedResponse result ->
             ( { model | data = Data.fromResult result }
             , Cmd.none )
 
-        TryAgain ->
+        RetryRequest ->
             ( model
             , isEvenCmd model.number )
 ```
 
-Wenn wir die Nachricht `TryAgain` erhalten, behalten wir das bestehende Modell bei und führen noch einmal die Anfrage mit der aktuellen Zahl durch.
+Wenn wir die Nachricht `RetryRequest` erhalten, behalten wir das bestehende Modell bei und führen noch einmal die Anfrage mit der aktuellen Zahl durch.
 
 
 [^1]: <https://github.com/public-apis/public-apis#science--math>

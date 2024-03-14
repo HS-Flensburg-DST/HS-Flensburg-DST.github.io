@@ -105,8 +105,9 @@ type Msg
     | RightKey
     | UpKey
     | DownKey
-    | FirstName String
-    | LastName String
+    | UnknownKey
+    | ChangeFirstName String
+    | ChangeLastName String
 ```
 
 Die Anwendung kann verschiedene Tasten verarbeiten und es gibt die Möglichkeit den Vor- und den Nachnamen zu ändern.
@@ -121,6 +122,7 @@ type Key
     | Right
     | Up
     | Down
+    | Unknown
 
 
 type Name
@@ -129,8 +131,8 @@ type Name
 
 
 type Msg
-    = Clicked Key
-    | Changed Name
+    = HandleKey Key
+    | ChangeName Name
 ```
 
 Die neue Struktur erlaubt es viel besser zu erkennen, dass die Anwendung zwei Arten von Interaktionen ermöglicht.
@@ -140,22 +142,27 @@ Außerdem können wir die neuen Datentypen nutzen, um die `update`-Funktion durc
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Clicked key ->
-            processKey key model
+        HandleKey key ->
+            moveCharacter key model
 
-        Changed name ->
-            changeName name model
+        ChangeName name ->
+            changeUserName name model
 
 
-processKey : Key -> Model -> Model
-processKey key model =
+moveCharacter : Key -> Model -> Model
+moveCharacter key model =
     ...
 
 
-changeName : Name -> Model -> Model
-changeName name model =
+changeUserName : Name -> Model -> Model
+changeUserName name model =
     ...
 ```
+
+Die Semantik der Funktion `update` ist "Verarbeite die Nachricht".
+Das heißt, durch eine Funktion wie `update` lernen wir im Grunde nichts über die Struktur der Anwendung.
+Eine Funktion wie `changeUserName` hat aber eine viel spezifischere Semantik.
+Das heißt, durch die Zerlegung der Funktion haben wir auch erreicht, dass Leser\*innen des Codes direkt sehen, dass in der Anwendung ein Name geändert werden kann.
 
 
 ## Modell strukturieren
@@ -249,25 +256,26 @@ viewFooter user highscore =
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Click key ->
-            { model | board = processKey key model.board }
+        HandleKey key ->
+            { model | board = moveCharacter key model.board }
 
-        Change name ->
-            { model | user = changeName name model.user }
+        ChangeName name ->
+            { model | user = changeUserName name model.user }
 
 
-processKey : Key -> Board -> Board
-processKey key board =
+moveCharacter : Key -> Board -> Board
+moveCharacter key board =
     ...
 
 
-changeName : Name -> User -> User
-changeName name user =
+changeUserName : Name -> User -> User
+changeUserName name user =
     ...
 ```
 
-Die Funktionen `processKey` und `changeName` arbeiten nun nur noch auf einem Teil des Modells.
+Die Funktionen `moveCharacter` und `changeUserName` arbeiten nun nur noch auf einem Teil des Modells.
 Dieser Teil des Modells kann ggf. nun auch in ein eigenes Modul ausgelagert werden, da die Logik der Funktionen häufig unabhängig von der konkreten Anwendung sind.
+Der Typ der Funktion liefert nun zusätzliche Informationen dazu, wie die Funktion funktioniert.
 
 Ein weiterer Vorteil dieser Art der Strukturierung ist, dass nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
 Da die Hilfsfunktionen jetzt nur noch auf einem Teil des Modells arbeiten, können wir jetzt in einem Fall auch mehrere Hilfsfunktionen verwenden.
@@ -279,24 +287,24 @@ update msg model =
     case ... of
         ... ->
             { model
-                | user = changeName key model.user
-                , board = processKey name model.board
+                | user = changeUserName key model.user
+                , board = moveCharacter name model.board
             }
 
         ...
 
 
-processKey : Key -> Board -> Board
-processKey key board =
+moveCharacter : Key -> Board -> Board
+moveCharacter key board =
     ...
 
 
-changeName : Name -> User -> User
-changeName name user =
+changeUserName : Name -> User -> User
+changeUserName name user =
     ...
 ```
 
-Im Unterschied zu Funktionen, die auf dem gesamten Modell arbeiten, sind die Funktionen `processKey` und `changeName` offensichtlich unabhängig voneinander, da sie auf disjunkten Teilen des Modells arbeiten.
+Im Unterschied zu Funktionen, die auf dem gesamten Modell arbeiten, sind die Funktionen `moveCharacter` und `changeUserName` offensichtlich unabhängig voneinander, da sie auf disjunkten Teilen des Modells arbeiten.
 Diese Form der Strukturierung mithilfe von Funktionen können wir nur erreichen, wenn wir den Modell-Datentyp strukturieren.
 
 
@@ -373,7 +381,7 @@ type alias Model =
 
 type Msg
     = CheckNumber
-    | Received (Result Http.Error Bool)
+    | ReceivedResponse (Result Http.Error Bool)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -383,7 +391,7 @@ update msg model =
             ( model
             , isEvenCmd model.number )
 
-        Received result ->
+        ReceivedResponse result ->
             ( { model | isEven = Result.withDefault False result }
             , Cmd.none )
 ```

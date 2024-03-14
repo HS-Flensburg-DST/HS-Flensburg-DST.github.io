@@ -102,7 +102,7 @@ type alias Model =
 
 
 type Msg =
-    Tick
+    IncreaseSeconds
 ```
 
 Mithilfe der Funktion `Time.every` definieren wir die folgende `main`-Funktion.
@@ -114,7 +114,7 @@ main : Program () Model Msg
 main =
     Browser.element
         { init = \_ -> ( Seconds.zero, Cmd.none )
-        , subscriptions = \_ -> Time.every 1000 (\_ -> Tick)
+        , subscriptions = \_ -> Time.every 1000 (\_ -> IncreaseSeconds)
         , view = view
         , update = \msg model -> ( update msg model, Cmd.none )
         }
@@ -155,14 +155,14 @@ Wir nutzen die Funktion `inc` nun wie folgt in unserer Uhr.
 
 ``` elm
 update : Msg -> Model -> Model
-update Tick model =
+update IncreaseSeconds model =
     Seconds.inc model
 ```
 
-Im Grunde könnten wir hier auch auf das Pattern Matching verzichten und einen Unterstrich verwenden, da wir wissen, dass die einzige Nachricht, die wir erhalten können, die Nachricht `Tick` ist.
+Im Grunde könnten wir hier auch auf das Pattern Matching verzichten und einen Unterstrich verwenden, da wir wissen, dass die einzige Nachricht, die wir erhalten können, die Nachricht `IncreaseSeconds` ist.
 Durch das _Pattern Matching_ gewährleisten wir aber, dass der Elm-Compiler sich beschwert, falls wir einen weiteren Konstruktor zum Typ `Msg` hinzufügen.
-Ohne das *Pattern Matching* auf `Tick` würde die Anwendung weiterhin kompilieren, wenn wir einen weiteren Konstruktor zu `Msg` hinzufügen.
-Die Anwendung würde sich aber für diese neue Nachricht genau so verhalten wie für die Nachricht `Tick`, was ggf. nicht das gewünschte Verhalten ist.
+Ohne das *Pattern Matching* auf `IncreaseSeconds` würde die Anwendung weiterhin kompilieren, wenn wir einen weiteren Konstruktor zu `Msg` hinzufügen.
+Die Anwendung würde sich aber für diese neue Nachricht genau so verhalten wie für die Nachricht `IncreaseSeconds`, was ggf. nicht das gewünschte Verhalten ist.
 
 Als nächstes wollen wir die Uhr zeichnen.
 Dazu verwenden wir die Funktion `rotate`, die wir im Abschnitt [Records](basics.md#records) definiert haben.
@@ -176,13 +176,15 @@ type alias Point =
 
 rotate : { angle : Float, point : Point } -> String
 rotate { angle, point } =
-    "rotate("
-        ++ String.fromFloat angle
-        ++ ","
-        ++ String.fromFloat point.x
-        ++ ","
-        ++ String.fromFloat point.y
-        ++ ")"
+    String.concat
+        [ "rotate("
+        , String.fromFloat angle
+        , ","
+        , String.fromFloat point.x
+        , ","
+        , String.fromFloat point.y
+        , ")"
+        ]
 ```
 
 Nun implementieren wir eine Funktion, die die aktuelle Sekundenzahl in Form einer Uhr anzeigt.
@@ -249,8 +251,8 @@ Dazu erweitern wir erst einmal wie folgt unseren Datentyp `Msg`.
 
 ``` elm
 type Msg
-    = Tick
-    | StartPause
+    = IncreaseSeconds
+    | StartPauseClock
 ```
 
 Außerdem fügen wir einen Knopf zu unserer Anwendung hinzu, um die Uhr zu starten bzw. anzuhalten.
@@ -273,7 +275,7 @@ clock seconds =
             [ clockBack center radius
             , clockHand center radius seconds
             ]
-        , button [ onClick StartPause ] [ text "Start/Pause" ]
+        , button [ onClick StartPauseClock ] [ text "Start/Pause" ]
         ]
 ```
 
@@ -292,7 +294,7 @@ Als nächstes adaptieren wir die Funktion `update` wie folgt.
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Tick ->
+        IncreaseSeconds ->
             case model of
                 Running seconds ->
                     Running (Seconds.inc seconds)
@@ -300,7 +302,7 @@ update msg model =
                 Paused _ ->
                     model
 
-        StartPause ->
+        StartPauseClock ->
             case model of
                 Running seconds ->
                     Paused seconds
@@ -334,7 +336,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     case model of
         Running _ ->
-            Time.every 1000 (\_ -> Tick)
+            Time.every 1000 (\_ -> IncreaseSeconds)
 
         Paused _ ->
             Sub.none
@@ -569,8 +571,8 @@ Alternativ könnten wir auch den folgenden Datentyp definieren, der bereits eine
 
 ```elm
 type Key
-    = Increase
-    | Decrease
+    = IncreaseCounter
+    | DecreaseCounter
     | Unknown
 ```
 
@@ -603,7 +605,7 @@ Daher definieren wir einen Nachrichtentyp, der als eine Ausprägung einen Tasten
 
 ```elm
 type Msg
-    = Key Key
+    = HandleKey Key
 ```
 
 Auf Grundlagen dieses Nachrichtentyps können wir nun eine Anwendung definieren, die mithilfe von Tastendrücken einen Zähler hoch- bzw. runterzählt.
@@ -616,7 +618,7 @@ type alias Model =
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Key key ->
+        HandleKey key ->
             updateKey key model
 
 
@@ -637,7 +639,7 @@ main : Program () Model Msg
 main =
     Browser.element
         { init = \_ -> ( 0, Cmd.none )
-        , subscriptions = \_ -> Sub.map Key (onKeyDown keyDecoder)
+        , subscriptions = \_ -> Sub.map Pressed (onKeyDown keyDecoder)
         , view = view
         , update = \msg model -> ( update msg model, Cmd.none )
         }
@@ -650,8 +652,8 @@ Wir hätten auch den folgenden flachen Nachrichtentyp definieren können.
 
 ```elm
 type Msg
-    = Increase
-    | Decrease
+    = Up
+    | Down
     | Unknown
 ```
 
@@ -661,7 +663,7 @@ Wenn wir später weitere Nachrichten zu unserer Anwendung hinzufügen wollen, f�
 
 Zuerst einmal müsste die Funktion `keyDecoder` nun den Typ `Decoder Msg` erhalten.
 Das heißt, wir verlieren die statische Information, dass der `keyDecoder` auch wirklich nur einen `Key` liefert.
-Solche statische Informationen sind aber für eine wartbare Codebasis unerlässlich.
+Solche statischen Informationen sind aber für eine wartbare Codebasis unerlässlich.
 Durch diesen alternativen `Msg`-Datentyp verlieren wir auch die Möglichkeit eine Funktion wie `updateKey` aus der Definition von `update` herauszuziehen.
 Wir werden diese Aspekte der Strukturierung einer Anwendung noch einmal gesammelt im Kapitel [Strukturierung einer Anwendung](structure.md) diskutieren.
 
