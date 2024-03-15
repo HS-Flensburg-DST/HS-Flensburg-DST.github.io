@@ -421,6 +421,13 @@ Neben der sehr einfachen Einbindung von Stilen durch die `style`-Funktion, gibt 
 Während die Argumente von `style` vom Typ `String` sind, definiert elm-css Abstraktionen, die etwa einen `Int` als Argument erwarten.
 Um diesen Aspekt der Programmierung im Rahmen der Vorlesung möglichst einfach zu halten, verwenden wir die vordefinierte `style`-Funktion und keine zusätzliche Bibliothek wie elm-css.
 
+{% include callout-important.html content="
+Zu guter Letzt soll an dieser Stelle noch erwähnt werden, dass wir den Ausdruck `text \"\"` beim Rendern der HTML-Seite nicht auftaucht.
+" %}
+
+Daher nutzen wir diesen Ausdruck, wenn wir ein Ergebnis vom Typ `Html Msg` erzeugen müssen, aber keine HTML-Struktur erzeugen möchten.
+Wir benutzen den Ausdruck `text ""` also zum Beispiel, wenn wir eine Fallunterscheidung durchführen und wir in einem der Fälle keine HTML-Struktur erzeugen möchten.
+
 
 _Print Debugging_
 -----------------
