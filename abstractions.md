@@ -32,7 +32,7 @@ map : (a -> b) -> f a -> f b
 ```
 
 wobei `f` ein Typkonstruktor ist.
-Man bezeichnet einen Typkonstruktor `f`, für den es eine Funktion `map` gibt, als Funktor.
+Man bezeichnet einen Typkonstruktor `f`, für den es eine Funktion `map` gibt, als **Funktor**.
 Es gibt noch viele weitere Typkonstruktoren, für die wir eine Funktion `map` definieren können.
 Neben den Implementierungen von `map`, die wir kennengelernt haben, gibt es in den Standardbibliotheken von Elm zum Beispiel noch die folgenden Funktionen.
 
@@ -47,13 +47,13 @@ Zur Illustration wollen wir eine weitere Variante der Funktion `map` definieren,
 
 ``` elm
 map : (a -> b) -> Maybe a -> Maybe b
-map func maybev =
-    case maybev of
+map func maybeValue =
+    case maybeValue of
         Nothing ->
             Nothing
 
-        Just v ->
-            Just (func v)
+        Just value ->
+            Just (func value)
 ```
 
 Leider können wir auch eine Funktion vom Typ `(a -> b) -> Maybe a -> Maybe b` definieren, die keine "sinnvolle" Implementierung darstellt.
@@ -68,10 +68,10 @@ Um solche Implementierungen zu vermeiden, sollte die Implementierung der Funktio
 Das heißt, die Funktion muss den angegebenen Typ haben und sich auf gewisse Weise verhalten.
 Die Funktion `map` sollte für alle möglichen Werte für `fx`, `f` und `g` die folgenden beiden Gesetze erfüllen.
 
-| `map (\x -\> x) fx       = fx`               |
-| `map (\x -\> f (g x)) fx = map f (map g fx)` |
+| `map (\x -> x) fx       = fx`               |
+| `map (\x -> f (g x)) fx = map f (map g fx)` |
 
-Die Funktion `mapWeird` erfüllt zum Beispiel das erste Gesetz nicht, da für `fx = Just 42` die erste Gleichung nicht erfüllt ist.
+Die Funktion `mapWeird` erfüllt zum Beispiel das erste Gesetz nicht, da für `fx = Just 42` die erste Gleichung nicht erfüllt ist, wie die folgenden Umformungen illustrieren.
 
 ``` elm
 mapWeird (\x -> x) fx
@@ -105,34 +105,34 @@ apply : Decoder   a -> Decoder   (a -> b) -> Decoder   b
 apply : Generator a -> Generator (a -> b) -> Generator b
 ```
 
-Damit ein Typkonstruktor `f` ein applikativer Funktor ist, muss es eine
-Funktion
+Während ein Funktor die Funktion `map` zur Verfügung stellt, stellt ein **applikativer Funktor** die Funktion `apply` zur Verfügung.
+Damit ein Typkonstruktor `f` ein applikativer Funktor ist, muss es also eine Funktion
 
 ```elm
 apply : f a -> f (a -> b) -> f b
 ```
 
 geben.
-Damit `f` ein applikativer Funktor ist, muss es auch noch eine Funktion `pure : a -> f a` geben.
+Damit `f` ein applikativer Funktor ist, muss es neben der Funktion `apply` noch eine Funktion `pure : a -> f a` geben.
 Es gibt eine solche Funktion für alle drei Typkonstruktoren, sie heißt nur immer anders.
 Im Fall von `List` heißt die Funktion `pure` zum Beispiel `singleton`, im Fall von `Decoder` heißt sie `succeed`.
 
-Zur Illustration wollen wir die Funktion `apply` für den Typkonstruktor `Maybe` einmal definieren.
+Um zu illustrieren, wofür die Funktionen `pure` und `apply` genutzt werden,  wollen wir die beiden Funktionen für den Typkonstruktor `Maybe` definieren.
 
 ``` elm
 apply : Maybe a -> Maybe (a -> b) -> Maybe b
-apply maybev maybef =
-    case maybev of
+apply maybeValue maybeFunc =
+    case maybeValue of
         Nothing ->
             Nothing
 
-        Just v ->
-            case maybef of
-                Nothing ->
+        Just value ->
+            case maybeFunc of
                     Nothing
+                Nothing ->
 
-                Just f ->
-                    Just (f v)
+                Just func ->
+                    Just (func value)
 ```
 
 Wir definieren außerdem die Funktion `pure : a -> f a` für `Maybe`.
@@ -148,7 +148,7 @@ Im Fall des Typkonstruktors `Decoder` haben wir zum Beispiel gesehen, dass wir m
 Im Fall von `Maybe` können wir `apply` auch nutzen, um zwei Werte zu kombinieren.
 Wir betrachten das folgende Beispiel.
 Wir wollen vom Benutzer zwei Zahlen einlesen und diese addieren.
-Wir nutzen dazu die Funktion `String.toInt : String -> Maybe Int`.
+Wir nutzen zum Einlesen der Zahlen die Funktion `String.toInt : String -> Maybe Int`.
 Da das Parsen von beiden Eingaben möglicherweise fehlschlagen kann, müssen wir zwei Werte vom Typ `Maybe Int` kombinieren.
 Dazu können wir die Funktion `apply` nutzen.
 
@@ -159,6 +159,9 @@ add userInput1 userInput2 =
         |> apply (String.toInt userInput1)
         |> apply (String.toInt userInput2)
 ```
+
+Die Implementierung von `add` liefert `Nothing` zurück, sobald einer der Aufrufe von `String.toInt` als Ergebnis `Nothing` liefert.
+Nur falls beide Aufrufe ein Eregbnis der Form `Just value` liefern, wird die Funktion `+` auf diese beiden Ergebnisse angewendet und das Ergebnis der Addition anschließend wieder in den Konstruktor `Just` eingepackt.
 
 Damit ein Typkonstruktor ein applikativer Funktor ist, müssen die Funktionen `pure` und `apply` ebenfalls Gesetze erfüllen.
 Auf diese Gesetze wollen wir hier aber nicht eingehen[^1].
@@ -171,9 +174,32 @@ map func maybe =
     apply maybe (pure func)
 ```
 
-Die Standardbibliotheken von Elm bieten für Datenstrukturen wie `List` und `Maybe` nicht die Funktion `apply` an, sondern eine Funktion `map2 : (a -> b -> c) -> f a -> f b -> f c` verwendet.
+Die Standardbibliotheken von Elm bieten für Datenstrukturen wie `List` und `Maybe` nicht die Funktion `apply` an, sondern nutzen die folgende Funktion.
+
+```elm
+map2 : (a -> b -> c) -> f a -> f b -> f c
+```
+
 Diese Funktion ist für Einsteiger vermutlich besser zugänglich.
-Elm bietet zum Beispiel die Funktion `map2 : (a -> b -> c) -> List a -> List b -> List c` im Modul `List`, die Funktion `map2 : (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c` im Modul `Maybe` und `map2 : (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c` im Modul `Json.Decode`.
+Elm bietet zum Beispiel die Funktion
+
+```elm
+map2 : (a -> b -> c) -> List a -> List b -> List c
+```
+
+im Modul `List`, die Funktion
+
+```elm
+map2 : (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+```
+
+im Modul `Maybe` und
+
+```elm
+map2 : (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c
+```
+
+im Modul `Json.Decode`.
 Wie haben die Funktion `apply` für `Decoder` mithilfe von `map2` definiert.
 Falls eine Datenstruktur eine Funktion `map2 : (a -> b -> c) -> f a -> f b -> f c` zur Verfügung stellt, können wir `apply` mittels `map2 (|>)` definieren.
 
@@ -193,7 +219,7 @@ Monaden
 -------
 
 In der funktionalen Programmierung gibt es eine ganze Reihe von Abstraktionen wie Funktor und applikativer Funktor.
-Wir wollen uns an dieser Stelle noch eine dieser Abstraktionen anschauen, die Monade heißt und vergleichsweise legendär auch außerhalb der funktionalen Programmierung ist.
+Wir wollen uns an dieser Stelle noch eine dieser Abstraktionen anschauen, die **Monade** heißt und vergleichsweise legendär auch außerhalb der funktionalen Programmierung ist.
 
 ![Monads, monad everywhere](./assets/images/monads-everywhere.png){: .centered}
 
@@ -209,35 +235,36 @@ Abhängig von der Version wollen wir jetzt den einen oder anderen `Decoder` verw
 Wir definieren dazu erst einmal einen `Decoder`, der die Version liefert.
 
 ``` elm
-version : Decoder Int
-version =
+versionDecoder : Decoder Int
+versionDecoder =
     Decode.field "version" Decode.int
 ```
 
-Außerdem haben wir die folgenden beiden `Decoder` bei denen sich der Name eines Feldes geändert hat.
+Außerdem haben wir die folgenden beiden `Decoder` für die beiden Varianten der JSON-Struktur.
+Das heißt, in einer Version hieß das Feld `bool` und in einer anderen Version hieß es `boolean`.
 
 ``` elm
-decoderVersion1 : Decoder Bool
-decoderVersion1 =
+boolDecoder : Decoder Bool
+boolDecoder =
     Decode.field "bool" Decode.bool
 
-decoderVersion2 : Decoder Bool
-decoderVersion2 =
+booleanDecoder : Decoder Bool
+booleanDecoder =
     Decode.field "boolean" Decode.bool
 ```
 
-Wir möchten jetzt gern einen `Decoder` definieren, der abhängig von der Version entweder `decoderVersion1` oder `decoderVersion2` verwendet.
+Wir möchten jetzt gern einen `Decoder` definieren, der abhängig von der Version entweder `boolDecoder` oder `booleanDecoder` verwendet.
 Diese Art von `Decoder` können wir mithilfe von `apply` aber nicht definieren.
 Das Problem besteht darin, dass wir abhängig von einem Wert den `Decoder` bestimmen möchten.
 Das Argument `Decoder (a -> b)` erlaubt es aber nicht, den `Decoder` danach zu wählen, welchen Wert wir als `a` übergeben bekommen.
 
-Zu diesem Zweck können wir die folgende Funktion verwenden.
+Wir können die gewünschte Funktionalität aber mit der folgenden Funktion implementieren.
 
 ``` elm
 andThen : (a -> Decoder b) -> Decoder a -> Decoder b
 ```
 
-Hier haben wir statt eines Arguments `Decoder (a -> b)` jetzt ein `a -> Decoder b`.
+Hier haben wir statt eines Arguments `Decoder (a -> b)` jetzt ein Argument vom Typ `a -> Decoder b`.
 Das heißt, wir können abhängig vom konkreten Wert, der vom Typ `a` übergeben wird, den `Decoder` wählen, den wir anschließend verwenden.
 Wir können damit den folgenden `Decoder` definieren.
 Wir verwenden hier die Funktion `|>` um die Argumente von `andThen` zu tauschen, ähnlich wie wir es bei der Verwendung von `apply` gemacht haben.
@@ -246,20 +273,24 @@ Wir verwenden hier die Funktion `|>` um die Argumente von `andThen` zu tauschen,
 decoder : Decoder Bool
 decoder =
     let
-        chooseVersion v =
+        chooseVersion version =
             case version of
                 1 ->
-                    decoderVersion1
+                    boolDecoder
 
                 2 ->
-                    decoderVersion2
+                    booleanDecoder
 
                 _ ->
-                    Decode.fail ("Version " ++ String.fromInt v ++ " not supported")
+                    Decode.fail ("Version " ++ String.fromInt version ++ " not supported")
     in
-    version
+    versionDecoder
         |> Decode.andThen chooseVersion
 ```
+
+Die Funktion `Decode.fail` liefert einen `Decoder`, der immer fehlschlägt.
+Das heißt, wenn wir eine Version parsen und es sich weder um Version `1` noch um Version `2` handelt, liefert `decoder` einen Fehler.
+Dieses Beispiel illustriert, dass wir mithilfe von `andThen` abhängig von einem Wert, den wir zuvor geparset haben, verschiedene `Decoder` ausführen können.
 
 Wir wollen uns noch ein weiteres Beispiel für die Verwendung von `andThen` anschauen.
 Dazu betrachten wir die Funktion `andThen : Maybe a -> (a -> Maybe b) -> Maybe b`.
@@ -269,8 +300,8 @@ Außerdem betrachten wir die folgenden beiden Funktionen, die wir im Kapitel [Po
 parseMonth : String -> Maybe Int
 parseMonth userInput =
     case String.toInt userInput of
-        Just n ->
-            toValidMonth n
+        Just number ->
+            toValidMonth number
 
         Nothing ->
             Nothing
@@ -299,7 +330,7 @@ Im Fall von `Decoder` ist `return` wie folgt definiert.
 ``` elm
 return : a -> Decoder a
 return =
-    Decode.succceed
+    Decode.succeed
 ```
 
 Wie beim Funktor und beim applikativen Funktor müssen die Funktionen einer Monade auch Gesetze erfüllen.
@@ -324,6 +355,23 @@ apply dx df =
 ```
 
 Die [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia) bietet noch weitere Informationen zu Abstraktionen in der funktionalen Programmierung.
+
+<!-- Um komplexere `Decoder` zu definieren benötigen wir noch eine weitere Definition.
+Diese Definition wollen wir bereits auch dieser Stelle einführen, auch wenn sie erst später benötigt wird.
+Die Funktion `succeed : a -> Decoder a` liefert einen `Decoder`, der für alle JSON-Strukturen immer den Wert vom Typ `a` als Ergebnis liefert.
+Das heißt, der Aufruf
+
+```elm
+decodeString (Decode.succeed 42) "true"
+```
+
+liefert genau so `Ok 42` als Ergebnis, wie der Aufruf
+
+```elm
+decodeString (Decode.succeed 42) "[1,2,3]"
+```
+
+Der Aufruf  -->
 
 [^1]: Mehr Informationen zu applikativen Funktoren finden Sie in der wissenschaftlichen Publikation ["Applicative programming with effects"](<https://openaccess.city.ac.uk/id/eprint/13222/1/>) oder im [Wiki-Artikel](<https://wiki.haskell.org/Typeclassopedia#Applicative>) zur entsprechenden Struktur in Haskell.
 
