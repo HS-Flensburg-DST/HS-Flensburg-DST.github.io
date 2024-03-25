@@ -116,15 +116,16 @@ Elm-Architektur
 ---------------
 
 In diesem Kapitel wollen wir uns über die Architektur einer Elm-Anwendung unterhalten.
-Eine Elm-Anwendung besteht immer aus den folgenden klar getrennten Teilen.
+Die Elm-Architektur wird auch als Model-View-Update-Architektur (MVU) bezeichnet.
+Wie der Name der Architektur schon sagt, besteht eine Elm-Anwendung aus den folgenden Bestandteilen.
 
-- **Model**: der Zustand der Anwendung
+- **Model**: das Modell, der Zustand der Anwendung
 
 - **View**: eine Umwandlung des Zustandes in eine HTML-Seite
 
 - **Update**: eine Möglichkeit, den Zustand zu aktualisieren
 
-Eine typische Elm-Anwendung hat immer die folgende Struktur.
+Eine typische Elm-Anwendung hat die folgende Struktur.
 
 ``` elm
 module App exposing (main)
@@ -144,6 +145,14 @@ init = ...
 
 
 
+-- View
+
+
+view : Model -> Html Msg
+view model = ...
+
+
+
 -- Update
 
 
@@ -152,14 +161,6 @@ type Msg = ...
 
 update : Msg -> Model -> Model
 update msg model = ...
-
-
-
--- View
-
-
-view : Model -> Html Msg
-view model = ...
 
 
 
@@ -209,6 +210,15 @@ init =
 
 
 
+-- View
+
+
+view : Model -> Html Msg
+view model =
+    text (String.fromInt model)
+
+
+
 -- Update
 
 
@@ -225,15 +235,6 @@ update msg model =
 
         DecreaseCounter ->
             model - 1
-
-
-
--- View
-
-
-view : Model -> Html Msg
-view model =
-    text (String.fromInt model)
 
 
 
@@ -409,7 +410,7 @@ navBarLinkStyle =
     In HTML können wir ein Kontrollelement wie einen Knopf deaktivieren, indem wir das Attribut `disabled` zu den Attributen des Kontrollelementes hinzufügen.
     Im Gegensatz dazu können wir das Deaktivieren eines Knopfes im Rahmen einer eDSL durch die dynamischen Features der Programmiersprache ausdrücken.
     Das Modul `Html.Attributes` stellt zum Beispiel die folgende Funktion zur Verfügung.
-    
+
     ```elm
     disabled : Bool -> Attribute msg
     ```

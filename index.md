@@ -45,11 +45,13 @@ custom_css: toc
 
 - 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
 
-- 3.2. [Elm-Architektur](first-application.md#elm-architektur)
+- 3.2. [Modulsystem](first-application.md#modulsystem)
 
-- 3.3. [HTML-Kombinatoren](first-application.md#html-kombinatoren)
+- 3.3. [Elm-Architektur](first-application.md#elm-architektur)
 
-- 3.4. [_Print Debugging_](first-application.md#print-debugging)
+- 3.4. [HTML-Kombinatoren](first-application.md#html-kombinatoren)
+
+- 3.5. [_Print Debugging_](first-application.md#print-debugging)
 
 ### 4. [Datentypen](data-types.md)
 
@@ -85,9 +87,9 @@ custom_css: toc
 
 ### 9. [Design von Datentypen](design.md)
 
-- 9.1. [Boolean Blindness](design.md#boolean-blindness)
+- 9.1. [_Boolean Blindness_](design.md#boolean-blindness)
 
-- 9.2. [Impossible States](design.md#impossible-states)
+- 9.2. [_Impossible States_](design.md#impossible-states)
 
 ### 10. [Funktionen höherer Ordnung](higher-order.md)
 
