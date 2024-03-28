@@ -839,9 +839,9 @@ type alias Point =
     { x : String, y : String }
 
 
-rotate : { angle : String, point : Point } -> String
-rotate { angle, point } =
-    "rotate(" ++ angle ++ "," ++ point.x ++ "," ++ point.y ++ ")"
+rotate : { angle : String, origin : Point } -> String
+rotate { angle, origin } =
+    "rotate(" ++ angle ++ "," ++ origin.x ++ "," ++ origin.y ++ ")"
 ```
 
 Wir können diese Implementierung aber noch in einem weiteren Aspekt verbessern.
@@ -854,14 +854,14 @@ type alias Point =
     { x : Float, y : Float }
 
 
-rotate : { angle : Float, point : Point } -> String
-rotate { angle, point } =
+rotate : { angle : Float, origin : Point } -> String
+rotate { angle, origin } =
     "rotate("
         ++ String.fromFloat angle
         ++ ","
-        ++ String.fromFloat point.x
+        ++ String.fromFloat origin.x
         ++ ","
-        ++ String.fromFloat point.y
+        ++ String.fromFloat origin.y
         ++ ")"
 ```
 
@@ -904,15 +904,15 @@ Diese Funktion erhält eine Liste von `String`s und hängt diese alle aneinander
 Wir können diese Funktion zum Beispiel wie folgt nutzen, um die Definition von `rotate` erweiterbarer zu gestalten.
 
 ```elm
-rotate : { angle : Float, point : Point } -> String
-rotate { angle, point } =
+rotate : { angle : Float, origin : Point } -> String
+rotate { angle, origin } =
     String.concat
         [ "rotate("
         , String.fromFloat angle
         , ","
-        , String.fromFloat point.x
+        , String.fromFloat origin.x
         , ","
-        , String.fromFloat point.y
+        , String.fromFloat origin.y
         , ")"
         ]
 ```
@@ -943,6 +943,34 @@ Das heißt, Elm versucht explizit längere Variablennamen zu fördern.
 
 Unabhängig davon sollte man bei der Benennung die Größe des Gültigkeitsbereichs (_Scope_) einer Variable beachten.
 Das heißt, bei einer Variable, die einen sehr kleinen _Scope_ hat, kann ein Name wie `x` angemessen sein, während er es bei einer Variable mit größerem _Scope_ auf jeden Fall nicht ist.
+
+
+### Grundlegendes zur Benennung
+
+An dieser Stelle soll es noch ein paar grundlegende Hinweise zu guter Benennung geben, die auch in anderen Programmiersprachen gültig sind.
+Benennungen von Variablen sollten _concise_ und _consistent_ sein[^1].
+
+Mit **konsistent** (_consistent_) ist dabei gemeint, dass identische Konzepte im Programm auch identisch benannt sein sollten.
+Das heißt zum Beispiel, wenn in der Funktion `rotate` der Winkel als `angle` bezeichnet wird, sollte diese Bezeichnung auch an anderen Stellen im Programm verwendet werden.
+Es wäre also zum Beispiel keine gute Idee, den Winkel an einer Stelle mit `angle` zu bezeichnen und an einer anderen Stelle mit `rotationAngle`.
+
+<!-- Es gibt in der natürlichen Sprache zwei Formen von Inkonsistenzen: Homonyme und Synonyme.
+Ein Homonym ist ein Wort, dass mehrere Bedeutungen hat. -->
+
+Um das Konzept der _conciseness_ zu beschreiben, fordern wir erst einmal, dass Bezeichnungen **korrekt** sind.
+Damit ist gemeint, dass der Name zumindest ein Oberbegriff des Konzeptes ist, den es beschreibt.
+Zum Beispiel wäre der folgende Funktionskopf korrekt, da das Argument der Funktion `rotate` den Mittelpunkt des Objektes beschreibt und der Begriff Punkt ein Oberbegriff von Ursprung ist.
+Wenn wir dagegen den Bezeichner `color` an Stelle von `point` wählen würden, wäre dieser nicht korrekt, da Farbe kein Oberbegriff des Konzeptes ist, auf das sich der Bezeichner bezieht.
+
+```elm
+rotate : { angle : Float, point : Point } -> String
+```
+
+Der Bezeichner `point` ist zwar korrekt, aber vermutlich nicht **präzise** (_concise_).
+Wenn wir in unserer Anwendung neben dem Mittelpunkt noch eine weitere Art Punkt nutzen und beide mit dem Bezeichner `point` bezeichnen, so ist der Bezeichner nicht mehr präzise, da wir aus dem Bezeichner nicht ableiten können, welches der beiden Konzepte gemeint ist.
+Das heißt, wir versuchen bei der Benennung einen Namen zu wählen, der im Kontext der Anwendung möglichst eindeutig bestimmt, welches Konzept wir meinen.
+
+[^1]: [Concise and consistent naming](https://wwwbroy.in.tum.de/publ/papers/deissenboeck_pizka_identifier_naming.pdf) - Software Quality Journal 14 (2006): 261-282.
 
 <div class="nav">
     <ul class="nav-row">

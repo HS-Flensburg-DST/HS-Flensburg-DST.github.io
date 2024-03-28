@@ -41,6 +41,8 @@ custom_css: toc
 
 - 2.6. [Benennungsstil](basics.md#benennungsstil)
 
+- 2.7. [Grundlegendes zur Benennung](basics.md#grundlegendes-zur-benennung)
+
 ### 3. [Eine Erste Anwendung](first-application.md)
 
 - 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
