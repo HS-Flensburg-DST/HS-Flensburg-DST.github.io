@@ -96,7 +96,7 @@ apply =
     Decode.map2 (|>)
 ```
 
-Auch die Funktion `apply` kann für verschiedene Typkonstruktoren definiert werden.
+Auch die Funktion `apply`[^1] kann für verschiedene Typkonstruktoren definiert werden.
 So können wir in Elm zum Beispiel die folgenden Funktionen definieren.
 
 ``` elm
@@ -164,7 +164,7 @@ Die Implementierung von `add` liefert `Nothing` zurück, sobald einer der Aufruf
 Nur falls beide Aufrufe ein Eregbnis der Form `Just value` liefern, wird die Funktion `+` auf diese beiden Ergebnisse angewendet und das Ergebnis der Addition anschließend wieder in den Konstruktor `Just` eingepackt.
 
 Damit ein Typkonstruktor ein applikativer Funktor ist, müssen die Funktionen `pure` und `apply` ebenfalls Gesetze erfüllen.
-Auf diese Gesetze wollen wir hier aber nicht eingehen[^1].
+Auf diese Gesetze wollen wir hier aber nicht eingehen[^2].
 Es sei an dieser Stelle aber noch kurz erwähnt, dass jeder applikative Funktor auch ein Funktor ist.
 Wir können die Funktion `map` nämlich mithilfe von `pure` und `apply` wie folgt definieren.
 
@@ -373,7 +373,9 @@ decodeString (Decode.succeed 42) "[1,2,3]"
 
 Der Aufruf  -->
 
-[^1]: Mehr Informationen zu applikativen Funktoren finden Sie in der wissenschaftlichen Publikation ["Applicative programming with effects"](<https://openaccess.city.ac.uk/id/eprint/13222/1/>) oder im [Wiki-Artikel](<https://wiki.haskell.org/Typeclassopedia#Applicative>) zur entsprechenden Struktur in Haskell.
+[^1]: In Elm wird die Funktion `apply` manchmal auch `andMap` genannt.
+
+[^2]: Mehr Informationen zu applikativen Funktoren finden Sie in der wissenschaftlichen Publikation ["Applicative programming with effects"](<https://openaccess.city.ac.uk/id/eprint/13222/1/>) oder im [Wiki-Artikel](<https://wiki.haskell.org/Typeclassopedia#Applicative>) zur entsprechenden Struktur in Haskell.
 
 <div class="nav">
     <ul class="nav-row">
