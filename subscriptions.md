@@ -174,15 +174,15 @@ type alias Point =
     { x : Float, y : Float }
 
 
-rotate : { angle : Float, point : Point } -> String
-rotate { angle, point } =
+rotate : { angle : Float, origin : Point } -> String
+rotate { angle, origin } =
     String.concat
         [ "rotate("
         , String.fromFloat angle
         , ","
-        , String.fromFloat point.x
+        , String.fromFloat origin.x
         , ","
-        , String.fromFloat point.y
+        , String.fromFloat origin.y
         , ")"
         ]
 ```

@@ -107,21 +107,21 @@ type alias Point =
     { x : Float, y : Float }
 
 
-rotate : { angle : Float, maybePoint : Maybe Point } -> String
-rotate { angle, maybePoint } =
+rotate : { angle : Float, maybeCenter : Maybe Point } -> String
+rotate { angle, maybeCenter } =
     String.concat
         [ "rotate("
         , String.fromFloat angle
-        , case maybePoint of
+        , case maybeCenter of
             Nothing ->
                 ""
 
-            Just point ->
+            Just center ->
                 String.concat
                     [ ","
-                    , String.fromFloat point.x
+                    , String.fromFloat center.x
                     , ","
-                    , String.fromFloat point.y
+                    , String.fromFloat center.y
                     ]
         , ")"
         ]
@@ -248,13 +248,13 @@ Die Funktion `cons : Char -> String -> String` hängt ein Zeichen vorne an eine 
 
 ``` elm
 toUpper : String -> String
-toUpper str =
-    case String.uncons str of
+toUpper string =
+    case String.uncons string of
         Nothing ->
             ""
 
-        Just ( char, rest ) ->
-            String.cons (Char.toUpper char) (toUpper str)
+        Just ( char, reststring ) ->
+            String.cons (Char.toUpper char) (toUpper reststring)
 ```
 
 Neben Paaren bietet Elm auch Tupel anderer Stelligkeiten.
@@ -385,12 +385,12 @@ In Elm, ist diese Funktion im Modul `List` definiert.
 ```elm
 head : List a -> Maybe a
 head list =
-  case list of
-    x :: xs ->
-      Just x
+    case list of
+        x :: xs ->
+            Just x
 
-    [] ->
-      Nothing
+        [] ->
+            Nothing
 ```
 
 Diese Funktion illustriert noch einmal einen Anwendungsfall für den `Maybe`-Typen.
@@ -409,13 +409,13 @@ Das heißt, falls die Berechnung erfolgreich war, verwenden wir den Wert, der im
 
 ``` elm
 withDefault : a -> Result x a -> a
-withDefault def result =
+withDefault default result =
     case result of
-        Ok a ->
-            a
+        Ok value ->
+            value
 
         Err _ ->
-            def
+            default
 ```
 
 Im Unterschied zur Funktion `identity`, ist die Funktion `withDefault` über zwei Typparameter parametrisiert.
@@ -490,7 +490,7 @@ Wir schauen uns einmal die Längenfunktion auf Listen an, die wie folgt definier
 ``` elm
 length : List a -> Int
 length list =
-    case l of
+    case list of
         [] ->
             0
 

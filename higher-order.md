@@ -123,8 +123,8 @@ Wir nutzen erst `List.map`, um eine Liste von Altersangaben zu erhalten, wir fil
 
 ``` elm
 sumOfAdultAges : List User -> Int
-sumOfAdultAges list =
-    List.sum (List.filter (\age -> age >= 18) (List.map .age list))
+sumOfAdultAges users =
+    List.sum (List.filter (\age -> age >= 18) (List.map .age users))
 ```
 
 Die Verarbeitungsschritte müssen dabei in umgekehrter Reihenfolge angegeben werden.
@@ -134,8 +134,8 @@ Wir können die Funktion mithilfe dieses Operators wie folgt definieren.
 
 ``` elm
 sumOfAdultAges : List Int -> Int
-sumOfAdultAges list =
-    list
+sumOfAdultAges users =
+    users
         |> List.map .age
         |> List.filter (\age -> age >= 18)
         |> List.sum
@@ -192,8 +192,8 @@ Als Beispiel betrachten wir noch einmal die folgende Definition aus dem  Abschni
 
 ``` elm
 viewUsers : List User -> List (Html msg)
-viewUsers list =
-    List.map viewUser list
+viewUsers users =
+    List.map viewUser users
 ```
 
 Im Abschnitt [Gecurryte Funktionen](#gecurryte-funktionen) haben wir gelernt, dass diese Definition nur eine Kurzform für die folgende Definition ist.
@@ -201,7 +201,7 @@ Im Abschnitt [Gecurryte Funktionen](#gecurryte-funktionen) haben wir gelernt, da
 ``` elm
 viewUsers : List User -> List (Html msg)
 viewUsers =
-    \list -> List.map viewUser list
+    \users -> List.map viewUser users
 ```
 
 Durch Eta-Reduktion können wir diese Definition jetzt zur folgenden Definition abändern.
@@ -225,19 +225,19 @@ Es kommt in Elm relativ häufig vor, dass man eine lokale Funktion definiert und
 Häufig definiert man die Funktion, die auf die Elemente der Liste angewendet wird, lokal, da sie außerhalb der Funktion nicht benötigt wird.
 
 ``` elm
-viewUsers : List Int -> List Int
-viewUsers list =
+viewUsers : List User -> List Int
+viewUsers users =
     let
         viewUser user =
             text (user.firstName ++ " " ++ user.lastName)
     in
-    List.map viewUser list
+    List.map viewUser users
 ```
 
 Auf diese Variant von `viewUsers` kann man ebenfalls Eta-Reduktion anwenden und erhält die folgende Definition.
 
 ``` elm
-viewUsers : List Int -> List Int
+viewUsers : List User -> List Int
 viewUsers =
     let
         viewUser user =
@@ -274,16 +274,16 @@ Wir betrachten noch einmal die Funktion `startWithA`.
 
 ``` elm
 startWithA : List User -> List User
-startWithA list =
-    List.filter (\user -> String.startsWith "A" user.firstName) list
+startWithA users =
+    List.filter (\user -> String.startsWith "A" user.firstName) users
 ```
 
 Mithilfe der Funktionskomposition können wir diese Funktion wie folgt definieren.
 
 ``` elm
 startWithA : List User -> List User
-startWithA list =
-    List.filter (String.startsWith "A" << .firstName) list
+startWithA users =
+    List.filter (String.startsWith "A" << .firstName) users
 ```
 
 Die Funktion `String.startsWith "A" << .firstName` erhält ein Argument und wendet auf dieses Argument zuerst die Funktion `.firstName` an.
@@ -295,8 +295,8 @@ Um die Funktionsweise der Funktionskomposition noch etwas zu illustrieren, könn
 
 ``` elm
 startWithA : List User -> List User
-startWithA list =
-    List.filter (\user -> (String.startsWith "A" << .firstName) user) list
+startWithA users =
+    List.filter (\user -> (String.startsWith "A" << .firstName) user) users
 ```
 
 Das heißt, das funktionale Argument ist eine Funktion, die das Argument `user` nimmt und die Funktion `(String.startsWith "A" << .firstName)` auf `user` anwendet.
@@ -305,8 +305,8 @@ Als weiteres Beispiel wollen wir uns noch einmal die Funktion `sumOfAdultAges` a
 
 ``` elm
 sumOfAdultAges : List User -> Int
-sumOfAdultAges list =
-    List.sum (List.filter (\age -> age >= 18) (List.map .age list))
+sumOfAdultAges users =
+    List.sum (List.filter (\age -> age >= 18) (List.map .age users))
 ```
 
 Die Funktion wendet mehrere Funktionen nacheinander auf das Argument `list` an.
@@ -314,8 +314,8 @@ Daher können wir diese Funktion auch mithilfe der Funktionskomposition definier
 
 ``` elm
 sumOfAdultAges : List User -> Int
-sumOfAdultAges list =
-    (List.sum << List.filter (\age -> age >= 18) << List.map .age) list
+sumOfAdultAges users =
+    (List.sum << List.filter (\age -> age >= 18) << List.map .age) users
 ```
 
 Da wir `sumOfAdultAges` nun mittels Funktionskomposition definiert haben, können wir Eta-Reduktion anwenden und erhalten das folgende Ergebnis.

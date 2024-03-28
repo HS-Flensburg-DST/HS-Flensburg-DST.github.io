@@ -322,9 +322,9 @@ In unserer Anwendung können wir nun wie folgt eine URL für unsere Anfrage kons
 
 ``` elm
 isEvenCmd : Int -> Cmd Msg
-isEvenCmd no =
+isEvenCmd number =
     Http.get
-        { url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt no ] []
+        { url = Url.Builder.crossOrigin Env.baseURL [ "api", "iseven", String.fromInt number ] []
         , expect = Http.expectJson ReceivedResponse isEvenDecoder
         }
 ```

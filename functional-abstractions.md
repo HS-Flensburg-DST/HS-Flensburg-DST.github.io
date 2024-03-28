@@ -35,13 +35,13 @@ Wir können nun wie folgt eine Funktion definieren, die unsere Liste von Nutzer\
 
 ```elm
 viewUsers : List User -> List (Html msg)
-viewUsers list =
-    case list of
+viewUsers users =
+    case users of
         [] ->
             []
 
-        user :: users ->
-            viewUser user :: viewUsers users
+        user :: users_ ->
+            viewUser user :: viewUsers users_
 ```
 
 Das Ergebnis der Funktion `viewUsers` würden wir zum Beispiel als Kinder eines `div`-Knotens in unsere `view`-Funktion einbinden.
@@ -61,13 +61,13 @@ Wir können nun wie folgt eine Funktion definieren, die eine Liste von Nutzer\*i
 
 ```elm
 userOptions : List User -> List (Html msg)
-userOptions list =
-    case list of
+userOptions users =
+    case users of
         [] ->
             []
 
-        user :: users ->
-            userOption user :: userOptions users
+        user :: users_ ->
+            userOption user :: userOptions users_
 ```
 
 Mithilfe der Funktion `Html.select` können wir dann wie folgt eine _Dropdown_-Liste definieren.
@@ -87,13 +87,13 @@ Wir definieren daher die folgende Funktion.
 
 ```elm
 ages : List User -> List Int
-ages list =
-    case list of
+ages users =
+    case users of
         [] ->
             []
 
-        user :: users ->
-            user.age :: ages users
+        user :: users_ ->
+            user.age :: ages users_
 ```
 
 Nun können wir wie folgt eine Funktion definieren, die das durchschnittliche Alter der Nutzer\*innen berechnet.
@@ -111,13 +111,13 @@ Daher können wir die Funktion `ages` auch wie folgt definieren.
 
 ```elm
 ages : List User -> List Int
-ages list =
-    case list of
+ages users =
+    case users of
         [] ->
             []
 
-        user :: users ->
-            .age user :: ages users
+        user :: users_ ->
+            .age user :: ages users_
 ```
 
 Das heißt, in der Funktion `ages` wendet `.age` auf alle Elemente der Liste an.
@@ -143,8 +143,8 @@ map func list =
         [] ->
             []
 
-        x :: xs ->
-            func x :: map func xs
+        head :: restlist ->
+            func head :: map func restlist
 ```
 
 Mithilfe der Funktion `map` können wir die Funktionen `viewUsers`, `viewOptions` und `ages` nun wie folgt definieren.
@@ -171,16 +171,16 @@ Dazu können wir die folgende Funktion definieren.
 
 ``` elm
 startWithA : List User -> List User
-startWithA list =
-    case list of
+startWithA users =
+    case users of
         [] ->
             []
 
-        user :: users ->
+        user :: users_ ->
             if String.startsWith "A" user.firstName then
-                user :: startWithA users
+                user :: startWithA users_
             else
-                startWithA users
+                startWithA users_
 ```
 
 Als nächstes nehmen wir an, wir wollen das Durchschnittsalter aller Nutzer\*innen über 18 berechnen.
@@ -188,16 +188,16 @@ Dazu definieren wir die folgende Funktion.
 
 ``` elm
 keepAdultUsers : List User -> List Int
-keepAdultUsers list =
-    case list of
+keepAdultUsers users =
+    case users of
         [] ->
             []
 
-        user :: users ->
+        user :: users_ ->
             if user.age >= 18 then
-                user :: keepAdultUsers users
+                user :: keepAdultUsers users_
             else
-                keepAdultUsers users
+                keepAdultUsers users_
 ```
 
 Mithilfe der Funktion `keepAdultUsers` können wir jetzt wie folgt das Durchschnittsalter der volljährigen Nutzer\*innen berechnen.
@@ -217,11 +217,11 @@ filter pred list =
         [] ->
             []
 
-        x :: xs ->
+        head :: restlist ->
             if pred x then
-                x :: filter pred xs
+                head :: filter pred restlist
             else
-                filter pred xs
+                filter pred restlist
 ```
 
 Dieses Mal übergeben wir eine Funktion, die angibt, ob ein Element in die Ergebnisliste kommt oder nicht.
@@ -283,10 +283,10 @@ Eine lokale Definition wird mithilfe eines `let`-Ausdrucks eingeführt.
 
 ``` elm
 quartic : Int -> Int
-quartic x =
+quartic n =
     let
         square =
-            x * x
+            n * n
     in
     square * square
 ```
@@ -443,12 +443,12 @@ Wenn eine Funktion wie `viewUser` nur in der Anwendung der Funktion `map` oder `
 
 ``` elm
 viewUsers : List Int -> List Int
-viewUsers list =
+viewUsers users =
     let
         viewUser user =
             text (user.firstName ++ " " ++ user.lastName)
     in
-    List.map viewUser list
+    List.map viewUser users
 ```
 
 Diese Definition verhindert, dass die Funktion `viewUser` außerhalb der Definition `viewUsers` verwendet wird.
@@ -479,8 +479,8 @@ Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mithilfe einer anonym
 
 ``` elm
 startWithA : List User -> List User
-startWithA list =
-    List.filter (\user -> String.startsWith "A" user.firstName) list
+startWithA users =
+    List.filter (\user -> String.startsWith "A" user.firstName) users
 ```
 
 Dabei stellt der Ausdruck `\user -> String.startsWith "A" user.firstName` die anonyme Funktion dar.
@@ -488,8 +488,8 @@ Analog können wir die Funktion `viewUsers` mithilfe einer anonymen Funktion wie
 
 ``` elm
 viewUsers : List User -> List (Html msg)
-viewUsers list =
-    List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) list
+viewUsers users =
+    List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) users
 ```
 
 **Anonyme Funktionen**, auch als **Lambda-Ausdrücke** bezeichnet, starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
