@@ -27,9 +27,10 @@ type Maybe a
 
 `Maybe` nimmt ein Argument, das `a` heißt, und auch als _Typparameter_ oder _Typvariable_ bezeichnet wird.
 Typvariablen werden in Elm im Gegensatz zu Typen klein geschrieben.
-Wenn wir den Datentyp `Maybe` verwenden, können wir für den Typparamenter einen konkreten Typ angeben.
-Ein Datentyp wie `Maybe`, der noch Typen als Argumente erhält, wird als
-**Typkonstruktor** bezeichnet.
+Wenn wir den Datentyp `Maybe` verwenden, können wir für den Typparameter einen konkreten Typ angeben.
+Ein Datentyp wie `Maybe`, der noch Typen als Argumente erhält, wird als **polymorpher Type** oder auch als **Typkonstruktor** bezeichnet.
+Im Gegensatz zu polymorphen Typen werden Datentypen, die wir zuvor kennengelernt haben, als **monomorphe Typen** bezeichnet.
+
 Die folgenden Beispiele definieren Werte von `Maybe`-Typen.
 
 ``` elm

@@ -12,7 +12,7 @@ Algebraische Datentypen
 
 In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte **algebraische Datentypen** definieren kann.
 Dazu wollen wir erst einmal den Namen algebraische Datentypen etwas analysieren.
-Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie auch den Namen **Summentyp**.
+Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie (PLT)[^1] auch den Namen **Summentyp**.
 Dieser Name zeigt einen Zusammenhang zum Namen algebraischer Datentyp.
 Eine Algebra ist in der Mathematik eine Struktur, die eine Addition und eine Multiplikation zur Verfügung stellt.
 Neben der Addition (dem Summentyp) benötigen wir für einen algebraischen Datentyp also noch eine Multiplikation.
@@ -29,8 +29,11 @@ type Point
 ```
 
 Der Datentyp `Point` fasst zwei Werte vom Typ `Float` zu einem Wert vom Typ `Point` zusammen.
+
+{% include callout-important.html content="
 Das Wort `Point` hinter dem Schlüsselwort `type` ist dabei der Name des Typs.
 Das Wort `Point` hinter dem `=`-Zeichen nennt man wie bei den Aufzählungstypen einen Konstruktor.
+" %}
 
 Hinter dem Namen des Konstruktors folgt ein Leerzeichen und anschließend folgen, durch Leerzeichen getrennt, die Typen der Argumente des Konstruktors.
 Im Gegensatz zu Funktionen und Variablen müssen Konstruktoren und Datentypen immer mit einem großen Anfangsbuchstaben beginnen.
@@ -66,14 +69,18 @@ Das heißt, die Variable `x` wird in diesem Beispiel an den Wert `2.3` und die V
 Als weiteres Beispiel können wir etwa die folgende Funktion definieren, um einen `Point` in einen `String` umzuwandeln.
 
 ``` elm
+
 toString : Point -> String
 toString point =
     case point of
         Point x y ->
-            "(" ++ String.fromFloat x
-                ++ ", "
-                ++ String.fromFloat y
-                ++ ")"
+            String.concat
+                [ "("
+                , String.fromFloat x
+                , ", "
+                , String.fromFloat y
+                , ")"
+                ]
 ```
 
 In der Definition eines Produkttyps können wir natürlich auch selbstdefinierte Datentypen verwenden.
@@ -119,9 +126,32 @@ toString player =
 
 Wir gehen hier davon aus, dass die Funktion `toString` für den Datentyp `Point`, die wir zuvor definiert haben, sich in einem Modul `Point` befindet.
 
+{% include callout-important.html content="
+In der funktionalen Programmierung werden Module häufig um einen Datentyp herum organisiert.
+Das heißt, wenn man einen Datentyp benötigt, dessen Bedeutung ohne Kontext klar ist, definiert man diesen Datentyp häufig in einem neuen Modul.
+In das Modul werden dann auch alle Funktionen, die auf dem Datentyp arbeiten, geschrieben.
+" %}
+
 Im Allgemeinen kann man Summen- und Produkttypen auch kombinieren.
 Die Kombination aus Summen- und Produkttypen wird als algebraischer Datentyp bezeichnet.
 Anders ausgedrückt sind Summen- und Produkttypen jeweils Spezialfälle von algebraischen Datentypen.
+
+{% include callout-info.html content="
+Wie mit einer Algebra in der Mathematik kann man tatsächlich mit algebraischen Datentypen auch \"rechnen\".
+" %}
+
+Der algebraische Datentyp `Bool` hat zwei Werte.
+Wenn wir den folgenden Datentyp definieren
+
+```elm
+type Product
+    = Product Bool Bool
+```
+
+erzeugen wir das Product aus dem Datentyp `Bool` mit sich selbst, das heißt, wir "multiplizieren" den Typ `Bool` mit dem Typ `Bool`.
+Analog hat der Datentyp `Product` tatsächlich auch `4 = 2 * 2` mögliche Werte, nämlich `Product False False`, `Product False True`, `Product True False` und `Product True True`.
+Die Analogie zu algebraischen Regeln, wie sie aus der Mathematik bekannt sind, geht noch wesentlich weiter und lässt sich mit polymorphen Datentypen noch besser illustrieren als mit monomorphen Datentypen, wie sie hier verwendet werden.
+
 Im folgenden ist ein algebraischer Datentyp definiert.
 Der Datentyp beschreibt, ob ein Spiel unentschieden ausgegangen ist oder ob ein Spieler das Spiel gewonnen hat.
 
@@ -135,7 +165,10 @@ Der Konstruktor `Win` modelliert, dass einer der Spieler gewonnen hat.
 Wenn die Spielrunde unentschieden ausgegangen ist, liefert die Funktion als Ergebnis den Wert `Draw`.
 Da wir in diesem Fall keine zusätzlichen Informationen benötigen, hat der Konstruktor keine Argumente.
 
+{% include callout-important.html content="
 Man bezeichnet algebraische Datentypen manchmal auch als **_Tagged Union_**.
+" %}
+
 Man spricht von einer _Union_, da der algebraische Datentyp wie bei einem Aufzählungstyp in der Lage ist, verschiedene Fälle zu einem Datentyp zu vereinigen.
 Die verschiedenen Fälle, die es gibt, werden dann in dem algebraischen Datentyp zu einem einzigen Datentyp vereinigt.
 Man bezeichnet diese Vereinigung als _Tagged_, da durch den Konstruktor immer eindeutig ist, um welchen Teil der Vereinigung es sich handelt.
@@ -154,6 +187,7 @@ Im Unterschied zu einem einfachen Vereinigungstyp ist bei einem Wert vom Typ `In
 Anders ausgedrückt: wenn wir den Typ `IntOrString` verwenden möchten, müssen wir den jeweiligen Konstruktor verwenden.
 Diese Eigenschaft ist elementar wichtig für die Typinferenz.
 Wenn die Typinferenz zum Beispiel den Konstruktor `IntValue` sieht, ist klar, dass es sich um den Typ `IntOrString` handelt.
+Bei Programmiersprachen, die Formen von _Untagged Unions_ bieten, ist eine allgemeine Typinferenz wesentlich schwieriger.
 
 _Pattern Matching_
 ------------------
@@ -195,7 +229,7 @@ description result =
 In diesem Fall wird die Variable `player` an den Wert vom Typ `Player` gebunden, der im Konstruktor `Win` steckt.
 
 _Pattern_ können auch geschachtelt werden.
-Das heißt, anstelle einer Variable, können wir auch wieder ein komplexes _Pattern_ verwenden.
+Das heißt, anstelle einer Variable können wir auch wieder ein komplexes _Pattern_ verwenden.
 Die folgende Funktion verwendet zum Beispiel ein geschachteltes _Pattern_, um die x-Position eines Spielers zu bestimmen.
 
 ``` elm
@@ -243,6 +277,7 @@ Zum anderen zerlegen wir Konstruktoren in ihre Einzelteile.
 Bei Datentypen, die nur einen Konstruktor zur Verfügung stellen, wie etwa der Typ `Point`, müssen wir keine Fallunterscheidung über die verschiedenen Konstruktoren durchführen.
 Daher kann man ein _Pattern_ für Datentypen mit nur einem Konstruktor auch ohne einen `case`-Ausdruck verwenden.
 Die folgende Funktion liefert zum Beispiel die x-Koordinate eines Punktes.
+Wir schreiben in dieser Variante das _Pattern_ also an die Stelle, an der wir sonst die Variable für den Parameter der Funktion schreiben.
 
 ``` elm
 xCoord : Point -> Float
@@ -250,7 +285,10 @@ xCoord (Point x _) =
     x
 ```
 
-Wir schreiben in dieser Variante das _Pattern_ also an die Stelle, an der wir sonst die Variable für den Parameter der Funktion schreiben.
+{% include callout-info.html content="
+Diese Art des _Pattern Matching_ entspricht dem Stil der regel-basierten Definition in Haskell.
+Der einzige Unterschied besteht darin, dass es in Elm in diesem Fall immer nur eine Regel gibt, da es immer nur einen Konstruktor gibt, wenn diese Art des _Pattern Matching_ angewendet werden kann.
+" %}
 
 Wenn wir sowohl die gesamte Struktur, die übergeben wird, benötigen als auch einen Teil der Struktur kann man mit dem Schlüsselwort `as` einen Namen für die gesamte Struktur einführen.
 Das heißt, im folgenden Beispiel wird der übergebene Punkt an die Variable `point` gebunden und die x-Koordinate an die Variable `x`.
@@ -260,6 +298,24 @@ xCoord : Point -> Float
 xCoord ((Point x _) as point) =
     ...
 ```
+
+Diese Art des _Pattern_ wird als **_Pattern Alias_** bezeichnet, da ein Alias für ein _Pattern_ eingeführt wird.
+Ein _Pattern Alias_ kann an jeder Stelle eingesetzt werden, an der ein _Pattern_ steht.
+
+```elm
+playerXCoord : Player -> Float
+playerXCoord player =
+    case player of
+        Player _ ((Point x _) as point) ->
+            ...
+```
+
+Hier wird der _Pattern Alias_ geschachtelt in einem anderen _Pattern_ verwendet.
+
+{% include callout-info.html content="
+In Haskell wird für ein _Pattern Alias_ anstelle des Schlüsselwortes `as` das `@` verwendet und der Alias wird vor das _Pattern_ geschrieben.
+Das heißt, wir schreiben in Haskell zum Beispiel `point@Point x _`.
+" %}
 
 
 Rekursive Datentypen
@@ -403,6 +459,7 @@ Dadurch entsteht nach einem Aufruf von `append` im Speicher die folgende Struktu
 
 Das heißt, das Ergebnis des Aufrufs `append list1 list2` hat die `Cons`-Zellen mit den Werten `1`, `2` und `3` neu erstellt.
 Diese existieren jetzt doppelt im Speicher.
+Falls wir die Liste `list1` anschließend nicht weiter verwenden, wird sie durch den _Garbage Collector_ aus dem Speicher entfernt.
 Die Liste `list2` wird aber nicht dupliziert, sondern die Variable `list2` und das Ergebnis von `append list1 list2` verweisen beide auf die gleiche Struktur im Speicher.
 
 Als weiteres Beispiel eines rekursiven Datentyps wollen wir uns eine Baumstruktur anschauen.
@@ -435,12 +492,17 @@ find n tree =
             n == int || find n lefttree || find n righttree
 ```
 
-Im Unterschied zur Programmiersprache Haskell ist Elm eine strikte Sprache, nutzt also **call-by-value** als Auswertungsstrategie.
+{% include callout-important.html content="
+Im Unterschied zur Programmiersprache Haskell ist Elm eine **strikte** Sprache, nutzt also **call-by-value** als Auswertungsstrategie.
+" %}
+
 Das heißt, bei Definitionen wie `find` müssen wir beachten, dass rekursive Aufrufe auch durchgeführt werden, wenn ihr Ergebnis ggf. gar nicht benötigt wird.
 Der Ausdruck `n == int || find n lefttree` müsste zum Beispiel beide Argumente von `||` auswerten, auch wenn der gesuchte Eintrag bereits gefunden wurde, also `n == int` als Ergebnis `True` liefert.
 
 In Elm -- wie in vielen anderen Programmiersprachen -- sind die logischen Operatoren `||` und `&&` daher als Kurzschlussoperatoren definiert.
 Das heißt, der rekursive Aufruf `find n lefttree` wird nur durchgeführt, falls die Bedingung `n == int` nicht erfüllt ist.
+
+[^1]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory)
 
 <div class="nav">
     <ul class="nav-row">
