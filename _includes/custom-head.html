@@ -1,5 +1,6 @@
 {% assign cacheBust = site.time | date:'?v=%s' %}
 
+<!-- start of custom-head -->
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
@@ -10,6 +11,12 @@
 <link rel="stylesheet" href="{{ "/assets/css/custom.css" | relative_url | append: cacheBust }}">
 {% if page.custom_css %}
 {% for stylesheet in page.custom_css %}
-<link rel="stylesheet" href="{{ "/assets/css/" | append: stylesheet | append: ".css" | relative_url | append: cacheBust }}">
+<link rel="stylesheet" href="{{ "/assets/css/" | append: stylesheet | append: ".css" | relative_url | append: cacheBust
+    }}">
 {% endfor %}
 {% endif %}
+{% if page.mathjax %}
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+{% endif %}
+<!-- end of custom-head -->

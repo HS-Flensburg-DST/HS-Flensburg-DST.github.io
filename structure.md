@@ -346,8 +346,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         UpdateInput input ->
-            { model | choosenNumber = Maybe.withDefault 0.0 (String.toFloat input)
-            }
+            { model | choosenNumber = Maybe.withDefault 0.0 (String.toFloat input) }
 ```
 
 Hier wird die Information, dass die Eingabe keine Zahl war einfach verworfen und durch einen _Default_-Wert ersetzt.
@@ -484,6 +483,6 @@ view model =
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="commands.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="abstractions.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="folds.html">weiter</a></li>
     </ul>
 </div>

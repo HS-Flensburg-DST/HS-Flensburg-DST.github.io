@@ -125,20 +125,28 @@ custom_css: toc
 
 - 12.4. [Fehlerbehandlung](structure.md#fehlerbehandlung)
 
-### 13. [Abstraktionen](abstractions.md)
+### 13. [Faltungen](folds.md)
 
-- 13.1. [Funktoren](abstractions.md#funktoren)
+- 13.1. [Rechtsfaltung für Listen](folds.md#rechtsfaltung-für-listen)
 
-- 13.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
+- 13.2. [Linksfaltungen für Listen](folds.md#linksfaltung-für-listen)
 
-- 13.3. [Monaden](abstractions.md#monaden)
+- 13.3. [Faltungen auf anderen Datentypen](folds.md#faltungen-auf-anderen-datentypen)
 
-### 14. [Weitere Themen](final-topics.md)
+### 14. [Abstraktionen](abstractions.md)
 
-- 14.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
+- 14.1. [Funktoren](abstractions.md#funktoren)
 
-- 14.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
+- 14.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
-- 14.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
+- 14.3. [Monaden](abstractions.md#monaden)
+
+### 15. [Weitere Themen](final-topics.md)
+
+- 15.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
+
+- 15.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
+
+- 15.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
 
 ### A. [Programmierregeln](rules.md)
