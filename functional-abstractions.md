@@ -212,16 +212,16 @@ Wir können diese beiden Funktionen wieder mithilfe einer Funktion höherer Ordn
 
 ``` elm
 filter : (a -> Bool) -> List a -> List a
-filter pred list =
+filter isGood list =
     case list of
         [] ->
             []
 
         head :: restlist ->
-            if pred x then
-                head :: filter pred restlist
+            if isGood x then
+                head :: filter isGood restlist
             else
-                filter pred restlist
+                filter isGood restlist
 ```
 
 Dieses Mal übergeben wir eine Funktion, die angibt, ob ein Element in die Ergebnisliste kommt oder nicht.
