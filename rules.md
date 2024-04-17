@@ -13,9 +13,13 @@ Auf dieser Seite werden einige der Programmierregeln erläutert, die durch den L
 
     1. [NoForbiddenFeatures](#noforbiddenfeatures)
 
-    2. [RemoveCodeDuplication](#removecodeduplication)
+    2. [NoMinimalUnderscorePattern](#nominimalunderscorepattern)
 
-    3. [NoUnnecessaryReconstruction](#nounnecessaryreconstruction)
+    3. [UseRecordUpdate](#userecordupdate)
+
+    4. [RemoveCodeDuplication](#removecodeduplication)
+
+    5. [NoUnnecessaryReconstruction](#nounnecessaryreconstruction)
 
 <br/>
 
@@ -50,6 +54,88 @@ Sprach-Features wie algebraische Datentypen, Polymorphismus, Funktionen höherer
 Die Funktion `List.append` sollte nicht verwendet werden, da stattdessen der Operator `++` verwendet werden sollte.
 
 Die Funktion `List.map` soll erst verwendet werden, wenn diese in der Vorlesung behandelt wurde.
+
+
+### NoMinimalUnderscorePattern
+
+Um diese Regel zu illustrieren, betrachten wir den folgenden Datentyp.
+
+``` elm
+type Key
+    = Left
+    | Right
+    | Up
+    | Down
+```
+
+Die folgende Funktion verwendet _Pattern Matching_ um zu testen, ob es sich um eine der horizontalen Richtungstasten handelt.
+
+``` elm
+isHorizontal : Key -> Bool
+isHorizontal key =
+    case key of
+        Up ->
+            False
+
+        Down ->
+            False
+
+        _ ->
+            True
+```
+
+Die Verwendung des Unterstrich\-_Pattern_ hat zwei Nachteile.
+Der erste Nachteil besteht darin, dass Funktionen wie `isHorizontal` weiterhin funktionieren, wenn wir einen Konstruktor zum Datentyp `Key` hinzufügen.
+Das heißt, wenn wir den Datentyp `Key` um einen Konstruktor erweitern, lässt sich das Programm weiterhin kompilieren, verhällt sich ggf. nur falsch.
+Wenn wir dagegen in der Funktion `isHorizontal` alle Fälle explizit auflisten, erhalten wir vom Compiler einen Fehler, wenn wir einen weiteren Konstruktor hinzufügen, da wir dann nicht mehr alle Fälle in der Funktion `isHorizontal` abdecken.
+
+Außerdem macht die Verwedung das Unterstrich\-_Pattern_ den Code sehr viel impliziter.
+Das heißt, wir müssen ggf. aktiv nachschauen, welche Fälle durch den Unterstrich abgedeckt werden.
+Daher sollte das Unterstrich\-_Pattern_ nur verwendet werden, wenn der Unterstrich viele Fälle abdeckt.
+Wenn so wie in `isHorizontal` nur zwei Fälle abgedeckt werden, sollte man diese Fälle besser explizit auflisten.
+
+
+### UseRecordUpdate
+
+Die Regel **UseRecordUpdate** überprüft ob die Record-Update-Syntax in sinnvoller Weise verwendet wird.
+Wir betrachten das folgende Beispiel eines Records, der Nutzer\*innen in einer Anwendung modelliert.
+
+```elm
+type alias User =
+    { firstName : String
+    , lastName : String
+    }
+```
+
+Außerdem betrachten wir die folgende Funktionsdefinition.
+
+```elm
+changeFirstName : User -> String -> User
+changeFirstName user firstName =
+    { firstName = firstName, lastName = user.lastName }
+```
+
+Statt alle Felder des Records explizit zu setzen, sollten wir die Record-Update-Syntax wie folgt verwenden.
+
+```elm
+changeFirstName : User -> String -> User
+changeFirstName user firstName =
+    { user | firstName = firstName }
+```
+
+In dieser Variante ist es viel expliziter, welche Felder des Records tatsächlich einen neuen Wert erhalten.
+
+Auf der anderen Seite betrachten wir die folgende Funktionsdefinition.
+
+```elm
+swapFirstAndLastName : User -> User
+swapFirstAndLastName user =
+    { user | firstName = user.lastName, lastName = user.firstName }
+```
+
+In der Funktion `swapFirstAndLastName` sollten wir keine Update-Record-Syntax verwenden, da alle Felder einen neuen Wert erhalten.
+Wenn wir uns die Definition von `swapFirstAndLastName` anschen, entsteht aber der Eindruck, dass `user` noch Felder enthält, die übernommen werden.
+Um diesen Eindruck zu vermeiden, sollten wir auf die Update-Record-Syntax verzichten und stattdessen den Record explizit neu konstruieren.
 
 
 ### RemoveCodeDuplication
