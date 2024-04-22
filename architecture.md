@@ -33,15 +33,19 @@ Der Record enthält einen Wert und zwei Funktionen.
 
 Das Ergebnis der Funktion `sandbox` ist ein dreistelliger Typkonstruktor.
 Dieser erhält den Typ des Modells und den Typ der Nachrichten als Argumente.
+
+{% include callout-important.html content="
 Der Typ `()` wird als *Unit* bezeichnet und ist der Typ der nullstelligen Tupel.
 Dieser Typ hat nur einen nullstelligen Konstruktor, nämlich `()`.
 Der *Unit*-Typ wird ähnlich verwendet wie der Typ `void` in Java.
+" %}
+
 Das erste Argument von `Program` wird genutzt, wenn eine Anwendung mit _Flags_ gestartet werden soll.
 In diesem Fall können der JavaScript-Anwendung, die aus dem Elm-Code erzeugt wird, initial Informationen übergeben werden.
 Das erste Argument von `Program` gibt den Typ dieser initialen Informationen an.
 Da diese Funktionalität bei einer einfachen Elm-Anwendung nicht benötigt wird, wird dem Typkonstruktor `Program` der Typ `()` übergeben.
 Das heißt, die Anwendung erhält beim Start ein _Flag_, das den Typ `()` hat.
-Die Anwendung erhält initial dann einfach den Wert `()`, der aber keinerlei Information enthält.
+Die Anwendung erhält initial dann einfach immer den Wert `()`, der aber keinerlei Information enthält.
 
 An der Typsignatur von `sandbox` erkennt man auch, dass `Html` ein Typkonstruktor ist.
 Man übergibt an den Typkonstruktor den Typ der Nachrichten.
@@ -123,6 +127,109 @@ Das heißt, Funktionen, für die der Typ der Nachrichten irrelevant ist, verwend
 
 Durch diese Modellierung kann gewährleistet werden, dass der Typ der Nachrichten, die an die Anwendung mithilfe von `onClick`-*Handlern* geschickt werden, auch von der Funktion `update` verarbeitet werden kann.
 Das heißt, mithilfe des statischen Typsystems sorgen wir dafür, dass klar ist, welche Nachrichten unsere `update`-Funktion verarbeiten können muss.
+Da wir in Elm in einem `case`-Ausdruck immer alle möglichen Werte eines Typs verarbeiten müssen, kann es somit nie vorkommen, dass in der Funktion `update` ein Laufzeitfehler auftritt, da eine Nachricht an die Funktion gesendet wird, die diese nicht verarbeiten kann.
+
+Dadurch, dass der Typ der Nachrichten im HTML-Typ kodiert sind, kann es natürlich vorkommen, dass wir zwei HTML-Strukturen nicht kombinieren können.
+Wir betrachten zum Beispiel folgendes Beispiel.
+
+```elm
+type alias Model =
+    Int
+
+
+type Msg
+    = IncreaseCounter
+    | DecreaseCounter
+
+
+viewText : Model -> Html ()
+viewText model =
+    text (String.fromInt model)
+
+
+viewButtons : Html Msg
+viewButtons =
+    div []
+        [ button [ onClick IncreaseCounter ] [ text "+" ]
+        , button [ onClick DecreaseCounter ] [ text "-" ]
+        ]
+
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ viewText model
+        , viewButtons
+        ]
+```
+
+Dieses Programm kompiliert nicht, da wir versuchen eine HTML-Struktur vom Typ `Html ()` mit einer HTML-Struktur vom Typ `Html Msg` zu kombinieren.
+Um solche Fälle zu vermeiden, sollten wir einer HTML-Struktur, die gar keine Nachrichten versendet immer einen polymorphen Typ geben.
+Das heißt, wir sollten die folgende Definition verwenden.
+
+```elm
+viewText : Model -> Html msg
+viewText model =
+    text (String.fromInt model)
+```
+
+Es war im oberen Beispiel unnötig, den Nachrichtentyp auf `()` einzuschränken, da gar keine Nachrichten verschickt wurden.
+
+<!--
+Wir nehmen einmal an, wie wollen unsere einfache Zähleranwendung noch um die Möglichkeit erweitern, Einstellungen vorzunehmen.
+Mithilfe einer Checkbox können wir auswählen, ob der Zähler rückwärts oder vorwärts zählen soll.
+
+```elm
+type Direction
+    = Forward
+    | Backward
+
+
+type Settings =
+    { direction : Direction }
+
+
+viewSettings : Settings -> Html Direction
+viewSettings settings =
+    div []
+        [ input
+            [ id "direction"
+            , type_ "checkbox"
+            , checked (settings.direction == Forward)
+            , onCheck
+                (\b ->
+                    if b then
+                        Forward
+                    else
+                        Backward
+                )
+            ]
+            []
+        , label [ for "direction" ] [ text "Richtung" ]
+        ]
+```
+
+Wir möchten nun unsere Definition in unserer `view`-Funktion nutzen.
+Die folgende Definition verursacht allerdings einen Typfehler.
+
+```
+view : Model -> Html Msg
+view model =
+    div []
+        [ viewText model
+        , viewButtons
+        , viewSettings model.settings
+        ]
+```
+
+Die Funktion `viewSettings` liefert als Ergebnis einen Wert vom Typ `Html Direction`, die Konstante `viewButtons` hat aber den Typ `Html Msg`.
+
+```elm
+type Msg
+    = UpdateCounter Direction
+    |
+```
+-->
 
 <div class="nav">
     <ul class="nav-row">
