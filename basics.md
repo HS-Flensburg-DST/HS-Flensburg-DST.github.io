@@ -91,6 +91,7 @@ Dabei gibt die erste Zeile den Typ der Variable an, in diesem Fall also ein Inte
 Wir nutzen hier um im Folgenden immer [`elm-format`](https://github.com/avh4/elm-format) um Elm-Programme zu formatieren, damit unsere Programme immer einheitlich formatiert sind.
 Dieser _Code Formatter_ sorgt dafür, dass der Wert der Variable in die nächste Zeile geschrieben wird.
 Wir erhalten aber auch ein valides Elm-Programm, wenn wir stattdessen `secretNumber = 42` schreiben.
+Bei einer Definition wie `secretNumber` bezeichnet man den Teil hinter dem `=`-Zeichen als **rechte Seite der Definition**.
 
 {% include callout-info.html content="In Haskell wird statt des einfachen Doppelpunktes `:` der doppelte Doppelpunkt `::` verwendet, um den Typ einer Definition anzugeben." %}
 
@@ -358,8 +359,8 @@ Um den `if`-Ausdruck einmal zu illustrieren, wollen wir eine Funktion `items` de
 Die Funktion `items` könnte zum Beispiel für den Warenkorb eines Online-Shops genutzt werden.
 Die Funktion erhält eine Zahl und liefert eine
 Pluralisierung des Wortes *Gegenstand*.
-Die Zahl gibt dabei an, um wie
-viele Gegenstände es sich handelt.
+Die Zahl gibt dabei an, um wie viele Gegenstände es sich handelt.
+Bei einer Definition wie `items` bezeichnet man den Teil hinter dem `=`-Zeichen als **rechte Seite der Definition**.
 
 ``` elm
 items : Int -> String
@@ -492,7 +493,6 @@ expression = literal ;
            | expression operator expression ;
            | "if" expression "then" expression "else" expression ;
            | "case" expression "of" "{" pattern "->" expression { pattern "->" expression } "}" ;
-           | "let" declarations "in" expression ;
            | "(" expression "," expression { "," expression } ")", ;
            | "[" [ expression { "," expression } ] "]" ;
            | "{" [ field_expression, { "," field_expression } ] "}" ;
