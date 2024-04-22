@@ -10,15 +10,16 @@ In diesem Kapitel werden wir zum Beispiel lernen, wie man einen Datentyp für Li
 Algebraische Datentypen
 -----------------------
 
-In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte **algebraische Datentypen** definieren kann.
+In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte **algebraische Datentypen**[^1] definieren kann.
 Dazu wollen wir erst einmal den Namen algebraische Datentypen etwas analysieren.
-Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie (PLT)[^1] auch den Namen **Summentyp**.
+Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie (PLT)[^2] auch den Namen **Summentyp**.
 Dieser Name zeigt einen Zusammenhang zum Namen algebraischer Datentyp.
 Eine Algebra ist in der Mathematik eine Struktur, die eine Addition und eine Multiplikation zur Verfügung stellt.
 Neben der Addition (dem Summentyp) benötigen wir für einen algebraischen Datentyp also noch eine Multiplikation.
 Man nennt Datentypen, die diese Multiplikation modellieren Produkttypen.
 
-Ein Produkttyp entspricht einem benannten Paar bzw. Tupel.
+Ein Produkttyp entspricht einem benannten Paar bzw. Tupel und wir auch Verbund genannt.
+In der Programmiersprache C wird er zum Beispiel durch das Schlüsselwort `struct` erzeugt.
 Das heißt, wie bei einem Paar kann man Werte von unterschiedlichen Typen zu einem Wert zusammenfassen.
 Im Unterschied zu einem klassischen Paar kann man der Kombination von Werten aber noch einen Namen geben.
 So kann man zum Beispiel auf die folgende Weise einen Datentyp für einen Punkt, zum Beispiel auf einer 2D-Zeichenfläche, definieren.
@@ -31,8 +32,8 @@ type Point
 Der Datentyp `Point` fasst zwei Werte vom Typ `Float` zu einem Wert vom Typ `Point` zusammen.
 
 {% include callout-important.html content="
-Das Wort `Point` hinter dem Schlüsselwort `type` ist dabei der Name des Typs.
-Das Wort `Point` hinter dem `=`-Zeichen nennt man wie bei den Aufzählungstypen einen Konstruktor.
+Das Wort `Point` hinter dem Schlüsselwort `type` ist dabei der Name des **Typs**.
+Das Wort `Point` hinter dem `=`-Zeichen nennt man wie bei den Aufzählungstypen einen **Konstruktor**.
 " %}
 
 Hinter dem Namen des Konstruktors folgt ein Leerzeichen und anschließend folgen, durch Leerzeichen getrennt, die Typen der Argumente des Konstruktors.
@@ -502,7 +503,9 @@ Der Ausdruck `n == int || find n lefttree` müsste zum Beispiel beide Argumente 
 In Elm -- wie in vielen anderen Programmiersprachen -- sind die logischen Operatoren `||` und `&&` daher als Kurzschlussoperatoren definiert.
 Das heißt, der rekursive Aufruf `find n lefttree` wird nur durchgeführt, falls die Bedingung `n == int` nicht erfüllt ist.
 
-[^1]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory)
+[^1]: Wikipedia-Artikel zum Thema [Algebraische Datentypen](https://en.wikipedia.org/wiki/Algebraic_data_type)
+
+[^2]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory)
 
 <div class="nav">
     <ul class="nav-row">
