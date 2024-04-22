@@ -24,9 +24,9 @@ custom_css: toc
 - 2.4. [Funktionsdefinitionen](basics.md#funktionsdefinitionen)
 
     - 2.4.1. [Konditionale](basics.md#konditionale)
-        
+
     - 2.4.2. [Fallunterscheidungen](basics.md#fallunterscheidungen)
-            
+
     - 2.4.3. [Mehrstellige Funktionen](basics.md#mehrstellige-funktionen)
 
 - 2.5. [Weitere Datentypen](basics.md#weitere-datentypen)
@@ -121,9 +121,11 @@ custom_css: toc
 
 - 12.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
 
-- 12.3. [Modell strukturieren](structure.md#modell-strukturieren)
+- 12.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
 
-- 12.4. [Fehlerbehandlung](structure.md#fehlerbehandlung)
+- 12.4. [Modell strukturieren](structure.md#modell-strukturieren)
+
+- 12.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
 
 ### 13. [Faltungen](folds.md)
 

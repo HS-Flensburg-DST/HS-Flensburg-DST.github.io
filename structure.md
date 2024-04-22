@@ -31,7 +31,7 @@ view model =
 Wenn wir den Eindruck haben, dass die Funktion unübersichtlich wird, sollten wir versuchen, Teile der Funktion in Hilfsfunktionen auszulagern.
 Das heißt, statt eine monolithische HTML-Struktur in der Funktion `view` zu erzeugen, identifizieren wir Teile, die wir in Funktionen auslagern können.
 Wir gehen in diesem Beispiel davon aus, dass wir ein Spiel implementieren, dessen visuelle Darstellung aus einem _Header_, einem _Footer_ und dem eigentlichen Spielbrett besteht.
-Es wäre zum Beispiel möglich, dass wir die Funktion wie folgt in Teile zerlegen. 
+Es wäre zum Beispiel möglich, dass wir die Funktion wie folgt in Teile zerlegen.
 
 ```elm
 view : Model -> Html Msg
@@ -164,6 +164,95 @@ Das heißt, durch eine Funktion wie `update` lernen wir im Grunde nichts über d
 Eine Funktion wie `changeUserName` hat aber eine viel spezifischere Semantik.
 Das heißt, durch die Zerlegung der Funktion haben wir auch erreicht, dass Leser\*innen des Codes direkt sehen, dass in der Anwendung ein Name geändert werden kann.
 
+
+## Mögliche Effekte einschränken
+
+Im Kapitel [Modellierung der Elm-Architektur](architecture.md) haben wir gelernt, dass die verschiedenen Komponenten der Elm-Architektur Typkonstruktoren bzw. polymorphe Datentypen nutzen, um zu kodieren, welche Arten von Nachrichten an die Anwendung geschickt werden können.
+Zum Beispiel drückt der Typ `Html Msg` aus, dass aus der entsprechenden HTML-Struktur Nachrichten vom Typ `Msg` verschickt werden können.
+Grundsätzlich können wir, wie im vorherigen Abschnitt gesehen, für jede `view`-Funktion, die wir definieren, den Ergebnistyp `Html Msg` verwenden.
+Es ist aber besser, den Typ stärker einzuschränken und damit Leser\*innen zu kommunizieren, welche Arten von Nachrichten überhaupt aus der Struktur heraus verschickt werden können.
+Wir nehmen zum Beispiel einmal an, dass _Header_ und _Board_ keine Art von Interaktion erlauben.
+In diesem Fall sollten die entsprechenden `view`-Funktionen polymorph im Typ der Nachrichten sein.
+
+```elm
+viewHeader : Model -> Html msg
+viewHeader model =
+    ...
+
+
+viewBoard : Model -> Html msg
+viewBoard model =
+    ...
+```
+
+Im _Footer_ befinden sich Eingabefelder, um den Vor- und Nachnamen zu ändern.
+Wir könnten für die Funktion `viewFooter` nun den Ergebnistyp `Html Msg` verwenden.
+Wir würden damit aber nicht ausdrücken, dass nur Nachrichten vom Typ `Name` verschickt werden können.
+Stattdessen können wir auch eine Definition der folgenden Form verwenden.
+Diese Funktion liefert eine HTML-Struktur vom Typ `Html Name`, da alle Nachrichten, die wir aus der HTML-Struktur verschicken, vom Typ `Name` sind.
+
+```
+viewFooter : Model -> Html Name
+viewFooter model =
+    div []
+        [ input
+            [ placeholder "Vorname"
+            , value model.textInput
+            , onInput FirstName
+            ]
+            []
+        , input
+            [ placeholder "Nachname"
+            , value model.textInput
+            , onInput LastName
+            ]
+            []
+        ]
+```
+
+Da `viewHeader` und `viewBoard` jeweils polymorph in der HTML-Struktur sind, können wir nun die folgende Funktion definieren.
+
+```elm
+view : Model -> Html Name
+view model =
+    div []
+        [ viewHeader model
+        , viewBoard model
+        , viewFooter model
+        ]
+```
+
+Die folgende Definition erzeugt nun allerdings einen Typfehler.
+Wir gehen im folgenden davon aus, dass die Konstante `keyDecoder` den Typ `Decoder Key` hat.
+
+``` elm
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , subscriptions = \_ -> onKeyDown keyDecoder
+        , view = view
+        , update = update
+        }
+```
+
+Die Funktion `view` liefert Nachrichten vom Typ `Name`, während `onKeyDown keyDecoder` Nachrichten vom Typ `Key` liefert.
+Außerdem behauptet der Typ `Program () Model Msg`, dass die gesamte Anwendung Nachrichten vom Typ `Msg` liefert.
+Für Typkonstruktoren wie `Html` und `Sub` können wir `map`-Funktionen definieren.
+Im Kapitel [Funktoren](abstractions.md#funktoren) werden wir noch einmal ausführlicher diskutieren, was diese `map`-Funktionen gemeinsam haben.
+Wir können diese `map`-Funktionen nutzen, um die Nachrichten, die die verschiedenen Strukturen verschicken können, in eine gemeinsame Datenstruktur einzupacken.
+Wir erhalten zum Beispiel wie folgt eine typkorrekte Definition.
+
+``` elm
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , subscriptions = \_ -> Sub.map HandleKey (onKeyDown keyDecoder)
+        , view = Html.map ChangeName view
+        , update = update
+        }
+```
 
 ## Modell strukturieren
 
