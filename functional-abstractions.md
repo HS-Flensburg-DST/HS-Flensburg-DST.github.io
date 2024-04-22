@@ -120,7 +120,7 @@ ages users =
             .age user :: ages users_
 ```
 
-Das heißt, in der Funktion `ages` wendet `.age` auf alle Elemente der Liste an.
+Das heißt, die Funktion `ages` wendet `.age` auf alle Elemente der Liste an.
 
 Die drei Funktionen unterscheiden sich also nur durch die Funktion, die jeweils auf alle Elemente der Liste angewendet wird.
 Allerdings unterscheiden sich auch die Typen der Funktionen, so hat die Funktion in den ersten beiden Fällen den Typ `User -> Html msg` und im letzten Beispiel `User -> Int`.
@@ -238,7 +238,7 @@ Im Folgenden sind einige Programmiersprachen aufgelistet, die Abstraktionen ähn
 ##### Java
 
 Das Interface `java.util.stream.Stream` stellt die folgenden beiden Methoden zur Verfügung.
- 
+
 ```java
 <R> Stream<R> map(Function<? super T, ? extends R> mapper)
 
@@ -276,7 +276,7 @@ Bei der Anwendung von Funktionen wie `map` oder `filter` nutzt man in funktional
 In Elm können Konstanten und Funktionen auch lokal definiert werden, das heißt, dass die entsprechende Konstante oder die Funktion nur innerhalb einer anderen Funktion sichtbar ist.
 Anders ausgedrückt ist der _Scope_ einer **_Top Level_-Definition** das gesamte Modul.
 _Top Level_-Definitionen sind die Definitionen, die wir bisher kennengelernt haben, also Konstanten wie `secretNumber` und Funktionen wie `viewUser` oder `map`.
-Im Kontrast dazu ist der _Scope_ einer lokalen Definition auf einen bestimmten Ausdruck eingeschränkt.
+Im Kontrast dazu ist der _Scope_ einer **lokalen Definition** auf einen bestimmten Ausdruck eingeschränkt.
 Wir betrachten zuerst die Definition einer Konstante mit einer lokalen Definition.
 
 Eine lokale Definition wird mithilfe eines `let`-Ausdrucks eingeführt.
@@ -294,10 +294,10 @@ quartic n =
 Ein `let`-Ausdruck startet mit dem Schlüsselwort `let`, definiert dann beliebig viele Konstanten und Funktionen und schließt schließlich mit dem Schlüsselwort `in` ab.
 Die Definitionen, die ein `let`-Ausdruck einführt, stehen nur in dem Ausdruck nach dem `in` zur Verfügung.
 Das heißt, wir können `square` hier in `square * square` verwenden, aber nicht außerhalb der Definition `quartic`.
-Die lokalen Definitionen wie hier `square` können auch auf die Argumente der umschließenden Funktion zugreifen, hier `x`.
+Die lokalen Definitionen wie hier `square` können auch auf die Argumente der umschließenden Funktion zugreifen, hier `n`.
 
 Man kann in einem `let`-Ausdruck auch **Funktionen** definieren, die dann auch nur in dem Ausdruck nach dem `in` sichtbar sind.
-Wir werden später Beispiele sehen, in denen dies sehr praktisch ist, etwa, wenn wir Listen verarbeiten.
+Die Definition einer lokalen Funktion ist zum Beispiel sehr praktisch, wenn wir Listen verarbeiten.
 Dort wird häufig die Verarbeitung eines einzelnen Listenelementes als lokale Funktion definiert.
 Im folgenden Beispiel wird eine lokale Funktion definiert, die eine Zahl um einen erhöht.
 
@@ -311,7 +311,7 @@ res =
     inc 41
 ```
 
-Wie andere Programmiersprachen, zum Beispiel Python, Elixir und Haskell, nutzt Elm eine **Off-side Rule**.
+Wie andere Programmiersprachen, zum Beispiel Python, Elixir und Haskell, nutzt Elm eine _**Off-side Rule**_.
 Das heißt, die Einrückung eines Programms wird genutzt, um Klammerung auszudrücken und somit Klammern einzusparen.
 In objektorientierten Sprachen wie Java wird diese Klammerung explizit durch geschweifte Klammern ausgedrückt.
 Dagegen muss die Liste der Definitionen in einem `let` zum Beispiel nicht geklammert werden, sondern wird durch ihre Einrückung dem `let`-Block zugeordnet.
@@ -325,8 +325,8 @@ Beispielprogramm, das vom Compiler aufgrund der Einrückung nicht
 akzeptiert wird.
 
 ``` elm
-layout1 : Int
-layout1 =
+badLayout1 : Int
+badLayout1 =
     let
     x =
         1
@@ -337,13 +337,13 @@ layout1 =
 Das Schlüsselwort `let` definiert eine Spalte.
 Alle Definitionen im `let` müssen in einer Spalte rechts vom Schlüsselwort `let` starten.
 Die erste Definition, die in der Spalte des `let` oder weiter links steht, beendet die Sequenz der Definitionen.
-Die Definition `layout1` wird nicht akzeptiert, da die Sequenz der Definitionen durch das `x` beendet wird, was aber keine valide Syntax ist, da die Sequenz mit dem Schlüsselwort `in` beendet werden muss.
+Die Definition `badLayout1` wird nicht akzeptiert, da die Sequenz der Definitionen durch das `x` beendet wird, was aber keine valide Syntax ist, da die Sequenz mit dem Schlüsselwort `in` beendet werden muss.
 
 Als weiteres Beispiel betrachten wir die folgende Definition, die ebenfalls aufgrund der Einrückung nicht akzeptiert wird.
 
 ``` elm
-layout2 : Int
-layout2 =
+badLayout2 : Int
+badLayout2 =
     let
         x =
             1
@@ -358,13 +358,13 @@ Die erste Definition in einem `let`-Ausdruck, also hier das `x`, definiert ebenf
 Alle Zeilen, die links von der ersten Definition starten, beenden die Liste der Definitionen.
 Alle Zeilen, die rechts von einer Definition starten, werden noch zu dieser Definition gezählt.
 Das heißt, in diesem Beispiel geht der Compiler davon aus, dass die Definition von `y` eine Fortsetzung der Definition von `x` ist.
-Dies ist auch wieder keine valide Syntax, da damit die Variable `x` den Wert des Ausdrucks `1 y = 2` erhält.
+Dies ist auch wieder keine valide Syntax, da damit hinter dem `=` der "Ausdruck" `1 y = 2` steht.
 Dies ist aber kein valider Ausdruck.
 Das folgende Beispiel zeigt noch einmal eine valide Definition eines `let`-Ausdrucks mit zwei lokalen Definitionen.
 
 ``` elm
-layout3 : Int
-layout3 =
+goodLayout : Int
+goodLayout =
     let
         x =
             1
@@ -413,7 +413,7 @@ unnecessaryCalculation decision =
 
 Der Ausdruck `expensiveCalculation` wird immer berechnet, auch wenn die Variable `decision` den Wert `False` hat.
 Falls die Variable `decision` den Wert `False` hat, benötigen wir den Wert von `result` aber gar nicht.
-Daher sollte man _Scope_ eines `let`-Ausdrucks so klein halten, wie möglich.
+Daher sollte man den _Scope_ eines `let`-Ausdrucks so klein halten, wie möglich.
 Im Beispiel `unnecessaryCalculation` ist die Variable `result` zum Beispiel im gesamten `if`-Ausdruck sichtbar.
 Wir benötigen die Variable `result` aber nur im `else`-Fall des `if`-Ausdrucks.
 Daher können wir den `let`-Ausdruck in den `else`-Fall des `if`-Ausdrucks ziehen.
@@ -433,11 +433,16 @@ noUnnecessaryCalculation decision =
         result
 ```
 
+Refaktorierungen dieser Art haben auch den Vorteil, dass wir durch die Struktur des Codes besser sein Verhalten ausdrücken.
+Durch die Struktur ist klar, dass die Variable `result` gar nicht im gesamtem `let`-Ausdruck benötigt wird, was wiederum Leser\*innen dabei hilft, den Code zu verstehen.
+
 In diesem artifiziellen Beispiel stellt sich nun allerdings die Frage, warum wir überhaupt die Variable `result` mithilfe eines `let`-Ausdrucks definieren.
 Davon abgesehen kann ein entsprechendes Problem auch in einer imperativen Programmiersprache observiert werden, wenn wir eine Variable definieren, obwohl sie gar nicht in allen Fällen benötigt wird.
 Auch in diesem Fall können wir den _Scope_ der Variable verkleinern, um dieses Problem zu beheben.
 
-{% include callout-info.html content="In Haskell tritt dieses Problem nicht auf, da Haskell eine nicht-strikte Auswertung nutzt und daher den Wert von `result` erst berechnet, wenn er benötigt wird. Elm nutzt dagegen eine strikte Auswertung wie viele andere Programmiersprachen." %}
+{% include callout-info.html content="In Haskell tritt dieses Problem nicht auf, da Haskell eine **nicht-strikte** Auswertung nutzt und daher den Wert von `result` erst berechnet, wenn er benötigt wird.
+Da der Wert in einem Zweig des `if`-Ausdrucks nicht benötigt wird, wird der Wert in diesem Fall auch nicht berechnet.
+Elm nutzt dagegen eine strikte Auswertung wie viele andere Programmiersprachen." %}
 
 Wenn eine Funktion wie `viewUser` nur in der Anwendung der Funktion `map` oder `filter` verwendet wird, nutzt man gern wie folgt eine lokale Definition.
 
@@ -456,9 +461,11 @@ Dadurch kann man verhindern, dass Funktionen, die eigentlich nur im Kontext eine
 Außerdem bindet man auf diese Weise die Position der Definition `viewUser` an die Position der Definition `viewUsers`.
 Das heißt, es kann nicht passieren, dass man im Modul springen muss, um die Definition von `viewUser` zu suchen.
 
-Es gibt keine feste Regel, wann man eine Funktion wie `viewUser` lokale und wann auf _Top Level_ definieren sollte.
-Grundsätzlich kann man sich überlegen, ob man eine Funktion alleinstehend als _Black Box_ verstehen kann.
-In diesem Fall ist es durchaus sinnvoll, eine Funktion auf _Top Level_ zu definieren.
+Es gibt keine feste Regel, wann man eine Funktion wie `viewUser` lokal und wann auf _Top Level_ definieren sollte.
+Grundsätzlich kann man sich überlegen, ob man die Funktionsweise einer Funktion erklären kann, ohne darauf einzugehen, wie die verwendet wird.
+Falls es möglich ist, eine Funktion in diesem Fall zu erklären, kann sie vermutlich auf _Top Level_ definiert werden.
+Darüber hinaus kann man noch darüber nachdenken, wie hoch die Wahrscheinlichkeit ist, dass die Funktion auch noch in einem anderen Kontext verwendet wird.
+Falls die Funktion auch in einem anderen Kontext Verwendung finden könnte, ist es durchaus sinnvoll, sie auf _Top Level_ zu definieren.
 
 
 Anonyme Funktionen
@@ -492,20 +499,32 @@ viewUsers users =
     List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) users
 ```
 
-**Anonyme Funktionen**, auch als **Lambda-Ausdrücke** bezeichnet, starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
+**Anonyme Funktionen**, auch als **Lambda-Ausdrücke** oder **Lambda-Funktionen** bezeichnet[^3], starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
 Das heißt, der Ausdruck `\x y -> x * y` definiert zum Beispiel eine Funktion, die ihre beiden Argumente multipliziert.
-Ein Lambda-Ausdruck der Form `\x y -> e` entspricht dabei der folgenden Funktionsdefinition.
+Ein Lambda-Ausdruck der Form `\x y -> expression` entspricht dabei der folgenden Funktionsdefinition.
 
 ``` elm
-f x y = e
+f x y = expression
 ```
 
 Der einzige Unterschied ist, dass wir die Funktion nicht verwenden, indem wir ihren Namen schreiben, sondern indem wir den gesamten Lambda-Ausdruck angeben.
 Während wir `f` zum Beispiel auf Argumente anwenden, indem wir `f 1 2` schreiben, wenden wir den Lambda-Ausdruck an, indem wir `(\x y -> e) 1 2` schreiben.
 
+Wir haben im Abschnitt [Fallunterscheidungen](basics.md#fallunterscheidungen) eine Grammatik für Ausdrücke gesehen.
+Dieses Kapitel illustriert nun, dass es die Grammatik zwei weitere mögliche Ausprägungen aufweist, nämlich Let-Ausdrücke und Lambda-Funktionen.
+
+```elm
+expression = ...
+           | "let" definition { definition } "in" expression ;
+           | '\' pattern { pattern } "->" expression ;
+           | ...
+```
+
 [^1]: <https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/linq>
 
 [^2]: Peter J. Landin (<https://en.wikipedia.org/wiki/Peter_Landin>) war einer der Begründer der funktionalen Programmierung.
+
+[^3]: Der Name Lambda-Ausdruck stammt vom Lambda-Kalkül. Durch den Lambda-Kalkül wird formal beschrieben, welche Arten von Berechnungen man in einer Programmiersprache ausdrücken kann. Der Lambda-Kalkül hat die Grundidee für funktionale Programmiersprachen geliefert. Im Lambda-Kalkül sind Lambda-Funktionen ein sehr wichtiger Bestandteil, daher hat dieses Konstrukt den Präfix Lambda erhalten. Das Zeichen `\` wird für Lambda-Ausdrücke verwendet, da es dem kleinen Lambda ähnelt.
 
 <div class="nav">
     <ul class="nav-row">
