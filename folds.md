@@ -411,7 +411,7 @@ flatten =
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="structure.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="commands.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
         <li class="nav-item nav-right"><a href="abstractions.html">weiter</a></li>
     </ul>

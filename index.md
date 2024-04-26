@@ -79,53 +79,53 @@ custom_css: toc
 
 ### 7. [Modellierung der Elm-Architektur](architecture.md)
 
-### 8. [Abonnements](subscriptions.md)
+### 8. [Design von Datentypen](design.md)
 
-- 8.1. [Zeit](subscriptions.md#zeit)
+- 8.1. [_Boolean Blindness_](design.md#boolean-blindness)
 
-- 8.2. [Decoder](subscriptions.md#decoder)
+- 8.2. [_Impossible States_](design.md#impossible-states)
 
-- 8.3. [Tasten](subscriptions.md#tasten)
+### 9. [Strukturierung einer Anwendung](structure.md)
 
-### 9. [Design von Datentypen](design.md)
+- 9.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
 
-- 9.1. [_Boolean Blindness_](design.md#boolean-blindness)
+- 9.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
 
-- 9.2. [_Impossible States_](design.md#impossible-states)
+- 9.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
 
-### 10. [Funktionen höherer Ordnung](higher-order.md)
+- 9.4. [Modell strukturieren](structure.md#modell-strukturieren)
 
-- 10.1. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
+- 9.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
 
-- 10.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
+### 10. [Abonnements](subscriptions.md)
 
-- 10.3. [Piping](higher-order.md#piping)
+- 10.1. [Zeit](subscriptions.md#zeit)
 
-- 10.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
+- 10.2. [Decoder](subscriptions.md#decoder)
 
-- 10.5. [Funktionskomposition](higher-order.md#funktionskomposition)
+- 10.3. [Tasten](subscriptions.md#tasten)
 
-### 11. [Kommandos](commands.md)
+### 11. [Funktionen höherer Ordnung](higher-order.md)
 
-- 11.1. [Zufall](commands.md#zufall)
+- 11.1. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
 
-- 11.2. [HTTP-Anfragen](commands.md#http-anfragen)
+- 11.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-    - 11.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
+- 11.3. [Piping](higher-order.md#piping)
 
-    - 11.2.2. [Weitere Aspekte](commands.md#weitere-aspekte)
+- 11.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
-### 12. [Strukturierung einer Anwendung](structure.md)
+- 11.5. [Funktionskomposition](higher-order.md#funktionskomposition)
 
-- 12.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+### 12. [Kommandos](commands.md)
 
-- 12.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+- 12.1. [Zufall](commands.md#zufall)
 
-- 12.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
+- 12.2. [HTTP-Anfragen](commands.md#http-anfragen)
 
-- 12.4. [Modell strukturieren](structure.md#modell-strukturieren)
+    - 12.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
 
-- 12.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
+    - 12.2.2. [Weitere Aspekte](commands.md#weitere-aspekte)
 
 ### 13. [Faltungen](folds.md)
 
