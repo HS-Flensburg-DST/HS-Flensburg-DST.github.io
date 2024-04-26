@@ -22,26 +22,30 @@ Dieses Phänomen tritt etwa bei der Kodierung von Fehlercodes als _Integer_ auf.
 Als Beispiel für _Boolean Blindness_ betrachten wir die folgende Funktion in einer Elm-Anwendung, die einen _Button_ liefert.
 
 ```elm
-mainButton : Bool -> Msg -> Html Msg
-mainButton isDisabled msg =
-    button (buttonStyle ++ [ disabled isDisabled, onClick msg ]) [ text (buttonLabel msg) ]
+mainButton : Msg -> Bool -> Html Msg
+mainButton msg isDisabled =
+    button
+        (buttonStyle ++ [ disabled isDisabled, onClick msg ]) 
+        [ text (buttonLabel msg) ]
 ```
 
-Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton False Increase` schwierig.
+Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton Increase False` schwierig.
 Im Abschnitt [Records](basics.md#records) haben wir bereits einen Ansatz kennengelernt, um dieses Problem zu beheben.
 Wir können einen Record verwenden, um den Argumenten einer Funktion sprechende Namen zuzuordnen.
-Dieses Prinzip funktioniert aber nur, solange der boolesche Wert fest mit den Recordfeld verbunden ist.
-Das heißt, das Prinzip funktioniert zum Beispiel nicht mehr, wenn wir den booleschen Wert von einer Funktion zur nächsten reichen.
-Ein alternativer Ansatz zur Lösung dieses Problems ist die Verwendung von nutzerdefinierten Aufzählungstypen.
+Wenn wir den booleschen Wert durch eine Anwendung reichen, müssten wir dann aber an allen Stellen einen Record verwenden oder sogar den Record durch die Anwendung reichen.
+Das heißt, das Prinzip funktioniert nur, solange der boolesche Wert fest mit den Recordfeld verbunden ist.
+
+Ein alternativer Ansatz, um die Interpretation von `False` und `True` explizit zu machen, ist die Verwendung von nutzerdefinierten Aufzählungstypen.
 Das heißt, statt den Datentyp `Bool` zu verwenden, definieren wir uns einen Datentyp der folgenden Art.
 
 ```elm
-type ButtonState
+type Interaction
     = Enabled
     | Disabled
 ```
 
-Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton Disabled Increase`, der wesentlich ausdrucksstärker ist.
+Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton Increase Disabled`.
+Bei diesem Aufruf können wir am Aufruf selbst bereits erkennen, dass der _Button_ deaktiviert wird.
 
 In den Elm-Standardbibliotheken werden trotz der _Boolean Blindness_ häufig boolesche Werte verwendet.
 Ein Beispiel für das Problem der _Boolean Blindness_ in den Standard-Bibliotheken ist die Funktion `filter`.
@@ -52,10 +56,18 @@ filter : (a -> Bool) -> List a -> List a
 ```
 
 ist nicht klar, ob das Prädikat für diejenigen Elemente `True` liefert, die in der Liste verbleiben sollen, oder für die Elemente, die aus der Liste entfernt werden sollen.
+
+Wir können in diesem Beispiel auch einen Record verwenden, um die Bedeutung des Typs zu signalisieren.
+Hier erkennt man aber gut, dass dieser Ansatz seine Grenzen hat.
+
+```elm
+filter : (a -> { isGood : Bool }) -> List a -> List a
+```
+
 Wenn wir stattdessen den folgenden Datentyp definieren
 
 ```elm
-type Keep
+type Filter
     = Discard
     | Keep
 ```
@@ -63,16 +75,31 @@ type Keep
 und diesen in der Definition von `filter` nutzen
 
 ```elm
-filter : (a -> Keep) -> List a -> List a
+filter : (a -> Filter) -> List a -> List a
 ```
 
 drückt das Ergebnis der Funktion, die wir an `filter` übergeben, sehr explizit aus, ob wir das Element behalten oder verwerfen möchten.
+Zur Illustration betrachten wir ein Beispiel aus dem Kapitel [Funktionale Abstraktionen](functional-abstractions.md), um die Verwendung dieser Funktion zu illustrieren.
 
-Die Verwendung von benutzerdefinierten Aufzählungstypen an Stelle des Datentyps `Bool` hat einen Nachteil.
-Es gibt viele Funktionen, die mit dem Datentyp `Bool` arbeiten und wir müssen diese Funktionen dann für einen Datentyp wie `Keep` redefinieren.
-Daher nutzen viele der Funktionen in den Standardbibliotheken den Datentyp `Bool`.
-In der Hauptanwendungslogik einer Elm-Anwendung gibt es aber Stellen, an denen man besser auf den Datentyp `Bool` verzichten sollte.
-Insbesondere ist ein selbstdefinierter Aufzählungstyp auch um weitere Fälle erweiterbar, während dies bei `Bool` nicht der Fall ist.
+```elm
+startWithA : List User -> List User
+startWithA users =
+    List.filter
+        (\user ->
+            if String.startsWith "A" user.firstName then
+                Keep
+
+            else
+                Discard
+        )
+        users
+```
+
+In diesem Code ist sehr explizit, wann ein Element in der Liste verbleibt und wann es entfernt wird.
+Das Beispiel illustriert aber auch gut die Grenzen dieses Ansatzes.
+Durch die Verwendung von selbstdefinierten Aufzählungstypen müssen an vielen Stellen Umwandlungen zwischen diesen Typen implementiert werden.
+Im Beispiel `startWithA` muss etwa der Typ `Bool`, den die Funktion `String.startsWith` liefert in den Typ `Filter` der Funktion `filter` umgewandelt werden.
+Das heißt, wie häufig in der Programmierung gibt es einen _Tradeoff_  zwischen Explizitheit und Komplexität des Codes.
 
 
 ## Impossible States
@@ -103,7 +130,7 @@ type alias Model =
     { state : State
     , error : Maybe Error
     , items : List Item
-    , options : Options
+    , settings : Settings
     }
 ```
 
@@ -111,7 +138,7 @@ Dieses Modell wird in einer Anwendung genutzt, die Daten von einem Server lädt.
 Das Feld `state` definiert, ob die Daten aktuell geladen werden, der Ladevorgang bereits beendet ist oder ein Fehler aufgetreten ist.
 Der Typ `Error` modelliert verschiedene Arten von Fehlern, die in der Anwendung auftreten können.
 Der Eintrag `items` enthält eine Liste von Daten, die in der Anwendung verarbeitet werden.
-Der Eintrag `options` enthält Informationen über die Konfiguration des _User Interface_, also etwa ob der _Light_ oder der _Dark Mode_ verwendet wird.
+Der Eintrag `settings` enthält Informationen über die Konfiguration des _User Interface_, also etwa ob der _Light_ oder der _Dark Mode_ verwendet wird.
 
 Wie der Slogan _Making Impossible States Impossible_ schon andeutet, hat die von uns gewählte Struktur den Nachteil, dass wir Zustände modellieren können, die es gar nicht gibt.
 Das heißt, einige Ausprägungen des Datentyps sollten in der Anwendung gar nicht auftreten.
@@ -142,7 +169,7 @@ type Data
 
 type Model
     { data : Data
-    , options : Options
+    , settings : Settings
     }
 ```
 

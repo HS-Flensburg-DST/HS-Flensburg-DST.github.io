@@ -68,7 +68,7 @@ Funktionen wie `viewHeader`, `viewBoard` und `viewFooter` zu definieren, die nur
 
 Insbesondere verhindern wir auf diese Weise, dass wir die Funktionen wiederverwenden können.
 Wir können die Funktionen aktuell nur aufrufen, wenn wir ein komplettes `Model` zur Verfügung haben.
-Dadurch können wir die Funktionen aber nicht mehr Aufrufen, obwohl wir ggf. alle Informationen zur Verfügung haben, welche die Funktionen benötigen.
+Dadurch können wir die Funktionen aber unter Umständen nicht mehr aufrufen, obwohl wir ggf. alle Informationen zur Verfügung haben, welche die Funktionen benötigen.
 Wir werden später in diesem Kapitel illustrieren, wie wir diesen Aspekt der Modellierung verbessern können.
 
 Wir können versuchen, ein ähnliches Muster auch auf die Funktion `update` anzuwenden.
@@ -88,7 +88,11 @@ In dieser Implementierung haben wir aber keinerlei Garantie, dass die Änderunge
 So kann `updateUser` zum Beispiel einen Wert überschreiben, der zuvor schon von `updateBoard` geändert wurde.
 Auf diese Weise kann es zum Beispiel wichtig sein, dass diese Funktionen in der richtigen Reihenfolge ausgeführt werden.
 All diese Eigenschaften führen mittel- oder langfristig häufig zu schlechtem Code.
+
+{% include callout-important.html content="
 Daher sollten Funktionen, die auf dem kompletten Modell arbeiten **nicht** nacheinander auf das Modell angewendet werden.
+" %}
+
 Um die Funktion `update` besser zu strukturieren, müssen wir die Nachrichten, die an unsere Anwendung geschickt werden, strukturieren.
 Im folgenden Abschnitt sehen wir ein Beispiel für diese Form der Strukturierung.
 
@@ -191,7 +195,7 @@ Wir würden damit aber nicht ausdrücken, dass nur Nachrichten vom Typ `Name` ve
 Stattdessen können wir auch eine Definition der folgenden Form verwenden.
 Diese Funktion liefert eine HTML-Struktur vom Typ `Html Name`, da alle Nachrichten, die wir aus der HTML-Struktur verschicken, vom Typ `Name` sind.
 
-```
+```elm
 viewFooter : Model -> Html Name
 viewFooter model =
     div []
@@ -224,6 +228,8 @@ view model =
 
 Die folgende Definition erzeugt nun allerdings einen Typfehler.
 Wir gehen im folgenden davon aus, dass die Konstante `keyDecoder` den Typ `Decoder Key` hat.
+Im Kapitel [Abonnements](subscriptions.md) werden wir genauer lernen, wofür der Eintrag `subscriptions` genutzt wird.
+An dieser Stelle müssen wir nur wissen, dass der Ausdruck `onKeyDown keyDecoder` den Typ `Sub Key` hat und dieser Typ kodiert, dass durch diese Komponente Nachrichten vom Typ `Key` an die Anwendung geschickt werden können.
 
 ``` elm
 main : Program () Model Msg
@@ -254,6 +260,9 @@ main =
         }
 ```
 
+In dieser Definition von `main` können wir ganz explizit sehen, dass die HTML-Struktur Nachrichten der Form `ChangeName` verschickt, während wir durch ein Abonnement Nachrichten der Form `HandleKey` erhalten.
+
+
 ## Modell strukturieren
 
 In diesem Abschnitt wollen wir uns mit der Strukturierung von Modellen beschäftigen, da eine gute Struktur des Modells häufig elementar für eine gute Struktur der Anwendung ist.
@@ -276,7 +285,10 @@ Das Modell modelliert ein Spiel, bei dem man seinen Namen in Form von Vor- und N
 Außerdem hat der Spieler eine aktuelle Punktzahl und es gibt einen Highscore für das Spiel.
 Zuletzt ist noch angegeben, wer aktuell den Highscore hält.
 
+{% include callout-important.html content="
 Um die Wiederverwendbarkeit von Funktionen zu erhöhen, sollte man Funktionen nur die Informationen übergeben, die sie auch benötigen.
+" %}
+
 Das heißt, wenn die Funktionen `viewHeader`, `viewBoard` und `viewFooter` aus Abschnitt [Funktionen strukturieren](#funktionen-strukturieren) nur Teile des Modells benötigen, sollten auch nur diese Teile übergeben werden.
 Da unser Modell flach ist, müssten wir die einzelnen Felder, die benötigt werden als einzelne Argumente an die Funktionen übergeben.
 Stattdessen sollten wir an dieser Stelle die Gelegenheit nutzen, um zu überprüfen, ob unser Modell besser strukturiert werden kann.
@@ -298,12 +310,16 @@ type Board =
     }
 
 
+type Score =
+    Score Int
+
+
 type Model =
     { user : User
-    , points : Int
+    , score : Score
     , board : Board
     , highscoreUser : User
-    , highscore : Int
+    , highscore : Score
     }
 ```
 
@@ -324,7 +340,7 @@ view model =
         ]
 
 
-viewHeader : User -> Int -> Html Msg
+viewHeader : User -> Score -> Html Msg
 viewHeader user score =
     ...
 
@@ -334,7 +350,7 @@ viewBoard board =
     ...
 
 
-viewFooter : User -> Int -> Html Msg
+viewFooter : User -> Score -> Html Msg
 viewFooter user highscore =
     ...
 ```
@@ -362,9 +378,10 @@ changeUserName name user =
     ...
 ```
 
-Die Funktionen `moveCharacter` und `changeUserName` arbeiten nun nur noch auf einem Teil des Modells.
+Während die Funktionen `moveCharacter` und `changeUserName` zuvor als Argument einen Wert vom Typ `Modell` erhalten haben, arbeiten sie nun nur noch auf einem Teil des Modells.
+Der Typ der Funktion liefert nun zusätzliche Dokumentation dazu, welches Verhalten die Funktionen haben.
 Dieser Teil des Modells kann ggf. nun auch in ein eigenes Modul ausgelagert werden, da die Logik der Funktionen häufig unabhängig von der konkreten Anwendung sind.
-Der Typ der Funktion liefert nun zusätzliche Informationen dazu, wie die Funktion funktioniert.
+Das heißt, wir können zum Beispiel die Verwaltung von Nutzer\*innen in ein Modul `User` auslagern.
 
 Ein weiterer Vorteil dieser Art der Strukturierung ist, dass nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
 Da die Hilfsfunktionen jetzt nur noch auf einem Teil des Modells arbeiten, können wir jetzt in einem Fall auch mehrere Hilfsfunktionen verwenden.
