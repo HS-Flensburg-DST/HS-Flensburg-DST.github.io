@@ -271,7 +271,11 @@ In diesem Fall würden wir aber das Ergebnis der Berechnung `not bool1` als erst
 
 Neben den booleschen Operatoren gibt es die üblichen **Vergleichsoperatoren** `==` und `/=`, so wie `<`,
 `<=`, `>` und `>=`.
+
+{% include callout-important.html content="
 Die Funktion `==` führt immer einen Wert-Vergleich und keinen Referenz-Vergleich durch.
+" %}
+
 Das heißt, die Funktion `==` überprüft, ob die beiden Argumente die gleiche Struktur haben.
 Das Konzept eines Referenz-Vergleichs existiert in einer rein funktionalen Sprache wie Elm nicht.
 
@@ -295,6 +299,14 @@ bool8 : Bool
 bool8 =
     "Elm" > "C++"
 ```
+
+{% include callout-important.html content="
+Die Funktionen `==` und `/=` stehen für jeden Datentyp zur Verfügung.
+Die Funktionen `<`, `<=`, `>` und `>=` stehen dagegen nur für bestimmte Datentypen zur Verfügung.
+" %}
+
+Im Kapitel [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen) wird dieser Aspekt im Detail diskutiert.
+Zum Verständnis werden aber Kenntnisse aus den Kapiteln zuvor benötigt.
 
 
 ### Präzedenzen
