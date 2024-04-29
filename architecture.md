@@ -57,7 +57,8 @@ Wir betrachten etwa das folgende Beispiel.
 module Counter exposing (main)
 
 import Browser
-import Html exposing (Html, text)
+import Html exposing (Html, button, div, text)
+import Html.Events exposing (onClick)
 
 
 type alias Model =
@@ -89,7 +90,7 @@ view model =
     div []
         [ text (String.fromInt model)
         , button [ onClick False ] [ text "+" ]
-        , button [ onClick 23 ] [ text "-" ]
+        , button [ onClick 23.5 ] [ text "-" ]
         ]
 
 

@@ -255,7 +255,7 @@ main =
     Browser.element
         { init = init
         , subscriptions = \_ -> Sub.map HandleKey (onKeyDown keyDecoder)
-        , view = Html.map ChangeName view
+        , view = \model -> Html.map ChangeName (view model)
         , update = update
         }
 ```
