@@ -27,8 +27,8 @@ Zuerst definieren wir eine Funktion, die für einen Wert vom Typ `User` eine HTM
 
 ```elm
 viewUser : User -> Html msg
-viewUser user =
-    text (user.firstName ++ " " ++ user.lastName)
+viewUser { firstName, lastName } =
+    text (firstName ++ " " ++ lastName)
 ```
 
 Wir können nun wie folgt eine Funktion definieren, die unsere Liste von Nutzer\*innen in eine Liste von HTML-Knoten überführt.
@@ -450,8 +450,8 @@ Wenn eine Funktion wie `viewUser` nur in der Anwendung der Funktion `map` oder `
 viewUsers : List Int -> List Int
 viewUsers users =
     let
-        viewUser user =
-            text (user.firstName ++ " " ++ user.lastName)
+        viewUser { firstName, lastName } =
+            text (firstName ++ " " ++ lastName)
     in
     List.map viewUser users
 ```
@@ -475,8 +475,8 @@ Um die Funktion `startWithA` mithilfe von `filter` zu definieren, müssten wir d
 
 ```elm
 userStartsWithA : User -> Bool
-userStartsWithA user =
-    String.startsWith "A" user.firstName
+userStartsWithA { firstName } =
+    String.startsWith "A" firstName
 ```
 
 Es ist recht umständlich extra die Funktionen `userStartsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden, unabhängig davon, ob wir die Funktion lokal definieren oder nicht.
@@ -487,7 +487,7 @@ Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mithilfe einer anonym
 ``` elm
 startWithA : List User -> List User
 startWithA users =
-    List.filter (\user -> String.startsWith "A" user.firstName) users
+    List.filter (\{ firstName } -> String.startsWith "A" firstName) users
 ```
 
 Dabei stellt der Ausdruck `\user -> String.startsWith "A" user.firstName` die anonyme Funktion dar.
@@ -496,7 +496,7 @@ Analog können wir die Funktion `viewUsers` mithilfe einer anonymen Funktion wie
 ``` elm
 viewUsers : List User -> List (Html msg)
 viewUsers users =
-    List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) users
+    List.map (\{ firstName, lastName } -> text (firstName ++ " " ++ lastName)) users
 ```
 
 **Anonyme Funktionen**, auch als **Lambda-Ausdrücke** oder **Lambda-Funktionen** bezeichnet[^3], starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
