@@ -14,102 +14,161 @@ Um Funktionen höherer Ordnung in vollem Umfang nutzen zu können, müssen wir u
 Dazu schauen wir uns noch einmal die Definition von mehrstelligen Funktionen an, die wir im Abschnitt [Mehrstellige Funktionen](basics.md#mehrstellige-funktionen) eingeführt haben.
 
 ``` elm
-cart : Int -> Float -> String
-cart quantity price =
-    "Summe (" ++ items quantity ++ "): " ++ String.fromFloat price
+pluralize : String -> String -> Int -> String
+pluralize singular plural quantity  =
+    if quantity == 1 then
+        "1 " ++ singular
+
+    else
+        String.fromInt quantity ++ " " ++ plural
 ```
 
-Wir haben dabei gelernt, dass man zwischen zwei Argumente immer einen Pfeil schreiben muss, wir haben aber bisher nicht diskutiert warum.
+Wir haben dabei gelernt, dass man zwischen drei Argumente immer einen Pfeil schreiben muss, wir haben aber bisher nicht diskutiert warum.
 In einer Programmiersprache wie Java würden wir die Funktion eher wie folgt definieren.
 
 ``` elm
-cartP : ( Int, Float ) -> String
-cartP ( quantity, price ) =
-    "Summe (" ++ items quantity ++ "): " ++ String.fromFloat price
+pluralizeTuple : (String, String, Int) -> String
+pluralizeTuple ( singular, plural, quantity )  =
+    if quantity == 1 then
+        "1 " ++ singular
+
+    else
+        String.fromInt quantity ++ " " ++ plural
 ```
 
-Die Funktion `cart` nennt man die **ge*curry*te** Variante und die Funktion `cartP` die **unge*curry*te** Variante.
-Die Funktion `cart` nimmt zwar auf den ersten Blick zwei Argumente, wir können den Typ der Funktion `cart` aber auch anders angeben.
-Die Schreibweise `Int -> Float -> String` steht eigentlich für den Typ `Int -> (Float -> String)`, das heißt, der Typkonstruktor `->` ist rechts-assoziativ.
-Das heißt, `cart` ist eine Funktion, die einen Wert vom Typ `Int` nimmt und eine Funktion vom Typ `Float -> String` liefert.
+Die Funktion `pluralize` nennt man die **ge*curry*te** Variante und die Funktion `pluralizeTuple` die **unge*curry*te** Variante.
+Die Funktion `pluralize` nimmt zwar auf den ersten Blick drei Argumente, wir können den Typ der Funktion `pluralize` aber auch anders angeben.
+Die Schreibweise `String -> String -> Int -> String` steht eigentlich für den Typ `String -> (String -> (Int -> String))`, das heißt, der Typkonstruktor `->` ist rechtsassoziativ.
+Das heißt, `pluralize` ist eine Funktion, die einen Wert vom Typ `Int` nimmt und eine Funktion vom Typ `Float -> String` liefert.
 Während der Funktionspfeil rechtsassoziativ ist, ist die Anwendung einer Funktion linksassoziativ.
-Das heißt, die Anwendung `cart 4 2.23` steht eigentlich für `(cart 4) 2.23`.
-Wir wenden also zuerst die Funktion `cart` auf das Argument `4` an.
-Wir erhalten dann eine Funktion, die noch einen `Float` als Argument erwartet.
-Diese Funktion wenden wir dann auf `2.23` an und erhalten schließlich einen `String`.
+Das heißt, die Anwendung `pluralize "Gegenstand" "Gegenstände" 3` steht eigentlich für `((pluralize "Gegenstand") "Gegenstände") 3`.
+Wir wenden also zuerst die Funktion `pluralize` auf das Argument `"Gegenstand"` an.
+Wir erhalten dann eine Funktion, die noch einen `String` und einen `Int` als Argumente erwartet.
+Diese Funktion wenden wir dann auf `"Gegenstände"` an und erhalten eine Funktion, die noch einen `Int` als Argument erwartet.
+Schließlich wenden wir diese Funktion auf `3` an und erhalten einen `String`.
 
 Die Idee, Funktionen mit mehreren Argumenten als Funktion zu repräsentieren, die ein Argument nimmt und eine Funktion liefert, wird als *Currying* bezeichnet.
 *Currying* ist nach dem amerikanischen Logiker Haskell Brooks Curry[^1] benannt (1900–1982), nach dem auch die Programmiersprache Haskell benannt ist.
 
-Die Definition von `cart` ist im Grunde nur eine vereinfachte Schreibweise der folgenden Definition.
+Die Definition von `pluralize` ist im Grunde nur eine vereinfachte Schreibweise der folgenden Definition.
 
 ``` elm
-cartL : Int -> Float -> String
-cartL =
-    \quantity ->
-        \price ->
-            "Summe ("
-                ++ items quantity
-                ++ "): "
-                ++ String.fromFloat price
+pluralizeLambda : Int -> Float -> String
+pluralizeLambda =
+    \singular ->
+        \plural ->
+            \quantity ->
+                if quantity == 1 then
+                    "1 " ++ singular
+
+                else
+                    String.fromInt quantity ++ " " ++ plural
 ```
 
-In dieser Form der Definition ist ganz explizit dargestellt, dass `cartL` eine Funktion ist, die ein Argument `quantity` nimmt und als Ergebnis wiederum eine Funktion liefert.
+In dieser Form der Definition ist ganz explizit dargestellt, dass `pluralizeLambda` eine Funktion ist, die ein Argument `singular` nimmt und als Ergebnis wiederum eine Funktion liefert.
 Um Schreibarbeit zu reduzieren, entsprechen alle Definitionen, die wir in Elm angeben, im Endeffekt diesem Muster.
-Wir können die Funktionen aber mit der Kurzschreibweise von `cart`, die auf die Verwendung der Lambda-Funktionen verzichtet, definieren.
+Wir können die Funktionen aber mit der Kurzschreibweise von `pluralize`, die auf die Verwendung der Lambda-Funktionen verzichtet, definieren.
 
-Mithilfe der Definition `cartL` können wir noch einmal illustrieren, dass die Funktionsanwendung linksassoziativ ist.
+Mithilfe der Definition `pluralizeLambda` können wir noch einmal illustrieren, dass die Funktionsanwendung linksassoziativ ist.
 
 ``` elm
-cartL 4 2.23
+pluralizeLambda "Gegenstand" "Gegenstände" 3
 =
-(cartL 4) 2.23
+((pluralizeLambda "Gegenstand") "Gegenstände") 3
 =
-((\quantity -> \price ->
-    "Summe (" ++ items quantity ++ "): " ++ String.fromFloat price)
-       4) 2.23
+(((\singular ->
+       \plural ->
+           \quantity ->
+               if quantity == 1 then
+                     "1 " ++ singular
+
+               else
+                   String.fromInt quantity ++ " " ++ plural)
+    "Gegenstand") "Gegenstände") 3
 =
-(\price ->
-    "Summe (" ++ items 4 ++ "): " ++ String.fromFloat price)
-          2.23
+((\plural ->
+      \quantity ->
+          if quantity == 1 then
+              "1 " ++ "Gegenstand"
+
+          else
+              String.fromInt quantity ++ " " ++ plural)
+    "Gegenstände") 3
 =
-"Summe (" ++ items 4 ++ "): " ++ String.fromFloat 2.23
+(\quantity ->
+     if quantity == 1 then
+         "1 " ++ "Gegenstand"
+
+     else
+         String.fromInt quantity ++ " " ++ "Gegenstände")
+    3
+=
+if 3 == 1 then
+    "1 " ++ "Gegenstand"
+
+else
+    String.fromInt 3 ++ " " ++ "Gegenstände"
+=
+String.fromInt 3 ++ " " ++ "Gegenstände"
+=
+"3 Gegenstände"
 ```
 
 Partielle Applikationen
 -----------------------
 
 Mit der ge*curry*ten Definition von Funktionen gehen zwei wichtige Konzepte einher.
-Das erste Konzept wird partielle Applikation oder partielle Anwendung genannt.
+Das erste Konzept wird **partielle Applikation** oder **partielle Anwendung** genannt.
 Funktionen in der ge*curry*ten Form lassen sich sehr leicht partiell applizieren.
 Applikation ist der Fachbegriff für das Anwenden einer Funktion auf konkrete Argumente.
 Eine partielle Applikation ist die Anwendung einer Funktion auf eine Anzahl von konkreten Argumenten, so dass der Anwendung noch weitere Argumente fehlen.
-Um zu illustrieren, was eine partielle Anwendung bedeutet, betrachten wir die Anwendung von `cartL` auf das Argument `4`.
+Um zu illustrieren, was eine partielle Anwendung bedeutet, betrachten wir die Anwendung von `pluralize` auf die Argumente `"Gegenstand"` und `"Gegenstände"`.
 
 ``` elm
-cartL 4
+pluralize "Gegenstand" "Gegenstände"
 =
-(\quantity -> \price ->
-    "Summe (" ++ items quantity ++ "): " ++ String.fromFloat price)
-      4
+(pluralize "Gegenstand") "Gegenstände"
 =
-\price ->
-    "Summe (" ++ items 4 ++ "): " ++ String.fromFloat price
+((\singular ->
+      \plural ->
+          \quantity ->
+              if quantity == 1 then
+                    "1 " ++ singular
+
+              else
+                  String.fromInt quantity ++ " " ++ plural)
+    "Gegenstand") "Gegenstände"
+=
+(\plural ->
+    \quantity ->
+        if quantity == 1 then
+            "1 " ++ "Gegenstand"
+
+        else
+            String.fromInt quantity ++ " " ++ plural)
+    "Gegenstände"
+=
+\quantity ->
+    if quantity == 1 then
+        "1 " ++ "Gegenstand"
+
+    else
+        String.fromInt quantity ++ " " ++ "Gegenstände")
 ```
 
-Das heißt, wenn wir die Funktion `cartL` partiell auf das Argument `4` anwenden, erhalten wir eine Funktion, die noch den Preis erwartet und einen Text liefert, der vier Gegenstände enthält.
-Wir können die Funktion `cart` genau auf diese Weise partiell anwenden.
+Das heißt, wenn wir die Funktion `pluralize` partiell auf die Argumente `"Gegenstand"` und `"Gegenstände"` anwenden, erhalten wir eine Funktion, die noch die Anzahl erwartet und einen Text liefert.
+Wir können die Funktion `pluralize` genau auf diese Weise partiell anwenden.
 Wir betrachten das folgende Beispiel.
 
 ``` elm
 items : List String
 items =
-    List.map (cart 4) [ 2.23, 1.99, 9.99 ]
+    List.map (pluralize "Gegenstand" "Gegenstände") [ 4, 2, 10 ]
 ```
 
-Die partielle Applikation `cart 4` nimmt noch ein weiteres Argument, nämlich den Preis.
+Die partielle Applikation `pluralize "Gegenstand" "Gegenstände"` nimmt noch ein weiteres Argument, nämlich die Anzahl.
 Daher können wir sie mithilfe von `map` auf alle Elemente einer Liste anwenden.
-Wir erhalten dann die Beschreibungen von Einkaufswagen, die alle jeweils vier Elemente enthalten und unterschiedliche Preise haben.
+Wir erhalten dann die Beschreibungen von mehreren Gegenständen.
 
 Piping
 ------
@@ -159,7 +218,7 @@ Neben dieser Definition enthält die Elm-Implementierung noch die folgende Angab
 infixl 0 |>
 ```
 
-Das heißt, der Operator hat die Präzedenz `0` und ist links-assoziativ.
+Das heißt, der Operator hat die Präzedenz `0` und ist linksassoziativ.
 
 Neben `|>` stellt Elm auch einen Operator `(<|) : (a -> b) -> a -> b` zur Verfügung.
 Die Operatoren `<|` und `|>` werden gern verwendet, um Klammern zu sparen.
@@ -169,8 +228,17 @@ Es ist relativ verbreitet, die Operatoren `<|` und `|>` zu nutzen.
 Um existierenden Elm-Code lesen zu können, sollte man die Operatoren daher kennen.
 In vielen Fällen wird der Code durch die Verwendung dieser Operatoren aber nicht unbedingt lesbarer.
 Daher sollten die Operatoren vor allem genutzt werden, wenn es sich tatsächlich um eine längere Sequenz von Transformationen wie in der Definition von `sumOfAdultAges` handelt.
+Der Operator `<|` kann auch eingesetzt werden, wenn der Ausdruck, der "geklammert" wird, mehrere Zeilen überspannt.
+In diesem Fall ist es häufig nicht so einfach, öffnende und schließende Klammer zu finden, daher kann es sinnvoll sein, den Operator `<|` zu verwenden.
 Ansonsten sollte man die Operatoren aber eher vermeiden.
-Leider ist die Verwendung der Operatoren `<|` und `|>` auch in solchen Fällen, in denen die Verwendung den Code eher schlechter lesbar macht, in Elm relativ weit verbreitet.
+Leider ist die Verwendung der Operatoren `<|` und `|>` auch in solchen Fällen, in denen die Verwendung den Code nicht unbedingt verbessert, in Elm relativ weit verbreitet.
+
+{% include callout-info.html content="
+Auch in Haskell ist die Verwendung des entsprechenden Operators `$ :: (a -> b) -> a -> b` recht weit verbreitet und führt regelmäßig dazu, dass Anfänger\*innen, einfachen Haskell-Code nicht lesen können.
+" %}
+
+Der Operator `|>` wird häufig mit der funktionalen Sprache [F#](https://en.wikipedia.org/wiki/F_Sharp_(programming_language)) assoziiert.
+Der Operator wurde aber laut der Publikation "The Early History of F#"[^2] im Jahr 2003 zur Standardbibliothek von F# hinzufügt, 1994 aber schon für die Programmiersprache [ML](https://en.wikipedia.org/wiki/ML_(programming_language)) definiert.
 
 
 Eta-Reduktion und -Expansion
@@ -179,16 +247,16 @@ Eta-Reduktion und -Expansion
 Mit der gecurryten Schreibweise geht noch ein weiteres wichtiges Konzept einher, die Eta-Reduktion bzw. die Eta-Expansion.
 Dies sind die wissenschaftlichen Namen für Umformungen eines Ausdrucks.
 Bei der Reduktion lässt man Argumente einer Funktion weg und bei der Expansion fügt man Argumente hinzu.
-Im Abschnitt [Wiederkehrende rekursive Muster](#wiederkehrende-rekursive-muster) haben wir die Funktion `map` mittels `map viewUser list` auf die Funktion `viewUser` und die Liste `list` angewendet.
+Im Abschnitt [Wiederkehrende rekursive Muster](functional-abstractions.md#wiederkehrende-rekursive-muster) haben wir die Funktion `map` mittels `map viewUser list` auf die Funktion `viewUser` und die Liste `list` angewendet.
 Wenn wir eine Lambda-Funktion verwenden, können wir den Aufruf aber auch als `map (\user -> viewUser user) list` definieren.
 Diese beiden Aufrufe verhalten sich exakt gleich.
 Den Wechsel von `\user -> viewUser user` zu `viewUser` bezeichnet man als Eta-Reduktion.
 Den Wechsel von `viewUser` zu `\user -> viewUser user` bezeichnet man als Eta-Expansion.
-Ganz allgemein kann man durch die Anwendung der Eta-Reduktion einen Ausdruck der Form `\x -> f x` in `f` umwandeln, wenn `f` eine Funktion ist, die mindestens ein Argument nimmt.
+Ganz allgemein kann man durch die Anwendung der Eta-Reduktion einen Ausdruck der Form `\x -> f x` in `f` umwandeln.
 Durch die Eta-Expansion kann man einen Ausdruck der Form `f` in `\x -> f x` umwandeln, wenn `f` eine Funktion ist, die mindestens ein Argument nimmt.
 
 Das Konzept der Eta-Reduktion und -Expansion lässt sich aber nicht nur auf Lambda-Funktionen sondern ganz allgemein auf die Definition von Funktionen anwenden.
-Als Beispiel betrachten wir noch einmal die folgende Definition aus dem  Abschnitt [Wiederkehrende rekursive Muster](#wiederkehrende-rekursive-muster).
+Als Beispiel betrachten wir noch einmal die folgende Definition aus dem  Abschnitt [Wiederkehrende rekursive Muster](functional-abstractions.md#wiederkehrende-rekursive-muster).
 
 ``` elm
 viewUsers : List User -> List (Html msg)
@@ -342,6 +410,8 @@ sumOfAdultAges =
 Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funktion `List.map .age` angewendet, dann wird `List.filter (\age -> age >>= 18)` angewendet und zu guter Letzt `List.sum`.
 
 [^1]: <https://en.wikipedia.org/wiki/Haskell_Curry>
+
+[^2]: [The early history of F#](https://fsharp.org/history/hopl-final/hopl-fsharp.pdf) - Proceedings of the ACM on Programming Languages, Volume 4, Issue HOPL (2020): 1–58
 
 <div class="nav">
     <ul class="nav-row">
