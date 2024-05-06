@@ -57,7 +57,9 @@ filter : (a -> Bool) -> List a -> List a
 
 ist nicht klar, ob das Prädikat für diejenigen Elemente `True` liefert, die in der Liste verbleiben sollen, oder für die Elemente, die aus der Liste entfernt werden sollen.
 
-Wir können in diesem Beispiel auch einen Record verwenden, um die Bedeutung des Typs zu signalisieren.
+Wir haben im Abschnitt [Records](basics.md#records) gelernt, dass wir einen Record nutzen können, um Argumenten eine Semantik zuzuordnen.
+Diese Art des Tricks können wir tatsächlich auch für Ergebnistypen nutzen.
+Wir können zum Beispiel die folgenden Definition von `filter` nutzen, um die Bedeutung des Typs `Bool` zu signalisieren.
 Hier erkennt man aber gut, dass dieser Ansatz seine Grenzen hat.
 
 ```elm
@@ -67,7 +69,7 @@ filter : (a -> { isGood : Bool }) -> List a -> List a
 Wenn wir stattdessen den folgenden Datentyp definieren
 
 ```elm
-type Filter
+type Decision
     = Discard
     | Keep
 ```
@@ -75,7 +77,7 @@ type Filter
 und diesen in der Definition von `filter` nutzen
 
 ```elm
-filter : (a -> Filter) -> List a -> List a
+filter : (a -> Decision) -> List a -> List a
 ```
 
 drückt das Ergebnis der Funktion, die wir an `filter` übergeben, sehr explizit aus, ob wir das Element behalten oder verwerfen möchten.
@@ -98,8 +100,8 @@ startWithA users =
 In diesem Code ist sehr explizit, wann ein Element in der Liste verbleibt und wann es entfernt wird.
 Das Beispiel illustriert aber auch gut die Grenzen dieses Ansatzes.
 Durch die Verwendung von selbstdefinierten Aufzählungstypen müssen an vielen Stellen Umwandlungen zwischen diesen Typen implementiert werden.
-Im Beispiel `startWithA` muss etwa der Typ `Bool`, den die Funktion `String.startsWith` liefert in den Typ `Filter` der Funktion `filter` umgewandelt werden.
-Das heißt, wie häufig in der Programmierung gibt es einen _Tradeoff_  zwischen Explizitheit und Komplexität des Codes.
+Im Beispiel `startWithA` muss etwa der Typ `Bool`, den die Funktion `String.startsWith` liefert in den Typ `Decision` der Funktion `filter` umgewandelt werden.
+Das heißt, wie häufig in der Programmierung, gibt es einen _Tradeoff_  zwischen Explizitheit und Komplexität des Codes.
 
 
 ## Impossible States
