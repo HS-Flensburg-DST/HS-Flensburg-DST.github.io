@@ -738,6 +738,7 @@ hasFullAge user =
 Diese Funktion erhält einen Record mit dem Feldern `firstName`, `lastName` und `age` als Argument und liefert einen Wert vom Typ `Bool`.
 Im Record haben die Felder `firstName` und `lastName` Einträge vom Typ `String` und das Feld `age` hat einen Eintrag vom Typ `Int`.
 Der Ausdruck `user.age` ist eine Kurzform für `.age user`, das heißt, `.age` ist eine Funktion, die einen entsprechenden Record erhält und einen Wert vom Typ `Int`, nämlich das Alter zurückliefert.
+Man nennt eine Funktion wie `.age` einen **Record-Selektor**, da die Funktion aus einem Record einen Teil selektiert.
 Das heißt, hinter dem Ausdruck `user.age` steht eigentlich auch nur eine Funktionsanwendung, nur dass es eine etwas vereinfachte Syntax für diesen Aufruf gibt, die näher an der Syntax ist, die wir aus anderen Sprachen gewohnt sind.
 
 Es ist recht umständlich, den Typ des Nutzers in einem Programm bei jeder Funktion explizit anzugeben.
@@ -808,7 +809,20 @@ fullName { firstName, lastName } =
     firstName ++ " " ++ lastName
 ```
 
-Diese Variante ist relativ unflexibel, da wir nicht mehr auf den gesamten Record zugreifen können und unsere Funktion zum Beispiel nicht mehr direkt auf die _Update_-Syntax umstellen können.
+Wir müssen dabei nicht auf alle Felder des Records _Pattern Matching_ machen, es ist auch möglich, nur einige Felder aufzuführen.
+Das heißt, auch die folgende Definition ist erlaubt.
+
+
+``` elm
+firstNames : User -> List String
+firstNames { firstName } =
+    List.words firstName
+```
+
+_Pattern Matching_ auf Records eignet sich sehr gut, wenn wir die Felder des Records nur lesen möchten.
+Durch das _Pattern Matching_ können wir den Code kürzen, da die Verwendung der Record-Selektoren länger ist.
+Außerdem kann es sehr sinnvoll sein, _Pattern Matching_ auf einem Record zu verwenden, wenn es schwierig ist, für den gesamten Record einen sinnvollen Namen zu vergeben.
+Ein solches Beispiel werden wir zum Beispiel weiter unten bei der Funktion `rotate` kennenlernen.
 
 Wenn wir für einen Record ein Typsynonym einführen, gibt es eine Kurzschreibweise, um einen Record zu erstellen.
 Um einen Wert vom Typ `User` zu erstellen, können wir zum Beispiel auch `User "John" "Doe" 20` schreiben.
