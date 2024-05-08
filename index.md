@@ -151,4 +151,6 @@ custom_css: toc
 
 - 15.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
 
-### A. [Programmierregeln](rules.md)
+### A. [Programmierregeln](linter-rules.md)
+
+### B. [Versionskontrolle](version-control.md)
