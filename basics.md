@@ -970,6 +970,14 @@ Das heißt, Elm versucht explizit längere Variablennamen zu fördern.
 Unabhängig davon sollte man bei der Benennung die Größe des Gültigkeitsbereichs (_Scope_) einer Variable beachten.
 Das heißt, bei einer Variable, die einen sehr kleinen _Scope_ hat, kann ein Name wie `x` angemessen sein, während er es bei einer Variable mit größerem _Scope_ auf jeden Fall nicht ist.
 
+Für Hilfsfunktionen nutzt man in Haskell gern den Suffix `'`.
+Das heißt, wenn der Name `primes` schon vergeben ist, nutzt man `primes'`.
+
+{% include callout-info.html content="
+In Elm ist das Zeichen `'` als Bestandteil von Bezeichnern nicht erlaubt.
+Stattdessen nutzt man den Unterstrich, das heißt, man nutzt Namen wir `primes_`.
+" %}
+
 
 ### Grundlegendes zur Benennung
 
