@@ -1,11 +1,14 @@
 ---
 layout: toc
 title: Inhaltsverzeichnis
+lang: de
 custom_css: toc
 ---
 
-### 1. [Vorwort](preface.md)
+{{ site.active_lang }}
 
+
+### 1. [Vorwort](preface.md)
 
 ### 2. [Grundlagen](basics.md)
 
@@ -24,9 +27,9 @@ custom_css: toc
 - 2.4. [Funktionsdefinitionen](basics.md#funktionsdefinitionen)
 
     - 2.4.1. [Konditionale](basics.md#konditionale)
-
+        
     - 2.4.2. [Fallunterscheidungen](basics.md#fallunterscheidungen)
-
+            
     - 2.4.3. [Mehrstellige Funktionen](basics.md#mehrstellige-funktionen)
 
 - 2.5. [Weitere Datentypen](basics.md#weitere-datentypen)
@@ -40,8 +43,6 @@ custom_css: toc
     - 2.5.4. [Listen](basics.md#listen)
 
 - 2.6. [Benennungsstil](basics.md#benennungsstil)
-
-- 2.7. [Grundlegendes zur Benennung](basics.md#grundlegendes-zur-benennung)
 
 ### 3. [Eine Erste Anwendung](first-application.md)
 
@@ -79,23 +80,19 @@ custom_css: toc
 
 ### 7. [Modellierung der Elm-Architektur](architecture.md)
 
-### 8. [Design von Datentypen](design.md)
+### 8. [Abonnements](subscriptions.md)
 
-- 8.1. [_Boolean Blindness_](design.md#boolean-blindness)
+- 8.1. [Zeit](subscriptions.md#zeit)
 
-- 8.2. [_Impossible States_](design.md#impossible-states)
+- 8.2. [Decoder](subscriptions.md#decoder)
 
-### 9. [Strukturierung einer Anwendung](structure.md)
+- 8.3. [Tasten](subscriptions.md#tasten)
 
-- 9.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+### 9. [Design von Datentypen](design.md)
 
-- 9.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+- 9.1. [_Boolean Blindness_](design.md#boolean-blindness)
 
-- 9.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
-
-- 9.4. [Modell strukturieren](structure.md#modell-strukturieren)
-
-- 9.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
+- 9.2. [_Impossible States_](design.md#impossible-states)
 
 ### 10. [Funktionen höherer Ordnung](higher-order.md)
 
@@ -109,52 +106,40 @@ custom_css: toc
 
 - 10.5. [Funktionskomposition](higher-order.md#funktionskomposition)
 
-### 11. [Decoder](decoder.md)
+### 11. [Kommandos](commands.md)
 
-### 12. [Abonnements](subscriptions.md)
+- 11.1. [Zufall](commands.md#zufall)
 
-- 12.1. [Zeit](subscriptions.md#zeit)
+- 11.2. [HTTP-Anfragen](commands.md#http-anfragen)
 
-- 12.3. [Tasten](subscriptions.md#tasten)
+    - 11.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
 
-### 13. [Kommandos](commands.md)
+    - 11.2.2. [Weitere Aspekte](commands.md#weitere-aspekte)
 
-- 13.1. [Zufall](commands.md#zufall)
+### 12. [Strukturierung einer Anwendung](structure.md)
 
-- 13.2. [HTTP-Anfragen](commands.md#http-anfragen)
+- 12.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
 
-    - 13.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
+- 12.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
 
-    - 13.2.2. [Weitere Aspekte](commands.md#weitere-aspekte)
+- 12.3. [Modell strukturieren](structure.md#modell-strukturieren)
 
-### 14. [Faltungen](folds.md)
+- 12.4. [Fehlerbehandlung](structure.md#fehlerbehandlung)
 
-- 14.1. [Rechtsfaltung für Listen](folds.md#rechtsfaltung-für-listen)
+### 13. [Abstraktionen](abstractions.md)
 
-- 14.2. [Linksfaltungen für Listen](folds.md#linksfaltung-für-listen)
+- 13.1. [Funktoren](abstractions.md#funktoren)
 
-- 14.3. [Faltungen auf anderen Datentypen](folds.md#faltungen-auf-anderen-datentypen)
+- 13.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
-### 15. [Abstraktionen](abstractions.md)
+- 13.3. [Monaden](abstractions.md#monaden)
 
-- 15.1. [Funktoren](abstractions.md#funktoren)
+### 14. [Weitere Themen](final-topics.md)
 
-- 15.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
+- 14.1. [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen)
 
-- 15.3. [Monaden](abstractions.md#monaden)
+- 14.2. [Interop mit JavaScript](final-topics.md#interop-mit-javascript)
 
-### 16. [Weitere Aspekte einer Elm-Anwendung](other-elm-topics.md)
+- 14.3. [Umsetzung einer größeren Anwendung](final-topics.md#umsetzung-einer-größeren-anwendung)
 
-- 16.1. [Spezielle Typvariablen](other-elm-topics.md#spezielle-typvariablen)
-
-- 16.2. [Interop mit JavaScript](other-elm-topics.md#interop-mit-javascript)
-
-- 16.3. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung)
-
-<!-- ### 17. [Weitere Aspekte einer Web-Anwendung](other-topics.md)
-
-- 17.1. [Lokalisierte Zeit](other-topics.md#lokalisierte-zeit) -->
-
-### A. [Programmierregeln](linter-rules.md)
-
-### B. [Versionskontrolle](version-control.md)
+### A. [Programmierregeln](rules.md)

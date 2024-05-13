@@ -157,6 +157,15 @@ Dort findet sich zum Beispiel eine Erklärung des *virtual DOM*, der dafür sorg
 Das Kapitel stellt außerdem die Funktion `lazy : (a -> Html msg) -> a -> Html msg` vor, die Caching von Funktionsaufrufen implementiert.
 Das heißt, wenn man eine Funktion hat, die eine HTML-Struktur liefert, kann man mithilfe von `lazy` dafür sorgen, dass diese Funktion nur ausgeführt wird, wenn sich die Argumente der Funktion im Vergleich zum vorherigen Aufruf geändert haben.
 
+
+<!-- Weitere Bibliotheken
+--------------------
+
+Für die Entwicklung einer größeren Anwendung gibt es eine ganze Reihe von Bibliotheken, die hilfreich sein können.
+
+- Das Paket `elm-community/list-extra` stellt -->
+
+
 [^1]: <https://github.com/elm-lang/elm-compiler/issues/38>
 
 [^2]: Alternativ kann man mithilfe des Parameters `-–output` auch dafür sorgen, dass der JavaScript-Code in eine JavaScript-Datei geschrieben wird.

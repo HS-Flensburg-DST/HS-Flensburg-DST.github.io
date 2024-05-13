@@ -24,6 +24,7 @@ Daher versucht man auch in anderen Programmiersprachen den Teil der Anwendung, d
 Zeit
 ----
 
+Als Beispiel für ein Abonnement wollen wir in diesem Abschnitt eine Uhr implementieren.
 Um über die aktuelle Zeit informiert zu werden, müssen wir zuerst das entsprechende Elm-Paket zu unserem Projekt hinzufügen.
 Dazu führen wir das folgende Kommando aus.
 
@@ -358,183 +359,6 @@ Auf diese Weise können wir in einer Anwendung über mehrere Ereignisse informie
 Im folgenden Abschnitt werden wir zum Beispiel lernen, wie man sich über Tastendrücke informieren lassen kann.
 Mithilfe der Funktion `batch` kann man dann zum Beispiel informiert werden, wenn ein Interval vergangen ist oder wenn eine Taste gedrückt wurde.
 
-Decoder
--------
-
-Bei einigen Arten von Abonnements aber auch bei anderen Konzepten, die wir später kennenlernen werden, müssen Daten im JSON-Format in einen stärker strukturierten Elm-Datentyp umgewandelt werden.
-Um diese Aufgabe umzusetzen, werden in Elm `Decoder` verwendet.
-
-![You shall not parse, syntax error on line 1](/assets/images/parse-error.png){: width="400px" .centered}
-
-Ein `Decoder` ist eine Elm-spezifische Variante des allgemeineren Konzeptes eines Parser-Kombinators.
-Parser-Kombinatoren sind eine leichtgewichtige Implementierung von Parsern.
-Ein Parser ist eine Anwendung, die einen String erhält und prüft, ob der String einem vorgegebenen Format folgt.
-Jeder Compiler nutzt zum Beispiel einen Parser, um Programmtext auf syntaktische Korrektheit zu prüfen.
-Neben der Überprüfung, ob der String einem Format entspricht, wird der String für gewöhnlich auch noch in ein strukturiertes Format umgewandelt.
-Im Fall von Elm, wird der String zum Beispiel in Werte von algebraischen Datentypen umgewandelt.
-In einer objektorientierten Programmiersprache würde ein Parser einen String erhalten und ein Objekt liefern, das eine strukturierte Beschreibung des Strings zur Verfügung stellt.
-
-Um in einer Elm-Anwendung einen `Decoder` zu nutzen, müssen wir zuerst den folgenden Befehl ausführen.
-
-```console
-elm install elm/json
-```
-
-Die Bibliothek `elm/json` ist eine eingebettete domänenspezifische Sprache und stellt eine deklarative Technik dar, um `Decoder` zur Verarbeitung von JSON zu beschreiben.
-
-Der Typkonstruktor `Decoder` ist im Modul `Json.Decode`[^1] definiert.
-Das Modul stellt eine Funktion
-
-```elm
-decodeString : Decoder a -> String -> Result Error a
-```
-
-zur Verfügung.
-Mithilfe dieser Funktion kann ein `Decoder` auf eine Zeichenkette angewendet werden.
-Ein `Decoder a` liefert einen Wert vom Typ `a` als Ergebnis nach dem Parsen.
-Wenn wir einen `Decoder a` mit `decodeString` auf eine Zeichenkette anwenden, erhalten wir entweder einen Fehler und eine Fehlermeldung mit einer Fehlerbeschreibung oder wir erhalten einen Wert vom Typ `a`.
-Daher ist der Ergebnistyp der Funktion `decodeString` `Result Error a`.
-
-Das Modul `Json.Decode` stellt die folgenden primitiven `Decoder` zur Verfügung.
-
-``` elm
-string : Decoder String
-int : Decoder Int
-float : Decoder Float
-bool : Decoder Bool
-```
-
-Um zu illustrieren, wie diese `Decoder` funktionieren, schauen wir uns die folgenden Beispiele an.
-Der Aufruf
-
-```elm
-Decode.decodeString Decode.int "42"
-```
-
-liefert als Ergebnis `Ok 42`.
-Das heißt, der `String` `"42"` wird erfolgreich mit dem `Decoder` `int` verarbeitet und liefert als Ergebnis den Wert `42`. Der Aufruf
-
-```elm
-Decode.decodeString Decode.int "a"
-```
-
-liefert dagegen als Ergebnis
-
-```elm
-Err (Failure ("This is not valid JSON! Unexpected token a in JSON at position 0"))
-```
-
-da der `String` `"a"` nicht der Spezifikation des Formates entspricht, da es sich nicht um einen `Int` handelt.
-
-Die Idee der Funktion `map`, die wir für Listen kennengelernt haben, lässt sich auch auf andere Datenstrukturen anwenden. Genauer gesagt, kann man `map` für die meisten Typkonstruktoren definieren.
-Da `Decoder` ein Typkonstruktor ist, können wir `map` für `Decoder` definieren.
-
-Elm stellt die folgende Funktion für `Decoder` zur Verfügung.
-
-```elm
-map : (a -> b) -> Decoder a -> Decoder b
-```
-
-Diese Funktion kann zum Beispiel genutzt werden, um das Ergebnis eines `Decoder` in einen Konstruktor einzupacken.
-Wir nehmen einmal an, dass wir den folgenden – zugegebenermaßen etwas artifiziellen – Datentyp in unserer Anwendung nutzen.
-
-``` elm
-type alias User =
-    { age : Int }
-```
-
-Wir können nun auf die folgende Weise einen `Decoder` definieren, der eine Zahl parst und als Ergebnis einen Wert vom Typ `User` zurückliefert.
-
-``` elm
-decodeUser : Decoder User
-decodeUser =
-    Decode.map User Decode.int
-```
-
-Wir sind nun nur in der Lage einen JSON-Wert, der nur aus einer Zahl besteht, in einen Elm-Datentyp umzuwandeln.
-In den meisten Fällen wird das Alter des Nutzers auf JSON-Ebene nicht als einzelne Zahl dargestellt, sondern zum Beispiel durch folgendes JSON-Objekt.
-
-```json
-{
-  "age": 18
-}
-```
-
-Auf diese Struktur können wir unseren `Decoder` nicht anwenden, da der `Decoder` `int` nur Zahlen parsen kann.
-Um dieses Problem zu lösen, nutzt man in Elm die folgende Funktion.
-
-```elm
-field : String -> Decoder a -> Decoder a
-```
-
-Mit dieser Funktion kann ein `Decoder` auf ein einzelnes Feld einer JSON-Struktur angewendet werden.
-Das heißt, der folgende `Decoder` ist in der Lage die oben gezeigte JSON-Struktur zu verarbeiten.
-
-``` elm
-decodeUser : Decoder User
-decodeUser =
-    Decode.map User (Decode.field "age" Decode.int)
-```
-
-Der Aufruf
-
-```elm
-Decode.decodeString decodeUser "{ \"age\": 18 }"
-```
-
-liefert in diesem Fall als Ergebnis `Ok { age = 18 }`.
-Das heißt, dieser Aufruf ist in der Lage, den `String`, der ein JSON-Objekt darstellt, in einen Elm-Record zu überführen.
-Ein Parser verarbeitet einen `String` häufig so, dass Leerzeichen für das Ergebnis keine Rolle spielen.
-So liefert der Aufruf
-
-```elm
-Decode.decodeString decodeUser "{\t   \"age\":\n     18}"
-```
-
-etwa das gleiche Ergebnis wie der Aufruf ohne die zusätzlichen Leerzeichen.
-
-In den meisten Fällen hat die JSON-Struktur, die wir verarbeiten wollen, nicht nur ein Feld, sondern mehrere.
-Für diesen Zweck stellt Elm die Funktion
-
-```elm
-map2 : (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c
-```
-
-zur Verfügung, mit der wir zwei `Decoder` zu einem kombinieren können.
-
-Wir erweitern unseren Datentyp wie folgt.
-
-``` elm
-type alias User =
-    { name : String, age : Int }
-```
-
-Nun definieren wir einen `Decoder` mithilfe von `map2` und kombinieren dabei einen `Decoder` für den `Int` mit einem `Decoder` für den `String`.
-
-``` elm
-decodeUser : Decoder User
-decodeUser =
-    Decode.map2
-        User
-        (Decode.field "name" Decode.string)
-        (Decode.field "age" Decode.int)
-```
-
-Der Aufruf
-
-```elm
-decodeString decodeUser "{ \"name\": \"Max Mustermann\", \"age\": 18}"
-```
-
-liefert in diesem Fall das folgende Ergebnis.
-
-```elm
-Ok { age = 18, name = "Max Mustermann" }
-```
-
-Der `Decoder` `decodeUser` illustriert wieder gut die deklarative Vorgehensweise.
-Zur Implementierung des `Decoder`s beschreiben wir, welche Felder wir aus den JSON-Daten verarbeiten wollen und wie wir aus den Ergebnissen der einzelnen Parser das Endergebnis konstruieren.
-Wir beschreiben aber nicht, wie genau das Verarbeiten durchgeführt wird.
 
 Tasten
 ------
@@ -579,7 +403,7 @@ type Key
 Diese Definition ist aber schlechter Stil, da wir an dieser Stelle unnötigerweise die Taste mit ihrer Interpretation koppeln.
 
 Um die Funktion `onKeyDown` nutzen zu können, müssen wir einen `Decoder` definieren.
-Wir definieren den folgenden `Decoder`, der abhängig davon, welchen `String` das Feld mit dem Namen `"key"`[^2] enthält, einen Wert vom Typ `Key`.
+Wir definieren den folgenden `Decoder`, der abhängig davon, welchen `String` das Feld mit dem Namen `"key"`[^2] enthält, einen Wert vom Typ `Key` liefert.
 
 ``` elm
 keyDecoder : Decoder Key
@@ -673,8 +497,8 @@ Wir werden diese Aspekte der Strukturierung einer Anwendung noch einmal gesammel
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="structure.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="decoder.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="higher-order.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="commands.html">weiter</a></li>
     </ul>
 </div>

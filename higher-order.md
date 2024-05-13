@@ -415,8 +415,8 @@ Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funkt
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="subscriptions.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="structure.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="commands.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="decoder.html">weiter</a></li>
     </ul>
 </div>
