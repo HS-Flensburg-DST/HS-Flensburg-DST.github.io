@@ -21,9 +21,6 @@ Man kann sich leicht vorstellen, dass es recht schwierig ist, Fehler zu finden, 
 wiederholte Aufrufe der gleichen Methode mit identischen Argumenten immer wieder andere Ergebnisse liefern.
 Daher versucht man auch in anderen Programmiersprachen den Teil der Anwendung, der nicht referentiell transparent ist, möglichst von dem Teil zu trennen, der referentiell transparent ist.
 
-Zeit
-----
-
 Als Beispiel für ein Abonnement wollen wir in diesem Abschnitt eine Uhr implementieren.
 Um über die aktuelle Zeit informiert zu werden, müssen wir zuerst das entsprechende Elm-Paket zu unserem Projekt hinzufügen.
 Dazu führen wir das folgende Kommando aus.
@@ -356,144 +353,9 @@ main =
 Zum Abschluss soll hier noch die Funktion `batch : List (Sub msg) -> Sub msg` vorgestellt werden.
 Diese Funktion kann genutzt werden, um eine Liste von Abonnements zu einem Abonnement zusammenzufassen.
 Auf diese Weise können wir in einer Anwendung über mehrere Ereignisse informiert werden.
-Im folgenden Abschnitt werden wir zum Beispiel lernen, wie man sich über Tastendrücke informieren lassen kann.
+Man kann über ein Abonnement zum Beispiel auf Tastendrücke reagieren.
 Mithilfe der Funktion `batch` kann man dann zum Beispiel informiert werden, wenn ein Interval vergangen ist oder wenn eine Taste gedrückt wurde.
 
-
-Tasten
-------
-
-Wir wollen uns nun eine Anwendung von `Decoder`n anschauen und zwar wollen wir auf die Eingabe einer Taste in unserer Anwendung horchen.
-Als Beispiel wollen wir einen einfachen Zähler implementieren, bei dem es möglich ist, den Zähler mithilfe der Pfeiltasten zu erhöhen oder zu erniedrigen.
-Zu diesem Zweck müssen wir über alle Tastendrücke informiert werden.
-Die Funktion
-
-```elm
-onKeyDown : Decoder msg -> Sub msg
-```
-
-aus dem Modul `Browser.Events` erlaubt es uns, auf _KeyDown_-Ereignisse zu reagieren.
-Der `Decoder`, den wir übergeben, wandelt die JSON-Struktur, die bei einem Tastendruck geliefert wird, in einen Elm-Wert um.
-Zur Modellierung der Tastendrücke als Elm-Wert definieren wir den folgenden Aufzählungstyp.
-
-```elm
-type Key
-    = Up
-    | Down
-    | Unknown
-```
-
-Wir wollen in unserer Anwendung Pfeiltasten _Up_ und _Down_ verarbeiten, daher enthält der Datentyp `Key` die Konstruktoren `Up` und `Down`.
-Da wir von Elm über alle Tastendrücke informiert werden, also auch über Tastendrücke, die für die Anwendung irrelevant sind, fügen wir einen Fall `Unknown` hinzu, den wir für sonstige Tastendrücke nutzen werden.
-
-{% include callout-important.html content="Ein Datentyp wie `Key` sollte die tatsächlich gedrückten Tasten modellieren und nicht deren Semantik.
-Die Semantik der Tastendrücke sollte erst in der `update`-Funktion interpretiert werden." %}
-
-Die Konstruktoren `Up` und `Down` beschreiben zum Beispiel nur, welche Tasten gedrückt wurden.
-Welche Aktion diese Tasten auslösen, werden wir erst in der `update`-Funktion implementieren.
-Alternativ könnten wir auch den folgenden Datentyp definieren, der bereits eine Semantik in den Namen der Konstruktoren kodiert.
-
-```elm
-type Key
-    = IncreaseCounter
-    | DecreaseCounter
-    | Unknown
-```
-
-Diese Definition ist aber schlechter Stil, da wir an dieser Stelle unnötigerweise die Taste mit ihrer Interpretation koppeln.
-
-Um die Funktion `onKeyDown` nutzen zu können, müssen wir einen `Decoder` definieren.
-Wir definieren den folgenden `Decoder`, der abhängig davon, welchen `String` das Feld mit dem Namen `"key"`[^2] enthält, einen Wert vom Typ `Key` liefert.
-
-``` elm
-keyDecoder : Decoder Key
-keyDecoder =
-    let
-        toKey string =
-            case string of
-                "ArrowUp" ->
-                    Up
-
-                "ArrowDown" ->
-                    Down
-
-                _ ->
-                    Unknown
-    in
-    Decode.map toKey (Decode.field "key" Decode.string)
-```
-
-Diesen `Decoder` können wir nun nutzen, um in unserer Anwendung auf Tastendrücke zu lauschen.
-Wir werden mit hoher Wahrscheinlichkeit neben den Tastendrücken später noch weitere Nachrichten in unserer Anwendung verarbeiten.
-Daher definieren wir einen Nachrichtentyp, der als eine Ausprägung einen Tastendruck enthält.
-
-```elm
-type Msg
-    = HandleKey Key
-```
-
-Auf Grundlagen dieses Nachrichtentyps können wir nun eine Anwendung definieren, die mithilfe von Tastendrücken einen Zähler hoch- bzw. runterzählt.
-
-``` elm
-type alias Model =
-    Int
-
-
-update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        HandleKey key ->
-            updateKey key model
-
-
-updateKey : Key -> Model -> Model
-updateKey key model =
-    case key of
-        Up ->
-            model + 1
-
-        Down ->
-            model - 1
-
-        Unknown ->
-            model
-
-
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = \_ -> ( 0, Cmd.none )
-        , subscriptions = \_ -> Sub.map Pressed (onKeyDown keyDecoder)
-        , view = view
-        , update = \msg model -> ( update msg model, Cmd.none )
-        }
-```
-
-Die `view`-Funktion stellt einfach den Zähler als Text in einer HTML-Struktur dar.
-
-Wir wollen an dieser Stelle noch kurz eine alternative, aber schlechtere Strukturierung des Datentyps `Msg` diskutieren.
-Wir hätten auch den folgenden flachen Nachrichtentyp definieren können.
-
-```elm
-type Msg
-    = Up
-    | Down
-    | Unknown
-```
-
-Wenn wir später weitere Nachrichten zu unserer Anwendung hinzufügen wollen, fügen wir dann einfach weitere Konstruktoren zum Datentyp `Msg` hinzu.
-
-{% include callout-important.html content="Die Verwendung eines solchen flachen Nachrichtentyps hat mehrere Nachteile und sollte vermieden werden." %}
-
-Zuerst einmal müsste die Funktion `keyDecoder` nun den Typ `Decoder Msg` erhalten.
-Das heißt, wir verlieren die statische Information, dass der `keyDecoder` auch wirklich nur einen `Key` liefert.
-Solche statischen Informationen sind aber für eine wartbare Codebasis unerlässlich.
-Durch diesen alternativen `Msg`-Datentyp verlieren wir auch die Möglichkeit eine Funktion wie `updateKey` aus der Definition von `update` herauszuziehen.
-Wir werden diese Aspekte der Strukturierung einer Anwendung noch einmal gesammelt im Kapitel [Strukturierung einer Anwendung](structure.md) diskutieren.
-
-[^1]: Dieses Modul wird hier mittels `import Json.Decode as Decode exposing (Decoder)` importiert.
-
-[^2]: Unter <https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key> lässt sich überprüfen, welchen Wert dieses Feld beim Druck einer bestimmten Taste annimmt.
 
 <div class="nav">
     <ul class="nav-row">
