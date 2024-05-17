@@ -1,7 +1,15 @@
 ---
 layout: post
-title: "Decoder"
+title: "JSON-Daten"
 ---
+
+Die Kommunikation mit einem Server läuft über ein Austauschformat, zumeist JSON oder XML.
+In diesem Kapitel beschäftigen wir uns damit, wie wir Daten im JSON-Format mit einem Server austauschen.
+Der Abschnitt [Decoder](#decoder) beschreibt, wie wir Daten, die wir im JSON-Format erhalten, in Elm-Datentypen umwandeln können.
+Der Abschnitt [Encoder](#encoder) beschreibt, wie wir Daten aus unserer Anwendung in das JSON-Format umwandeln.
+
+
+## Decoder
 
 Wenn wir HTTP-Anfragen durchführen, erhalten wir vom Server häufig eine Antwort in Form vom JSON.
 Diese Antwort erhalten wir aber in Form eines _Strings_.
@@ -91,8 +99,8 @@ type alias User =
 Wir können nun auf die folgende Weise einen `Decoder` definieren, der eine Zahl parst und als Ergebnis einen Wert vom Typ `User` zurückliefert.
 
 ``` elm
-decodeUser : Decoder User
-decodeUser =
+userDecoder : Decoder User
+userDecoder =
     Decode.map User Decode.int
 ```
 
@@ -116,15 +124,15 @@ Mit dieser Funktion kann ein `Decoder` auf ein einzelnes Feld einer JSON-Struktu
 Das heißt, der folgende `Decoder` ist in der Lage die oben gezeigte JSON-Struktur zu verarbeiten.
 
 ``` elm
-decodeUser : Decoder User
-decodeUser =
+userDecoder : Decoder User
+userDecoder =
     Decode.map User (Decode.field "age" Decode.int)
 ```
 
 Der Aufruf
 
 ```elm
-Decode.decodeString decodeUser "{ \"age\": 18 }"
+Decode.decodeString userDecoder "{ \"age\": 18 }"
 ```
 
 liefert in diesem Fall als Ergebnis `Ok { age = 18 }`.
@@ -133,7 +141,7 @@ Ein Parser verarbeitet einen `String` häufig so, dass Leerzeichen für das Erge
 So liefert der Aufruf
 
 ```elm
-Decode.decodeString decodeUser "{\t   \"age\":\n     18}"
+Decode.decodeString userDecoder "{\t   \"age\":\n     18}"
 ```
 
 etwa das gleiche Ergebnis wie der Aufruf ohne die zusätzlichen Leerzeichen.
@@ -159,8 +167,8 @@ type alias User =
 Nun definieren wir einen `Decoder` mithilfe von `map2` und kombinieren dabei einen `Decoder` für den `Int` mit einem `Decoder` für den `String`.
 
 ``` elm
-decodeUser : Decoder User
-decodeUser =
+userDecoder : Decoder User
+userDecoder =
     Decode.map2
         User
         (Decode.field "name" Decode.string)
@@ -170,7 +178,7 @@ decodeUser =
 Der Aufruf
 
 ```elm
-decodeString decodeUser "{ \"name\": \"Max Mustermann\", \"age\": 18}"
+decodeString userDecoder "{ \"name\": \"Max Mustermann\", \"age\": 18}"
 ```
 
 liefert in diesem Fall das folgende Ergebnis.
@@ -179,7 +187,7 @@ liefert in diesem Fall das folgende Ergebnis.
 Ok { age = 18, name = "Max Mustermann" }
 ```
 
-Der `Decoder` `decodeUser` illustriert wieder gut die deklarative Vorgehensweise.
+Der `Decoder` `userDecoder` illustriert wieder gut die deklarative Vorgehensweise.
 Zur Implementierung des `Decoder`s beschreiben wir, welche Felder wir aus den JSON-Daten verarbeiten wollen und wie wir aus den Ergebnissen der einzelnen Parser das Endergebnis konstruieren.
 Wir beschreiben aber nicht, wie genau das Verarbeiten durchgeführt wird.
 
@@ -277,9 +285,158 @@ Die Funktion `Decode.fail` liefert einen `Decoder`, der immer fehlschlägt.
 Das heißt, wenn wir eine Version parsen und es sich weder um Version `1` noch um Version `2` handelt, liefert `decoder` einen Fehler.
 Dieses Beispiel illustriert, dass wir mithilfe von `andThen` abhängig von einem Wert, den wir zuvor geparset haben, verschiedene `Decoder` ausführen können.
 
+Die Reihenfolge der Argumente im Aufruf `Decode.andThen chooseVersion versionDecoder` ist unglücklich, da wir zuerst den `Decoder` `versionDecoder` durchführen und anschließend die Funktion `chooseVersion`.
+Es stellt sich also die Frage, warum die Funktion `Decode.andThen` ihre Argumente in dieser Reihenfolge erhält.
+Der Grund besteht darin, dass man die Funktion `Decode.andThen` zusammen mit dem Operator `|>` nutzt.
+Das heißt, man nutzt bei der Definition von `Decoder`n häufig [Piping](higher-order.md#piping).
+
+Um Piping anzuwenden, benötigen wir eine einstellige Funktion.
+Die Funktion `Decode.andThen` ist aber zweistellig.
+Daher wird die Funktion `Decode.andThen` zuerst partiell auf das Argument `chooseVersion` appliziert.
+Wir erhalten somit, `Decode.andThen chooseVersion`, also eine einstellige Version.
+Diese Funktion können wir mithilfe von `|>` auf ihr Argument anwenden.
+Wir erhalten damit die folgende Definition.
+Aus didaktischen Gründen haben wir zuvor die Konstante `versionDecoder` definiert.
+In einer "realen" Anwendung würde man auf die Definition dieser Konstante aber eher verzichten.
+
+``` elm
+decoder : Decoder Bool
+decoder =
+    let
+        chooseVersion version =
+            case version of
+                1 ->
+                    boolDecoder
+
+                2 ->
+                    booleanDecoder
+
+                _ ->
+                    Decode.fail
+                        ("Version "
+                            ++ String.fromInt version
+                            ++ " not supported"
+                        )
+    in
+    Decode.field "version" Decode.int
+        |> Decode.andThen chooseVersion
+```
+
+Um die Funktion `Decode.andThen` noch etwas zu illustrieren, wollen wir den `Decoder` `userDecoder`, den wir zuvor bereits definiert haben, noch einmal mithilfe von `Decode.andThen` definieren.
+
+```elm
+user : Decoder User
+user =
+    Decode.field "id" Decode.int
+        |> Decode.andThen
+            (\id ->
+                Decode.field "name" Decode.string
+                    |> Decode.andThen
+                        (\name ->
+                            Decode.succeed
+                                { id = id
+                                , name = name
+                                }
+                        )
+            )
+```
+
+Aufgrund der Schachtelung ist dieser Code vergleichsweise schwierig zu lesen.
+Daher sollte man für diesen Anwendungsfall die Funktion `map2` verwenden.
+Dieses Beispiel illustriert aber, dass wir die Funktion vom Typ `a -> Decoder b` definieren können, indem wir wiederum `andThen` verwenden.
+Auf diese Weise, können wir die Entscheidung, die in der Funktion vom Typ `a -> Decoder b` getroffen wird, von mehreren Werten abhängig machen.
+Wir könnten in der Definition von `user` zum Beispiel abhängig von den Werten von `id` **und** `name` den Decoder erfolgreich ein Ergebnis liefern oder scheitern lassen.
+
+{% include callout-info.html content="
+Die Programmiersprache Haskell stellt die `do`-Notation zur Verfügung, um Funktionen übersichtlicher zu gestalten, wenn sie mehrere Aufrufe einer Funktion wie `andThen` enthalten.
+" %}
+
+Als weiteres Beispiel für die Verwendung von `andThen` betrachten wir den Fall, dass wir auf dem Server einen Wert vom Typ `String` speichern, in der Anwendung aber einen Aufzählungstyp zur Darstellung verwenden.
+Wir betrachten an dieser Stellen den folgenden Datentyp, der verschiedene Benutzerrollen definiert.
+
+```elm
+type Role
+    = Admin
+    | User
+```
+
+Auf dem Server wird der Eintrag `Role` mithilfe eines `String` dargestellt.
+Daher benötigen wir einen `Decoder`, der das Feld in Form eines `String` parset und anschließend in unseren Datentyp `Role` umwandelt.
+Dabei kann es vorkommen, dass in der Datenbank ein Wert steht, den wir nicht erwarten.
+Daher müssen wir auch den Fall behandeln, dass der `String` in der Datenbank weder `"Admin"` noch `"User"` ist.
+
+```elm
+roleDecoder : Decoder Role
+roleDecoder =
+    let
+        decodeRole string =
+            case string of
+                "Admin" ->
+                    Decode.succeed Admin
+
+                "User" ->
+                    Decode.succeed User
+
+                _ ->
+                    Decode.fail (string ++ " is not a valid value of type Role")
+    in
+    Decode.field "role" Decode.string
+        |> Decode.andThen decodeRole
+```
 
 
+## Encoder
 
+Wenn wir mit einem Server kommunizieren, müssen wir nicht nur in der Lage sein, die JSON-Daten, die wir vom Server erhalten, in Elm-Datentypen umzuwandeln.
+Wir müssen auch in der Lage sein, JSON-Daten, zu erzeugen, die wir an den Server schicken können.
+Für diesen Zweck wird in Elm das Modul `Json.Encode` aus der Bibliothek `elm/json` verwendet.
+
+Der Typ `Value` repräsentiert JSON-Daten.
+Dieser Datentyp stellt keine Konstruktoren zur Verfügung.
+Stattdessen stellt das Modul `Json.Encode` eine Reihe von Funktionen zur Verfügung, mit denen wir die verschiedenen Formen von JSON-Daten erzeugen können.
+Das Modul stellt außerdem eine Funktion `encode : Int -> Value -> String` zur Verfügung, mit der wir aus einem `Value` einen `String` erzeugen können.
+Der `Int` gibt dabei die Einrückungstiefe an, die bei der Formatierung des JSON-Strings verwendet wird.
+
+Zuerst wollen wir einen Wert vom Typ `User`, den wir im Abschnitt [Decoder](#decoder) definiert haben, in einen JSON-Wert umwandeln.
+Wir wollen einen `User` als JSON-Objekt mit zwei Feldern darstellen.
+Daher verwenden wir die Funktion `object : List ( String, Value ) -> Value`.
+Die erste Komponente der Paare in der Liste gibt dabei die Namen der Felder an.
+Die zweite Komponente der Paare ist ein JSON-Wert.
+Neben der Funktion `object` stellt das Modul `Json.Encode` zum Beispiel die Funktion `string : String -> Value` zur Verfügung, um aus einem `String` auf Elm-Ebene einen entsprechenden `JSON-Wert` zu machen.
+
+Der folgende Aufruf
+
+```elm
+Decode.encode 4 (Encode.string "test")
+```
+
+liefert zum Beispiel `"\"test\"` als Ergebnis.
+Das heißt, wir erhalten einen `String`, der Anführungszeichen und den Text `test` enthält.
+Bei dem Ergebnis handelt es sich um einen validen JSON-Wert.
+
+Der `User` enthält neben dem Namen vom Typ `String` noch ein Alter vom Typ `Int`.
+Um dieses zu encodieren, mutzen wir die Funktion `Encode.int : Int -> Value`.
+Der folgende Aufruf
+
+```elm
+Decode.encode 4 (Encode.int 23)
+```
+
+liefert zum Beispiel `"23"` als Ergebnis.
+Das heißt, wir erhalten einen `String`, der den Text `23` enthält.
+Dabei handelt es sich wieder um einen validen JSON-Wert, da eine einzelne Zahl ein valider JSON-Wert ist.
+
+Um einen Wert vom Typ `User` in ein JSON-Objekt umzuwandeln, nutzen wir die folgende Definition.
+Wir gehen davon aus, dass die folgende Definition in einem Modul `User` definiert wird, daher können wir den Namen `encode` wählen.
+
+```elm
+encode : User -> Encode.Value
+encode { name, age } =
+    Encode.object
+        [ ( "name", Encode.string name )
+        , ( "age", Encode.int age )
+        ]
+```
 
 <div class="nav">
     <ul class="nav-row">

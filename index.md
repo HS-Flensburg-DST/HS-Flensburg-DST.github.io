@@ -109,13 +109,13 @@ custom_css: toc
 
 - 10.5. [Funktionskomposition](higher-order.md#funktionskomposition)
 
-### 11. [Decoder](decoder.md)
+### 11. [JSON-Daten](json.md)
+
+- 11.1. [Decoder](json.md#decoder)
+
+- 11.2. [Encoder](json.md#encoder)
 
 ### 12. [Abonnements](subscriptions.md)
-
-- 12.1. [Zeit](subscriptions.md#zeit)
-
-- 12.3. [Tasten](subscriptions.md#tasten)
 
 ### 13. [Kommandos](commands.md)
 
