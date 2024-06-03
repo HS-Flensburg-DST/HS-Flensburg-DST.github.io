@@ -334,23 +334,23 @@ Wir nutzen zur Modellierung des internen Zustands unserer Anwendung den folgende
 ``` elm
 type alias Model =
     { number : Int
-    , data : Data IsEvenInfo
+    , responseData : ResponseData IsEvenInfo
     }
 ```
 
-Der Datentyp `Data` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
+Der Datentyp `ResponseData` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
 
 ```elm
-type Data value
+type ResponseData value
     = Loading
     | Failure Http.Error
     | Success value
 ```
 
-Für den Datentyp `Data` nutzen wir außerdem die folgende Funktion.
+Für den Datentyp `ResponseData` nutzen wir außerdem die folgende Funktion.
 
 ``` elm
-fromResult : Result Http.Error a -> Data a
+fromResult : Result Http.Error a -> ResponseData a
 fromResult result =
     case result of
         Err e ->
@@ -370,11 +370,11 @@ update msg model =
         ChangeCounter orientation ->
             let newCounter = updateCounter orientation model.number
             in
-            ( { model | number = newCounter, data = Loading }
+            ( { model | number = newCounter, responseData = Loading }
             , isEvenCmd newCounter )
 
         ReceivedResponse result ->
-            ( { model | data = Data.fromResult result }
+            ( { model | responseData = ResponseData.fromResult result }
             , Cmd.none )
 
 
@@ -400,13 +400,13 @@ view model =
             , text (String.fromInt model.number)
             , button [ onClick (Counter Increase) ] [ text "+" ]
             ]
-        , viewData model.data
+        , viewResponseData model.responseData
         ]
 
 
-viewData : Data IsEvenInfo -> Html msg
-viewData data =
-    case data of
+viewResponseData : ResponseData IsEvenInfo -> Html msg
+viewResponseData responseData =
+    case responseData of
         Loading ->
             text "Loading ..."
 
@@ -420,14 +420,14 @@ viewData data =
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \_ -> ( { number = 0, data = Loading }, isEvenCmd 0 )
+        { init = \_ -> ( { number = 0, responseData = Loading }, isEvenCmd 0 )
         , subscriptions = \_ -> Sub.none
         , view = view
         , update = update
         }
 ```
 
-Die Funktion `viewData` nutzt einfachheitshalber hier die Funktion `Debug.toString`.
+Die Funktion `viewResponseData` nutzt einfachheitshalber hier die Funktion `Debug.toString`.
 Diese Funktion kann einen beliebigen Elm-Wert in einen `String` umwandeln und ist eigentlich nur zum Debugging einer Anwendung gedacht.
 
 
@@ -439,15 +439,15 @@ Die Funktion `get` in der Bibliothek `elm/http` ist wie folgt implementiert.
 ```elm
 get : { url : String, expect : Expect msg } -> Cmd msg
 get r =
-  request
-    { method = "GET"
-    , headers = []
-    , url = r.url
-    , body = emptyBody
-    , expect = r.expect
-    , timeout = Nothing
-    , tracker = Nothing
-    }
+    request
+        { method = "GET"
+        , headers = []
+        , url = r.url
+        , body = emptyBody
+        , expect = r.expect
+        , timeout = Nothing
+        , tracker = Nothing
+        }
 ```
 
 Das heißt, `get` ruft eine allgemeinere Funktion `request` auf, die weitere Informationen erhält.
@@ -483,9 +483,9 @@ Daher stellen wir Nutzer\*innen die Möglichkeit zur Verfügung, die Anfrage zu 
 Da der Datentyp `Error`, den wir von einer fehlschlagenden Anfrage zurückerhalten, einfach ein algebraischer Datentyp ist, können wir den Fall, dass ein _Timeout_ aufgetreten ist, wie folgt gesondert behandeln.
 
 ```elm
-viewData : Data IsEvenInfo -> Html msg
-viewData data =
-    case data of
+viewResponseData : ResponseData IsEvenInfo -> Html msg
+viewResponseData responseData =
+    case responseData of
         Loading ->
             text "Loading ..."
 
@@ -523,11 +523,11 @@ update msg model =
         ChangeCounter orientation ->
             let newCounter = updateCounter orientation model.number
             in
-            ( { model | number = newCounter, data = Loading }
+            ( { model | number = newCounter, responseData = Loading }
             , isEvenCmd newCounter )
 
         ReceivedResponse result ->
-            ( { model | data = Data.fromResult result }
+            ( { model | responseData = ResponseData.fromResult result }
             , Cmd.none )
 
         RetryRequest ->
@@ -537,6 +537,10 @@ update msg model =
 
 Wenn wir die Nachricht `RetryRequest` erhalten, behalten wir das bestehende Modell bei und führen noch einmal die Anfrage mit der aktuellen Zahl durch.
 
+In unserem Beispiel führen wir zu Anfang direkt eine HTTP-Anfrage durch.
+Es gibt aber zahlreiche Anwendungsfälle, in denen die Anfrage erst durch die Aktion von Nutzer\*innen ausgelöst werden.
+In diesen Fällen ist es sinnvoll, zum Datentyp `ResponseData` einen Fall `Uninitiated` hinzuzufügen.
+Dieser Fall wird verwendet, um zu signalisieren, dass noch keine Anfrage durchgeführt wurde.
 
 [^1]: <https://github.com/public-apis/public-apis#science--math>
 
