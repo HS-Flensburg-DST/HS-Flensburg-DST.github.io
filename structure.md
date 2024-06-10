@@ -452,7 +452,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         UpdateInput input ->
-            { model | choosenNumber = Maybe.withDefault 0.0 (String.toFloat input) }
+            { choosenNumber = Maybe.withDefault 0.0 (String.toFloat input) }
 ```
 
 Hier wird die Information, dass die Eingabe keine Zahl war einfach verworfen und durch einen _Default_-Wert ersetzt.
@@ -461,7 +461,7 @@ Daher kann diese Information auch niemals an die Nutzerschnittstelle gelangen.
 
 ### Fehlgeschlagene Anfrage
 
-Die Anfrage an einer externe Ressource kann aus verschiedenen Gründen fehlschlagen.
+Die Anfrage an eine externe Ressource kann aus verschiedenen Gründen fehlschlagen.
 Beispiele sind etwa, dass das Netz kurzzeitig nicht zur Verfügung steht oder dass es einen _Timeout_ bei einer Anfrage gab.
 In diesem Fall sollte auf jeden Fall darauf hingewiesen werden, dass Informationen nicht angezeigt werden können.
 Daher muss der `Maybe`-Wert hier ebenfalls bis zur `view`-Funktion propagiert werden.
@@ -470,7 +470,7 @@ Falls die Anwendung nicht sinnvoll fortgeführt werden kann, sollte es eine Mög
 Das heißt, es gibt zum Beispiel einen Knopf, der dafür sorgt, dass die Anfrage erneut durchgeführt wird.
 
 Der folgende Ausschnitt aus einer Elm-Anwendung illustriert noch einmal das Beispiel.
-Im Fall einer fehlgeschlagenen Anfrage wird in den meisten Fällen der Typ `Result` und nicht `Maybe` verwendet, da die `http`-Bibliothek diesen zur Verfügung stellt.
+Im Fall einer fehlgeschlagenen Anfrage wird in den meisten Fällen der Typ `Result` und nicht `Maybe` verwendet, da die Bibliothek `elm/http` diesen zur Verfügung stellt.
 
 {% include callout-important.html content="
 Dieses Beispiel illustriert einen _Code Smell_.
@@ -507,7 +507,7 @@ Daher kann diese Information bei einer solchen Implementierung nicht angezeigt w
 
 ### Nicht-erfüllte Invarianten
 
-In einer Anwendung gibt es häufig Invarianten, bei deren Nicht-Erfüllen die Anwendung nicht sinnvoll fortgeführt werden kann.
+In einer Anwendung gibt es häufig Invarianten, bei deren Nicht-Erfüllung die Anwendung nicht sinnvoll fortgeführt werden kann.
 Dies kann zum Beispiel passieren, wenn in einer Liste ein Element mit einer bestimmten Eigenschaft gesucht, aber nicht gefunden wird.
 Wenn eine solche Invariante nicht erfüllt ist, bedeutet das in den allermeisten Fällen, dass ein Bug in der Anwendung vorliegt.
 Auch in diesem Fall sollte die Information, dass es einen internen Fehler gibt, an die Nutzerschnittstelle propagiert werden.
@@ -539,9 +539,9 @@ Alle drei Beispiele haben gemeinsam, dass der `Nothing`-Fall verworfen wird, bev
 In allen drei Fällen sollte diese Information aber zur `view`-Funktion gelangen.
 Zur `view`-Funktion kann die Information aber nur gelangen, wenn sie in irgendeiner Form im Modell gespeichert wird.
 Wir müssen die Information nicht notwendigerweise durch einen `Maybe`-Typ im Modell kodieren.
-Zum Beispiel könnte das Modell einen eigenen Konstruktor haben, der kodiert, dass Informationen fehlen.
+Zum Beispiel könnte das Modell einen eigenen Konstruktor haben, der kodiert, dass ein Fehler aufgetreten ist.
 In allen drei Beispielen wird der `Nothing`-Fall aber auf einen ansonsten validen Wert abgebildet, nämlich auf `0.0`, `False` und `""`.
-In diesen Fällen können wir also später auf jeden Fall nicht mehr unterscheiden, ob der Wert `False` durch `Just False` oder durch `Nothing` entstanden ist.
+In diesen Fällen können wir also später auf jeden Fall nicht mehr unterscheiden, ob Werte wie `""` durch `Just ""` oder durch `Nothing` entstanden sind.
 Das heißt, wir verwerfen in diesen Fällen Information.
 Dies sollte nie geschehen.
 Stattdessen sollte diese Information bis zur Nutzerschnittstelle, also bis zur `view`-Funktion erhalten bleiben.
