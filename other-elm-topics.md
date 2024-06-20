@@ -145,12 +145,41 @@ Wenn im JavaScript-Code diese Zeile aufgerufen wird, wird die Elm-Anwendung übe
 
 Die Seite [JavaScript Interop](https://guide.elm-lang.org/interop/) gibt noch mal eine etwas ausführlichere Einführung in die Verwendung von Ports.
 
+
+Routing
+-------
+
+Wenn man eine _Single Page Application_ mit Elm umsetzen möchte, also eine Web-Anwendung, bei die HTML-Seiten nicht direkt von einem Backend ausgeliefert werden, sondern im Frontend erzeugt, kann es sinnvoll sein, Routing zu verwenden.
+Das Routing sorgt dafür, dass man über verschiedene URLs verschiedene Ansichten der Anwendung erreicht.
+Das heißt, man simuliert gewissermaßen das Verhalten einer klassischen _Multi Page Application_, bei der die HTML-Seiten durch das Backend ausgeliefert werden.
+
+Um Routing in Elm umzusetzen, gibt es verschiedene Möglichkeiten.
+Im Kapitel [Web Apps - Navigation](https://guide.elm-lang.org/webapps/navigation) des _Elm Guides_ wird erklärt, wie man in Elm auf Änderungen der Route reagieren kann.
+Im Kapitel [Web Apps - Parsing URLs](https://guide.elm-lang.org/webapps/url_parsing) wird erklärt, wie man aus Routen Informationen extrahiert.
+So kann es zum Beispiel sein, dass eine Route nicht rein statisch ist, sondern dynamische Informationen enthält.
+So kann die Route zum Beispiel die ID eines Objektes enthalten, zum dem eine Detailansicht angezeigt werden soll.
+
+Neben diesem eher händischen Ansatz gibt es zwei Elm-Frameworks, die einen Teil des Codes, der für das Verarbeiten von Routen notwendig ist, erzeugen.
+Das Framework [elm-spa](https://www.elm-spa.dev) ist das etwas ältere Framework.
+Aus den Namen von Elm-Modulen werden dabei die Namen der Routen erzeugt, unter denen die Module erreichbar sind.
+Gibt es zum Beispiel ein Elm-Modul `Pages/Test.elm`, so stellt die generierte Anwendung eine Route `test` zur Verfügung und unter dieser Route wird der Inhalt des Moduls `Pages/Test.elm` angezeigt.
+Jedes Modul, das eine Seite darstellt, stellt dabei seine eigenen _Model, View, Update_-Komponenten zur Verfügung.
+Die Abstraktionen, die von [elm-spa](https://www.elm-spa.dev) verwendet werden, sind sehr ähnlich zu den Standard-Abstraktionen einer Elm-Anwendung, tragen nur leicht andere Namen.
+Statt einer Funktion `Browser.element` gibt es zum Beispiel eine Funktion `Page.element`.
+Eine [elm-spa](https://www.elm-spa.dev)-Anwendung kann außerdem ein Modell nutzen, das von allen Seiten geteilt wird.
+Auf diese Weise kann zum beispiel gespeichert werden, wenn Nutzer\*innen eingeloggt sind.
+
+Das Framework [Elm Land](https://elm.land) ist vergleichsweise neu.
+Es setzt im Grunde die gleichen Konzepte um, wie das Framework [elm-spa](https://www.elm-spa.dev).
+Im Gegensatz zu [elm-spa](https://www.elm-spa.dev) versucht [Elm Land](https://elm.land), aber noch mehr als Routing anzubieten.
+So gehört zu [Elm Land](https://elm.land) zum Beispiel auch einen Plugin für _VS Code_.
+Insgesamt nutzt [Elm Land](https://elm.land) außerdem etwas mehr das Konzept von _Konvention over Konfiguration_ als [elm-spa](https://www.elm-spa.dev).
+
+
 Umsetzung einer größeren Anwendung
 ----------------------------------
 
-Die Seite [Web Apps](https://guide.elm-lang.org/webapps/) des Elm-Guide bietet noch weitere Themen, die bei der Umsetzung einer größeren Anwendung relevant sein können.
-Dazu gehört zum Beispiel die Umsetzung einer Anwendung mit Routing, also eine Anwendung, die aus mehreren Seiten besteht.
-Die Seite enthält außerdem Tipps, was man bei der Umsetzung einer Anwendung mit mehreren Modulen beachten sollte.
+Die Seiten [Web Apps - Modules](https://guide.elm-lang.org/webapps/modules) und [Web Apps - Structure](https://guide.elm-lang.org/webapps/structure) des _Elm Guide_ bietet noch einmal ein paar Informationen zur Strukturierung einer Elm-Anwendung.
 
 Die Seite [Optimization](https://guide.elm-lang.org/optimization/) bietet Informationen zur Performance einer Webanwendung.
 Dort findet sich zum Beispiel eine Erklärung des *virtual DOM*, der dafür sorgt, dass das Rendern von HTML im Browser effizient durchgeführt wird, obwohl die Funktion `view` immer die gesamte HTML-Struktur als Ergebnis liefert.

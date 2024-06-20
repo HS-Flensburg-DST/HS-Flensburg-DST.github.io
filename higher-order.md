@@ -27,7 +27,7 @@ Wir haben dabei gelernt, dass man zwischen drei Argumente immer einen Pfeil schr
 In einer Programmiersprache wie Java würden wir die Funktion eher wie folgt definieren.
 
 ``` elm
-pluralizeTuple : (String, String, Int) -> String
+pluralizeTuple : ( String, String, Int ) -> String
 pluralizeTuple ( singular, plural, quantity )  =
     if quantity == 1 then
         "1 " ++ singular
