@@ -167,12 +167,12 @@ Jedes Modul, das eine Seite darstellt, stellt dabei seine eigenen _Model, View, 
 Die Abstraktionen, die von [elm-spa](https://www.elm-spa.dev) verwendet werden, sind sehr ähnlich zu den Standard-Abstraktionen einer Elm-Anwendung, tragen nur leicht andere Namen.
 Statt einer Funktion `Browser.element` gibt es zum Beispiel eine Funktion `Page.element`.
 Eine [elm-spa](https://www.elm-spa.dev)-Anwendung kann außerdem ein Modell nutzen, das von allen Seiten geteilt wird.
-Auf diese Weise kann zum beispiel gespeichert werden, wenn Nutzer\*innen eingeloggt sind.
+Auf diese Weise kann zum Beispiel gespeichert werden, wenn Nutzer\*innen eingeloggt sind.
 
 Das Framework [Elm Land](https://elm.land) ist vergleichsweise neu.
-Es setzt im Grunde die gleichen Konzepte um, wie das Framework [elm-spa](https://www.elm-spa.dev).
+Es setzt im Grunde die gleichen Konzepte um wie das Framework [elm-spa](https://www.elm-spa.dev).
 Im Gegensatz zu [elm-spa](https://www.elm-spa.dev) versucht [Elm Land](https://elm.land), aber noch mehr als Routing anzubieten.
-So gehört zu [Elm Land](https://elm.land) zum Beispiel auch einen Plugin für _VS Code_.
+So gehört zu [Elm Land](https://elm.land) zum Beispiel auch ein Plugin für _VS Code_.
 Insgesamt nutzt [Elm Land](https://elm.land) außerdem etwas mehr das Konzept von _Konvention over Konfiguration_ als [elm-spa](https://www.elm-spa.dev).
 
 
