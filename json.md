@@ -61,14 +61,14 @@ Um zu illustrieren, wie diese `Decoder` funktionieren, schauen wir uns die folge
 Der Aufruf
 
 ```elm
-Decode.decodeString Decode.int "42"
+Decoder.decodeString Decoder.int "42"
 ```
 
 liefert als Ergebnis `Ok 42`.
 Das heißt, der `String` `"42"` wird erfolgreich mit dem `Decoder` `int` verarbeitet und liefert als Ergebnis den Wert `42`. Der Aufruf
 
 ```elm
-Decode.decodeString Decode.int "a"
+Decoder.decodeString Decoder.int "a"
 ```
 
 liefert dagegen als Ergebnis
@@ -101,7 +101,7 @@ Wir können nun auf die folgende Weise einen `Decoder` definieren, der eine Zahl
 ``` elm
 userDecoder : Decoder User
 userDecoder =
-    Decode.map User Decode.int
+    Decoder.map User Decoder.int
 ```
 
 Wir sind nun nur in der Lage einen JSON-Wert, der nur aus einer Zahl besteht, in einen Elm-Datentyp umzuwandeln.
@@ -126,13 +126,13 @@ Das heißt, der folgende `Decoder` ist in der Lage die oben gezeigte JSON-Strukt
 ``` elm
 userDecoder : Decoder User
 userDecoder =
-    Decode.map User (Decode.field "age" Decode.int)
+    Decoder.map User (Decoder.field "age" Decoder.int)
 ```
 
 Der Aufruf
 
 ```elm
-Decode.decodeString userDecoder "{ \"age\": 18 }"
+Decoder.decodeString userDecoder "{ \"age\": 18 }"
 ```
 
 liefert in diesem Fall als Ergebnis `Ok { age = 18 }`.
@@ -141,7 +141,7 @@ Ein Parser verarbeitet einen `String` häufig so, dass Leerzeichen für das Erge
 So liefert der Aufruf
 
 ```elm
-Decode.decodeString userDecoder "{\t   \"age\":\n     18}"
+Decoder.decodeString userDecoder "{\t   \"age\":\n     18}"
 ```
 
 etwa das gleiche Ergebnis wie der Aufruf ohne die zusätzlichen Leerzeichen.
@@ -169,10 +169,10 @@ Nun definieren wir einen `Decoder` mithilfe von `map2` und kombinieren dabei ein
 ``` elm
 userDecoder : Decoder User
 userDecoder =
-    Decode.map2
+    Decoder.map2
         User
-        (Decode.field "name" Decode.string)
-        (Decode.field "age" Decode.int)
+        (Decoder.field "name" Decoder.string)
+        (Decoder.field "age" Decoder.int)
 ```
 
 Der Aufruf
@@ -201,7 +201,7 @@ Die Funktion `succeed :: a -> Decoder a` liefert einen `Decoder`, der immer erfo
 Das heißt, der folgende Aufruf
 
 ```elm
-decodeString (Decode.succeed 23) "{ \"name\": \"Max Mustermann\", \"age\": 18}"
+decodeString (Decoder.succeed 23) "{ \"name\": \"Max Mustermann\", \"age\": 18}"
 ```
 
 liefert immer als Ergebnis `23`.
@@ -209,7 +209,7 @@ Die Funktion `fail :: String -> Decoder a` liefert dagegen einen `Decoder`, der 
 Das heißt, der folgende Aufruf
 
 ```elm
-decodeString (Decode.fail "Error message") "{ \"name\": \"Max Mustermann\", \"age\": 18}"
+decodeString (Decoder.fail "Error message") "{ \"name\": \"Max Mustermann\", \"age\": 18}"
 ```
 
 liefert dagegen als Ergebnis
@@ -227,7 +227,7 @@ Wir definieren dazu erst einmal einen `Decoder`, der die Version liefert.
 ``` elm
 versionDecoder : Decoder Int
 versionDecoder =
-    Decode.field "version" Decode.int
+    Decoder.field "version" Decoder.int
 ```
 
 Außerdem haben wir die folgenden beiden `Decoder` für die beiden Varianten der JSON-Struktur.
@@ -236,11 +236,11 @@ Das heißt, in einer Version hieß das Feld `bool` und in einer anderen Version 
 ``` elm
 boolDecoder : Decoder Bool
 boolDecoder =
-    Decode.field "bool" Decode.bool
+    Decoder.field "bool" Decoder.bool
 
 booleanDecoder : Decoder Bool
 booleanDecoder =
-    Decode.field "boolean" Decode.bool
+    Decoder.field "boolean" Decoder.bool
 ```
 
 Wir möchten jetzt gern einen `Decoder` definieren, der abhängig von der Version entweder `boolDecoder` oder `booleanDecoder` verwendet.
@@ -272,28 +272,28 @@ decoder =
                     booleanDecoder
 
                 _ ->
-                    Decode.fail
+                    Decoder.fail
                         ("Version "
                             ++ String.fromInt version
                             ++ " not supported"
                         )
     in
-    Decode.andThen chooseVersion versionDecoder
+    Decoder.andThen chooseVersion versionDecoder
 ```
 
-Die Funktion `Decode.fail` liefert einen `Decoder`, der immer fehlschlägt.
+Die Funktion `Decoder.fail` liefert einen `Decoder`, der immer fehlschlägt.
 Das heißt, wenn wir eine Version parsen und es sich weder um Version `1` noch um Version `2` handelt, liefert `decoder` einen Fehler.
 Dieses Beispiel illustriert, dass wir mithilfe von `andThen` abhängig von einem Wert, den wir zuvor geparset haben, verschiedene `Decoder` ausführen können.
 
-Die Reihenfolge der Argumente im Aufruf `Decode.andThen chooseVersion versionDecoder` ist unglücklich, da wir zuerst den `Decoder` `versionDecoder` durchführen und anschließend die Funktion `chooseVersion`.
-Es stellt sich also die Frage, warum die Funktion `Decode.andThen` ihre Argumente in dieser Reihenfolge erhält.
-Der Grund besteht darin, dass man die Funktion `Decode.andThen` zusammen mit dem Operator `|>` nutzt.
+Die Reihenfolge der Argumente im Aufruf `Decoder.andThen chooseVersion versionDecoder` ist unglücklich, da wir zuerst den `Decoder` `versionDecoder` durchführen und anschließend die Funktion `chooseVersion`.
+Es stellt sich also die Frage, warum die Funktion `Decoder.andThen` ihre Argumente in dieser Reihenfolge erhält.
+Der Grund besteht darin, dass man die Funktion `Decoder.andThen` zusammen mit dem Operator `|>` nutzt.
 Das heißt, man nutzt bei der Definition von `Decoder`n häufig [Piping](higher-order.md#piping).
 
 Um Piping anzuwenden, benötigen wir eine einstellige Funktion.
-Die Funktion `Decode.andThen` ist aber zweistellig.
-Daher wird die Funktion `Decode.andThen` zuerst partiell auf das Argument `chooseVersion` appliziert.
-Wir erhalten somit, `Decode.andThen chooseVersion`, also eine einstellige Version.
+Die Funktion `Decoder.andThen` ist aber zweistellig.
+Daher wird die Funktion `Decoder.andThen` zuerst partiell auf das Argument `chooseVersion` appliziert.
+Wir erhalten somit, `Decoder.andThen chooseVersion`, also eine einstellige Version.
 Diese Funktion können wir mithilfe von `|>` auf ihr Argument anwenden.
 Wir erhalten damit die folgende Definition.
 Aus didaktischen Gründen haben wir zuvor die Konstante `versionDecoder` definiert.
@@ -312,28 +312,28 @@ decoder =
                     booleanDecoder
 
                 _ ->
-                    Decode.fail
+                    Decoder.fail
                         ("Version "
                             ++ String.fromInt version
                             ++ " not supported"
                         )
     in
-    Decode.field "version" Decode.int
-        |> Decode.andThen chooseVersion
+    Decoder.field "version" Decoder.int
+        |> Decoder.andThen chooseVersion
 ```
 
-Um die Funktion `Decode.andThen` noch etwas zu illustrieren, wollen wir den `Decoder` `userDecoder`, den wir zuvor bereits definiert haben, noch einmal mithilfe von `Decode.andThen` definieren.
+Um die Funktion `Decoder.andThen` noch etwas zu illustrieren, wollen wir den `Decoder` `userDecoder`, den wir zuvor bereits definiert haben, noch einmal mithilfe von `Decoder.andThen` definieren.
 
 ```elm
 user : Decoder User
 user =
-    Decode.field "id" Decode.int
-        |> Decode.andThen
+    Decoder.field "id" Decoder.int
+        |> Decoder.andThen
             (\id ->
-                Decode.field "name" Decode.string
-                    |> Decode.andThen
+                Decoder.field "name" Decoder.string
+                    |> Decoder.andThen
                         (\name ->
-                            Decode.succeed
+                            Decoder.succeed
                                 { id = id
                                 , name = name
                                 }
@@ -372,24 +372,24 @@ roleDecoder =
         decodeRole string =
             case string of
                 "Admin" ->
-                    Decode.succeed Admin
+                    Decoder.succeed Admin
 
                 "User" ->
-                    Decode.succeed User
+                    Decoder.succeed User
 
                 _ ->
-                    Decode.fail (string ++ " is not a valid value of type Role")
+                    Decoder.fail (string ++ " is not a valid value of type Role")
     in
-    Decode.field "role" Decode.string
-        |> Decode.andThen decodeRole
+    Decoder.field "role" Decoder.string
+        |> Decoder.andThen decodeRole
 ```
 
 
-## Encoder
+## Encode
 
 Wenn wir mit einem Server kommunizieren, müssen wir nicht nur in der Lage sein, die JSON-Daten, die wir vom Server erhalten, in Elm-Datentypen umzuwandeln.
 Wir müssen auch in der Lage sein, JSON-Daten, zu erzeugen, die wir an den Server schicken können.
-Für diesen Zweck wird in Elm das Modul `Json.Encode` aus der Bibliothek `elm/json` verwendet.
+Für diesen Zweck wird in Elm das Modul `Json.Encode`[^2] aus der Bibliothek `elm/json` verwendet.
 
 Der Typ `Value` repräsentiert JSON-Daten.
 Dieser Datentyp stellt keine Konstruktoren zur Verfügung.
@@ -407,7 +407,7 @@ Neben der Funktion `object` stellt das Modul `Json.Encode` zum Beispiel die Funk
 Der folgende Aufruf
 
 ```elm
-Decode.encode 4 (Encode.string "test")
+Encode.encode 4 (Encode.string "test")
 ```
 
 liefert zum Beispiel `"\"test\"` als Ergebnis.
@@ -419,7 +419,7 @@ Um dieses zu encodieren, mutzen wir die Funktion `Encode.int : Int -> Value`.
 Der folgende Aufruf
 
 ```elm
-Decode.encode 4 (Encode.int 23)
+Encode.encode 4 (Encode.int 23)
 ```
 
 liefert zum Beispiel `"23"` als Ergebnis.
@@ -437,6 +437,13 @@ encode { name, age } =
         , ( "age", Encode.int age )
         ]
 ```
+
+[^1]: Dieses Modul wird hier mittels `import Json.Decoder as Decode exposing (Decoder)` importiert.
+      Wir benennen das Modul in `Decoder` um, da der Name `Decode` unglücklich gewählt ist, da das Modul den Typ `Decoder` exportiert.
+
+[^2]: Dieses Modul wird hier mittels `import Json.Encode as Encode` importiert.
+      Im Gegensatz zum Modul `Json.Decode` stellt das Modul `Json.Encode` eben **keinen** `Encoder` zur Verfügung, sondern Funktionen.
+      Diese Funktionen laufen unter dem Oberbegriff `Encode`.
 
 <div class="nav">
     <ul class="nav-row">
