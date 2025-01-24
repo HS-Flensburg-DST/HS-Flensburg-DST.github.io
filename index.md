@@ -35,8 +35,6 @@ custom_css: toc
 
     - 2.5.2. [Aufzählungstypen](basics.md#aufzählungstypen)
 
-    - 2.5.3. [Records](basics.md#records)
-
     - 2.5.4. [Listen](basics.md#listen)
 
 - 2.6. [Benennungsstil](basics.md#benennungsstil)
@@ -57,11 +55,13 @@ custom_css: toc
 
 ### 4. [Datentypen](data-types.md)
 
-- 4.1. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
+- 4.1. [Records](data-types.md#records)
 
-- 4.2. [_Pattern Matching_](data-types.md#pattern-matching)
+- 4.2. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
 
-- 4.3. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
+- 4.3. [_Pattern Matching_](data-types.md#pattern-matching)
+
+- 4.4. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
 
 ### 5. [Polymorphismus](polymorphism.md)
 

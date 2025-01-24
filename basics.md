@@ -724,176 +724,6 @@ monthToString month =
             "Dezember"
 ```
 
-### Records
-
-Da Elm als JavaScript-Ersatz gedacht ist, unterstützt es auch Recordtypen.
-Wir können zum Beispiel eine Funktion, die für einen Nutzer testet, ob er volljährig ist, wie folgt definieren.
-
-``` elm
-hasFullAge : { firstName : String, lastName : String, age : Int } -> Bool
-hasFullAge user =
-    user.age >= 18
-```
-
-Diese Funktion erhält einen Record mit dem Feldern `firstName`, `lastName` und `age` als Argument und liefert einen Wert vom Typ `Bool`.
-Im Record haben die Felder `firstName` und `lastName` Einträge vom Typ `String` und das Feld `age` hat einen Eintrag vom Typ `Int`.
-Der Ausdruck `user.age` ist eine Kurzform für `.age user`, das heißt, `.age` ist eine Funktion, die einen entsprechenden Record erhält und einen Wert vom Typ `Int`, nämlich das Alter zurückliefert.
-Man nennt eine Funktion wie `.age` einen **Record-Selektor**, da die Funktion aus einem Record einen Teil selektiert.
-Das heißt, hinter dem Ausdruck `user.age` steht eigentlich auch nur eine Funktionsanwendung, nur dass es eine etwas vereinfachte Syntax für diesen Aufruf gibt, die näher an der Syntax ist, die wir aus anderen Sprachen gewohnt sind.
-
-Es ist recht umständlich, den Typ des Nutzers in einem Programm bei jeder Funktion explizit anzugeben.
-Um unser Beispiel leserlicher zu gestalten, können wir das folgende Typsynonym für unseren Recordtyp einführen.
-
-``` elm
-type alias User =
-    { firstName : String
-    , lastName : String
-    , age : Int
-    }
-
-hasFullAge : User -> Bool
-hasFullAge user =
-    user.age >= 18
-```
-
-Das heißt, wir führen den Namen `User` als Kurzschreibweise für einen Record ein und nutzen diesen Typ dann an allen Stellen, an denen wir zuvor den ausführlichen Recordtyp genutzt hätten.
-
-Es gibt eine spezielle Syntax, um initial einen Record zu erzeugen.
-
-``` elm
-exampleUser : User
-exampleUser =
-    { firstName = "Max", lastName = "Mustermann", age = 42 }
-```
-
-Wir können einen Record natürlich auch abändern.
-Zu diesem Zweck wird die folgende **_Update_-Syntax** verwendet.
-Die Funktion `maturing` erhält einen Record in der Variable `user` und liefert einen Record zurück, bei dem die Felder `firstName` und `lastName` die gleichen Einträge haben wie `user`, das Feld `age` ist beim Ergebnis-Record aber auf den Wert `18` gesetzt.
-
-``` elm
-maturing : User -> User
-maturing user =
-    { user | age = 18 }
-```
-
-{% include callout-important.html content="Da Elm eine rein funktionale Programmiersprache ist, wird hier der Record nicht wirklich abgeändert, sondern ein neuer Record mit anderen Werten erstellt." %}
-
-Das heißt, die Funktion `maturing` erstellt einen neuen Record, dessen Einträge `firstName` und `lastName` die gleichen Werte haben wie die entsprechenden Einträge von `user` und dessen Eintrag `age` auf `18` gesetzt ist.
-Dieses Beispiel demonstriert eine sehr einfache Form von deklarativer Programmierung.
-In einem sehr imperativen Ansatz, müssten wir den Code, um den neuen Record zu erzeugen und die Felder `firstName` und `lastName` zu kopieren, explizit schreiben.
-In einem deklarativeren Ansatz verwenden wir stattdessen eine spezielle Syntax oder eine vordefinierte Funktion, um das gleiche Ziel zu erreichen.
-
-Wir können das Verändern eines Recordeintrags und das Lesen eines Eintrags natürlich auch kombinieren.
-Wir können zum Beispiel die folgende Definition verwenden, um einen Benutzer altern zu lassen.
-
-``` elm
-increaseAge : User -> User
-increaseAge user =
-    { user | age = user.age + 1 }
-```
-
-Es ist auch möglich, mehrere Felder auf einmal abzuändern, wie die folgende Funktion illustriert.
-
-``` elm
-japanese : User -> User
-japanese user =
-    { user | firstName = user.lastName, lastName = user.firstName }
-```
-
-Zu guter Letzt können wir auch _Pattern Matching_ verwenden, um auf die Felder eines Records zuzugreifen.
-Zu diesem Zweck müssen wir die Variablen im _Pattern_ nennen wie die Felder des entsprechenden Recordtyps.
-
-``` elm
-fullName : User -> String
-fullName { firstName, lastName } =
-    firstName ++ " " ++ lastName
-```
-
-Wir müssen dabei nicht auf alle Felder des Records _Pattern Matching_ machen, es ist auch möglich, nur einige Felder aufzuführen.
-Das heißt, auch die folgende Definition ist erlaubt.
-
-
-``` elm
-firstNames : User -> List String
-firstNames { firstName } =
-    List.words firstName
-```
-
-_Pattern Matching_ auf Records eignet sich sehr gut, wenn wir die Felder des Records nur lesen möchten.
-Durch das _Pattern Matching_ können wir den Code kürzen, da die Verwendung der Record-Selektoren länger ist.
-Außerdem kann es sehr sinnvoll sein, _Pattern Matching_ auf einem Record zu verwenden, wenn es schwierig ist, für den gesamten Record einen sinnvollen Namen zu vergeben.
-Ein solches Beispiel werden wir zum Beispiel weiter unten bei der Funktion `rotate` kennenlernen.
-
-Wenn wir für einen Record ein Typsynonym einführen, gibt es eine Kurzschreibweise, um einen Record zu erstellen.
-Um einen Wert vom Typ `User` zu erstellen, können wir zum Beispiel auch `User "John" "Doe" 20` schreiben.
-Dabei gibt die Reihenfolge der Felder in der Definition des Records an, in welcher Reihenfolge die Argumente übergeben werden.
-Wir werden im Kapitel [Funktionen höherer Ordnung](higher-order.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
-Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann, da dadurch unser Programm ggf. nicht mehr kompilieren würde.
-
-An dieser Stelle soll noch kurz ein interessanter Anwendungsfall für Records erwähnt werden.
-Einige Programmiersprachen bieten **benannte Argumente** als Sprachfeature.
-Das heißt, Argumente einer Funktion bzw. Methode können einen Namen erhalten, um Entwickler\*innen beim Aufruf der Methode klarzumachen, welche Semantik die einzelnen Argumente haben.
-Wir betrachten als Beispiel die folgende Funktion, die genutzt werden kann, um das `transform`-Attribut in einer SVG-Graphik zu setzen.
-
-```elm
-rotate : String -> String -> String -> String
-rotate angle x y =
-    "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
-```
-
-Wir können diese Funktion nun zum Beispiel mittels `rotate "50" "60" "10"` aufrufen.
-Um bei diesem Aufruf herauszufinden, welches der Argumente welche Bedeutung hat, müssen wir uns die Funktion `rotate` anschauen.
-In einer Programmiersprache mit benannten Argumenten, können wir den Argumenten einer Funktion/Methode Namen geben und diese beim Aufruf nutzen.
-In einer Programmiersprache mit Records können wir diese Funktionalität mithilfe eines Records nachstellen.
-Wir können die Funktion `rotate` zum Beispiel wie folgt definieren.
-
-```elm
-rotate : { angle : String, x : String, y : String } -> String
-rotate { angle, x, y } =
-    "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
-```
-
-Wenn wir die Funktion `rotate` nun aufrufen, nutzen wir `rotate { angle = "50", x = "60", y = "10" }` und sehen am Argument der Funktion direkt, welche Semantik die verschiedenen Parameter haben.
-
-Wir können die Struktur der Funktion `rotate` noch weiter verbessern.
-Zuerst können wir observieren, dass die Argumente der Funktion `rotate` nicht alle gleichberechtigt sind.
-Anders ausdrückt gehören die Argumente `x` und `y` der Funktion stärker zusammen, da sie gemeinsam einen Punkt bilden.
-Diese Eigenschaft können wir in unserem Code wie folgt explizit darstellen.
-
-```elm
-type alias Point =
-    { x : String, y : String }
-
-
-rotate : { angle : String, origin : Point } -> String
-rotate { angle, origin } =
-    "rotate(" ++ angle ++ "," ++ origin.x ++ "," ++ origin.y ++ ")"
-```
-
-Wir können diese Implementierung aber noch in einem weiteren Aspekt verbessern.
-Aktuell arbeitet unsere Anwendung mit Werten vom Typ `String`.
-Das heißt, wir können auch `"a"` als Winkel an die Funktion `rotate` übergeben und müssen dann erst observieren, dass die Anwendung nicht das gewünschte Ergebnis anzeigt.
-Um eine offensichtlich falsche Verwendung wie diese zu verhindern, können wir statt des Typs `String` einen Datentyp mit mehr Struktur nutzen.
-
-```elm
-type alias Point =
-    { x : Float, y : Float }
-
-
-rotate : { angle : Float, origin : Point } -> String
-rotate { angle, origin } =
-    "rotate("
-        ++ String.fromFloat angle
-        ++ ","
-        ++ String.fromFloat origin.x
-        ++ ","
-        ++ String.fromFloat origin.y
-        ++ ")"
-```
-
-Wenn wir nun versuchen würden, den `String` `"a"` als Winkel an die Funktion `rotate` zu übergeben, würden wir direkt beim Übersetzen des Codes einen Fehler vom Compiler erhalten.
-Grundsätzlich sind Fehler zur Kompilierzeit (_Compile Time_) besser als Fehler zur Laufzeit (_Run Time_), da Fehler zur Kompilierzeit nicht bei Kund\*innen auftreten können.
-
 
 ### Listen
 
@@ -923,25 +753,6 @@ Der Infixoperator `++` hängt zwei Listen hintereinander.
 Das heißt, der Ausdruck `[ 1, 2 ] ++ [ 3, 4 ]` liefert die Liste `[ 1, 2, 3, 4 ]`.
 Dabei ist immer zu beachten, dass in einer funktionalen Programmiersprache Datenstrukturen nicht verändert werden.
 Das heißt, der Operator `::` liefert eine neue Liste und verändert nicht etwa sein Argument.
-
-Listen können häufig genutzt werden, um repetitiven Code besser zu strukturieren.
-Als Beispiel betrachten wir die Verwendung der Funktion `String.concat : [String] -> String`.
-Diese Funktion erhält eine Liste von `String`s und hängt diese alle aneinander.
-Wir können diese Funktion zum Beispiel wie folgt nutzen, um die Definition von `rotate` erweiterbarer zu gestalten.
-
-```elm
-rotate : { angle : Float, origin : Point } -> String
-rotate { angle, origin } =
-    String.concat
-        [ "rotate("
-        , String.fromFloat angle
-        , ","
-        , String.fromFloat origin.x
-        , ","
-        , String.fromFloat origin.y
-        , ")"
-        ]
-```
 
 
 ### Benennungsstil
@@ -1005,6 +816,7 @@ Wenn wir in unserer Anwendung neben dem Mittelpunkt noch eine weitere Art Punkt 
 Das heißt, wir versuchen bei der Benennung einen Namen zu wählen, der im Kontext der Anwendung möglichst eindeutig bestimmt, welches Konzept wir meinen.
 
 [^1]: [Concise and consistent naming](https://wwwbroy.in.tum.de/publ/papers/deissenboeck_pizka_identifier_naming.pdf) - Software Quality Journal 14 (2006): 261-282.
+
 
 <div class="nav">
     <ul class="nav-row">
