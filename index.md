@@ -41,7 +41,7 @@ custom_css: toc
 
 <!-- - 2.7. [Grundlegendes zur Benennung](basics.md#grundlegendes-zur-benennung) -->
 
-### 3. [Eine Erste Anwendung](first-application.md)
+<!-- ### 3. [Eine Erste Anwendung](first-application.md)
 
 - 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
 
@@ -113,7 +113,7 @@ custom_css: toc
 
 - 11.1. [Decoder](json.md#decoder)
 
-- 11.2. [Encoder](json.md#encoder)
+- 11.2. [Encode](json.md#encode)
 
 ### 12. [Abonnements](subscriptions.md)
 
@@ -156,6 +156,10 @@ custom_css: toc
 <!-- ### 17. [Weitere Aspekte einer Web-Anwendung](other-topics.md)
 
 - 17.1. [Lokalisierte Zeit](other-topics.md#lokalisierte-zeit) -->
+
+<!-- ### 17. [Supabase](supabase.md)
+
+- 17.1. [Authentifizierung](supabase.md#authentifizierung) -->
 
 ### A. [Programmierregeln](linter-rules.md)
 
