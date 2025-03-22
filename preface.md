@@ -39,11 +39,11 @@ Andersherum ausgedrückt, kann Code, dessen Verhalten sehr stark von der Reihenf
 Die Programmiersprache [**Elm**](https://elm-lang.org) ist eine **rein funktionale Programmiersprache**.
 Das heißt, die Ausführung eines Programms ist immer die Auswertung eines Ausdrucks.
 Neben Elm gibt es eigentlich nur noch eine weitere rein funktionale Programmiersprache, die etwas verbreiteter ist, nämlich [Haskell](https://en.wikipedia.org/wiki/Haskell).
-Die anderen rein funktionalen Programmiersprachen, die es gibt, wie [Coq](https://en.wikipedia.org/wiki/Coq_(software)) oder [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), sind zwar schon vergleichsweise alt, ihre noch fortgeschritteneren Programmierkonzepte haben aber bisher noch keinen Einzug in Mainstream-Sprachen gefunden.
+Die anderen rein funktionalen Programmiersprachen, die es gibt, wie [Rocq](https://en.wikipedia.org/wiki/Rocq_(software)) oder [Agda](https://en.wikipedia.org/wiki/Agda_(programming_language)), sind zwar schon vergleichsweise alt, ihre noch fortgeschritteneren Programmierkonzepte haben aber bisher noch keinen Einzug in Mainstream-Sprachen gefunden.
 
-Neben den rein funktionalen Programmiersprachen, gibt es aber noch eine ganze Reihe von Programmiersprachen, die grundlegend funktional sind, aber auch einzelne Sprachfeatures zur Verfügung stellen, die auf der Abarbeitung von Anweisungen basieren.
+Neben den rein funktionalen Programmiersprachen gibt es aber noch eine ganze Reihe von Programmiersprachen, die grundlegend funktional sind, aber auch einzelne Sprachfeatures zur Verfügung stellen, die auf der Abarbeitung von Anweisungen basieren.
 Zu diesen Sprachen gehören etwa [Clojure](https://en.wikipedia.org/wiki/Clojure), [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)), [Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language)) und [F#]().
-Außerdem gibt es Hybridsprachen, welche die Ideen der funktionalen und der objektorientierten Sprachen kombinieren, etwa [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)) und [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)).
+Außerdem gibt es Hybridsprachen, welche die Ideen der funktionalen und der objektorientierten Sprachen kombinieren, etwa [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)), [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)) und [Swift](https://en.wikipedia.org/wiki/Swift_(programming_language)).
 
 Während zu den funktionalen Programmiersprachen eine ganze Reihe von **dynamisch getypten Sprachen** wie [Clojure](https://en.wikipedia.org/wiki/Clojure), [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)) und [Elixir](https://en.wikipedia.org/wiki/Elixir_(programming_language)) gehören, sind die rein funktionalen Sprachen ausschließlich **statisch getypt** und weisen vergleichsweise **ausdrucksstarke Typsysteme** auf.
 Statisch getypt bedeutet dabei, dass die Prüfung der Typkorrektheit eines Programms zur Kompilierzeit stattfindet.
@@ -78,7 +78,7 @@ Wir werden in dieser Vorlesung die Programmiersprache Elm nutzen.
 Elm ist eine domänenspezifische Sprache zur Entwicklung von **Web-Frontend-Anwendungen** und eignet sich sehr gut, um alle Facetten von deklarativen Software-Technologien zu beleuchten.
 Elm ist, wie bereits erwähnt, eine domänenspezifische Sprache.
 Außerdem ist Elm eine funktionale Programmiersprache und bietet eine Reihe von eingebetteten domänenspezifischen Sprachen, zum Beispiel zur Definition von HTML oder um Daten im JSON-Format zu verarbeiten.
-Zu guter Letzt nutzt Elm eine sehr deklarative Architektur, die sogenannte Elm-Architektur, um Web-Frontend-Anwendungen deklarativ zu formulieren.
+Zu guter Letzt nutzt Elm eine sehr deklarative Architektur, die sogenannte Elm-Architektur oder auch _Model-View-Update_-Architektur, um Web-Frontend-Anwendungen deklarativ zu formulieren.
 Zum Beispiel wird in Elm nicht beschrieben, wie das HTML-Dokument sich durch Aktionen des Nutzers verändert.
 Stattdessen wird nur zu jedem Zeitpunkt beschrieben, wie das HTML-Dokument aktuell aussieht und Elm berechnet mithilfe einer Technik, die als *Virtual DOM* bezeichnet wird, welche Operationen durchgeführt werden müssen, um von einem Zustand zum anderen zu gelangen.
 

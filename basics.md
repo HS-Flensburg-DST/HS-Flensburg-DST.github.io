@@ -88,7 +88,7 @@ secretNumber =
 ```
 
 Dabei gibt die erste Zeile den Typ der Variable an, in diesem Fall also ein Integer und die zweite und dritte Zeile ordnen der Variable einen Wert zu.
-Wir nutzen hier um im Folgenden immer [`elm-format`](https://github.com/avh4/elm-format) um Elm-Programme zu formatieren, damit unsere Programme immer einheitlich formatiert sind.
+Wir nutzen hier und im Folgenden immer [`elm-format`](https://github.com/avh4/elm-format) um Elm-Programme zu formatieren, damit unsere Programme immer einheitlich formatiert sind.
 Dieser _Code Formatter_ sorgt dafür, dass der Wert der Variable in die nächste Zeile geschrieben wird.
 Wir erhalten aber auch ein valides Elm-Programm, wenn wir stattdessen `secretNumber = 42` schreiben.
 Bei einer Definition wie `secretNumber` bezeichnet man den Teil hinter dem `=`-Zeichen als **rechte Seite der Definition**.
@@ -151,10 +151,9 @@ Das heißt, im Unterschied zu JavaScript, unterscheidet Elm zwischen dem Typ `In
 
 Wenn ein Kommentar zu einer Definition geschrieben werden soll, muss ein sogenannter Doc-Kommentar verwendet werden.
 Diese Art von Kommentar wird einer Definition zugeordnet.
-Wenn wir Elm-Programme schreiben, werden wir das Programm [`elm-format`](https://github.com/avh4/elm-format) verwenden, um den Quellcode zu formatieren.
-Auf diese Weise ersparen wir uns das manuelle Formatieren des Quellcodes.
+Wie bereits erwähnt, verwenden wir [`elm-format`](https://github.com/avh4/elm-format), um den Quellcode zu formatieren.
 Bei den Kommentaren, die wir bisher kennengelernt haben, wird durch `elm-format` eine Leerzeile zwischen Kommentar und Definition hinzugefügt.
-Da ein Doc-Kommentar sich auf eine Definition bezieht, fügt `elm-format` zwischen den Kommentar `This comment illustrates how to attach a comment to a definition` und die Definition von `s` keine Leerzeile ein.
+Da ein Doc-Kommentar sich auf eine Definition bezieht, fügt `elm-format` zwischen den Kommentar `This comment illustrates how to attach a comment to a definition` und die Definition von `string` keine Leerzeile ein.
 
 
 ### Arithmetische Ausdrücke
@@ -187,13 +186,14 @@ Elm erlaubt es nicht, Zahlen unterschiedlicher Art zu kombinieren.
 So liefert die folgende Definition zum Beispiel einen Fehler.
 
 ``` elm
-typeError = secretNumber + float
+typeError =
+    secretNumber + float
 ```
 
 Wir können Zahlen nur mit `+` addieren, wenn sie den gleichen Typ haben.
 Daher müssen wir Zahlen ggf. explizit konvertieren.
 
-Um einmal zu illustrieren, dass Elm sich sehr viel Mühe bei **Fehlermeldungen** gibt, wollen wir uns den Fehler anschauen, den die REPL liefert, wenn wir versuchen, zwei Zahlen, die unterschiedliche Typen haben, zu addieren.
+Um einmal zu illustrieren, dass der Elm-Compiler vergleichsweise gute **Fehlermeldungen** liefert, wollen wir uns den Fehler anschauen, den die REPL liefert, wenn wir versuchen, zwei Zahlen, die unterschiedliche Typen haben, zu addieren.
 
 ``` text
 -- TYPE MISMATCH -------------------------------------------------- src/Test.elm
@@ -227,7 +227,8 @@ Um unser konkretes Problem zu lösen und die Zahlen `secretNumber` und `float` z
 Das Ergebnis dieser Addition ist dann wieder vom Typ `Float`, das heißt, die Variable `convert` hat den Typ `Float`.
 
 ``` elm
-convert = toFloat secretNumber + float
+convert =
+    toFloat secretNumber + float
 ```
 
 Im Unterschied zu anderen Sprachen führt der Operator `/` nur Divisionen
@@ -242,7 +243,7 @@ Zahlen zu dividieren, muss der Operator `//` verwendet werden, der eine
 
 {% include callout-important.html content="Durch Elms Typinferenz müssen wir die Typen von Definitionen zwar nicht angeben, es ist aber guter Stil, die Typen dennoch explizit anzugeben." %}
 
-Die Typangaben fungieren als eine Art überprüfte Dokumentation und helfen Leser\*innen, sich schneller im Code zurechzufinden.
+Die Typangaben fungieren als eine Art überprüfte Dokumentation und helfen Leser\*innen, sich schneller im Code zurechtzufinden.
 Daher werden wir im folgenden bei allen Definitionen immer explizit Typen angeben.
 Im Vergleich zu Programmiersprachen wie Java müssen wir dennoch wesentlich weniger Stellen mit Typinformationen versehen, da wir uns durch die Typinferenz wiederholende Typangaben sparen können.
 
@@ -305,7 +306,7 @@ Die Funktionen `==` und `/=` stehen für jeden Datentyp zur Verfügung.
 Die Funktionen `<`, `<=`, `>` und `>=` stehen dagegen nur für bestimmte Datentypen zur Verfügung.
 " %}
 
-Im Kapitel [Spezielle Typvariablen](final-topics.md#spezielle-typvariablen) wird dieser Aspekt im Detail diskutiert.
+Im Kapitel [Spezielle Typvariablen](other-elm-topics.md#spezielle-typvariablen) wird dieser Aspekt im Detail diskutiert.
 Zum Verständnis werden aber Kenntnisse aus den Kapiteln zuvor benötigt.
 
 
@@ -316,7 +317,7 @@ Die Präzedenz eines Operators liegt zwischen 0 und 9.
 Der Operator `+` hat zum Beispiel die Präzedenz 6 und `*` hat die Präzedenz 7.
 Da die Präzedenz von `*` also höher ist als die Präzedenz von `+` bindet `*` stärker als `+` und der Ausdruck `3 + 4 * 8` steht für den Ausdruck `3 + (4 * 8)`.
 
-Wie auch in anderen Programmiersprachen üblich binden die **relationalen Operatoren**, wie `<`, `<=`, `>`, `>=`, `==` und `/=` stärker als die logischen Operatoren `&&` und `||`.
+Wie auch in anderen Programmiersprachen üblich binden die **relationalen Operatoren** wie `<`, `<=`, `>`, `>=`, `==` und `/=` stärker als die logischen Operatoren `&&` und `||`.
 Daher steht der Ausdruck `5 > 3 && 'p' <= 'q'` ohne Klammern für den Ausdruck `(5 > 3) && ('p' <= 'q')`.
 
 Wenn Code mit Operatoren mehrzeilig ist, formatiert `elm-format` den Code so, dass die Operatoren am Beginn der jeweiligen Zeile stehen.
@@ -330,6 +331,7 @@ bool7 =
         <= 'q'
 ```
 
+Wir werden erst sehr viel später sehen, warum diese Formatierung in vielen Fällen sinnvoll ist.
 Wenn ein Ausdruck mit Operatoren so lang ist, dass er in mehrere Zeile geschrieben werden sollte, können wir explizit Klammern setzen, um eine etwas lesbarere Formatierung zu erhalten.
 
 ```elm
@@ -343,12 +345,12 @@ bool7 =
 Der Ausdruck `not True || False` steht daher zum Beispiel für `(not True) || False` und nicht etwa für `not (True || False)`.
 Wir werden später noch weitere Beispiele für diese Regel sehen.
 
-Neben der Bindungsstärke wird bei Operatoren noch definiert, ob diese **links- oder rechts-assoziativ** sind.
+Neben der Bindungsstärke wird bei Operatoren noch definiert, ob diese **links-** oder **rechts-assoziativ** sind.
 In Elm (wie in vielen anderen Sprachen) gibt es links- und rechts-assoziative Operatoren.
 Dies gibt an, wie ein Ausdruck der Form *x* ∘ *y* ∘ *z* interpretiert wird.
 Falls der Operator ∘ linksassoziativ ist, gilt *x* ∘ *y* ∘ *z* = (*x* ∘ *y*) ∘ *z*, falls er rechts-assoziativ ist, gilt *x* ∘ *y* ∘ *z* = *x* ∘ (*y* ∘ *z*).
 Das heißt, im Unterschied zur Bindungsstärke wird die Assoziativität genutzt, um auszudrücken, wie ein Ausdruck geklammert ist, wenn er mehrfach den gleichen Operator enthält.
-Im Kapitel [Funktionen höherer Ordnung](recursion.md) werden wir sehen, dass für einige Konzepte der Programmiersprache Elm, die Assoziativität eine entscheidende Rolle spielt.
+Im Kapitel [Funktionen höherer Ordnung](recursion.md) werden wir sehen, dass für einige Konzepte der Programmiersprache Elm die Assoziativität eine entscheidende Rolle spielt.
 
 Funktionsdefinitionen
 ---------------------
@@ -408,12 +410,13 @@ Durch den qualifizierten Namen ist dann uns (und dem Compiler) klar, welche Funk
 
 In diesem Beispiel greift wieder die Regeln, dass Funktionsanwendungen -- auch Funktionsapplikationen oder nur **Applikationen** genannt -- stärker binden als Infixoperatoren.
 Daher steht der Ausdruck `String.fromInt quantity ++ " Gegenstände"` für den Ausdruck `(String.fromInt quantity) ++ " Gegenstände"`.
-Das heißt, wir hängen das Ergebnis des Aufrufs `String.fromInt quantity` vorne an den String `" Gegenstände"`.
+Das heißt, wir hängen den `String` `" Gegenstände"` hinter das Ergebnis des Aufrufs `String.fromInt quantity`. 
 
 Um komplexere Programme zu konstruieren, folgt man in Elm --- wie in allen Programmiersprachen --- Bauprinzipien.
 Zum Beispiel können im `then`- und im `else`-Zweig eines `if`-Ausdrucks wieder Ausdrücke stehen.
 Da ein `if`-Ausdruck selbst ein Ausdruck ist, können wir auf diese Weise Mehrfachfallunterscheidungen umsetzen.
 Wir betrachten zum Beispiel die folgende Variante der Funktion `items`.
+Hier ist der Ausdruck, der hinter dem Schlüsselwort `else` steht wieder ein `if`-Ausdruck.
 
 ``` elm
 items : Int -> String
@@ -451,7 +454,7 @@ items quantity =
 ```
 
 Die Fälle in einem `case`-Ausdruck werden von oben nach unten geprüft.
-Wenn wir zum Beispiel die Anwendung `items 0` auswerten, so passt die erste Regel und wir erhalten `"Kein Gegenstand"` als Ergebnis.
+Wenn wir zum Beispiel die Anwendung `items 0` auswerten, so passt die erste Regel und wir erhalten `"Keine Gegenstände"` als Ergebnis.
 Werten wir dagegen `items 3` aus, so passen die ersten beiden Regeln nicht.
 Die dritte Regel mit dem Unterstrich ist eine *Default*-Regel, die immer passt und daher nur als letzte Regel genutzt werden darf.
 Das heißt, wenn wir die Anwendung `items 3` auswerten, wird anschließend der Ausdruck `String.fromInt 3 ++ " Gegenstände"` ausgewertet.
@@ -467,10 +470,10 @@ Dieses Wort bedeutet so viel wie "Der Geprüfte" und stammt vom Verb _scrutinize
 In vielen Fällen ist _Pattern Matching_ für eine Funktion, die einen `Int` verarbeitet, keine gute Lösung, da nicht auf negative Zahlen geprüft werden kann." %}
 
 In der Funktion `items` landen negative Argumente zum Beispiel im dritten Fall, was nicht unbedingt gewünscht ist.
-Daher sollte man zur Prüfung eines Wertes vom Typ `Int` einen `if`-Ausdruck nutzen.
+Daher sollte man zur Prüfung eines Wertes vom Typ `Int` in vielen Fällen einen `if`-Ausdruck nutzen.
 
 An dieser Stelle soll noch erwähnt werden, dass wir eine Fallunterscheidung nicht nur über den Wert einer Variable durchführen können, sondern über den Wert eines beliebigen Ausdrucks.
-Das heißt, wir können auch die folgende nicht sehr sinnvolle Funktion definieren.
+Als Beispiel betrachten wir die folgende nicht sehr sinnvolle Funktion.
 
 ```elm
 items : Int -> String
@@ -487,12 +490,14 @@ items quantity =
 ```
 
 Diese Funktion verhält sich genau so, wie die zuvor definierte Funktion.
-Statt der Addition können wir für den _Scrutinee_ einen beliebigen Ausdruck nutzen.
+Statt der Addition können wir für den _Scrutinee_ auch einen beliebigen anderen Ausdruck nutzen.
 Zum Beispiel könnten wir auch eine Fallunterscheidung über das Ergebnis eines `if`-Ausdrucks durchführen.
 Wir werden später Anwendungsfälle kennenlernen, bei denen es sinnvoll ist, eine Fallunterscheidung über einen komplexen Ausdruck durchzuführen.
 
 Wenn man eine Programmiersprache lernt, sieht man häufig nur bestimmte Formen von Beispielen.
-Die meisten Beispiele für `case`-Ausdrücke in Elm haben etwa eine Variable als _Scrutinee_.
+Die meisten Beispiele für `case`-Ausdrücke in funktionalen Sprachen haben etwa eine Variable als _Scrutinee_.
+Daher denken viele Studierende, dass der _Scrutinee_ immer eine Variable sein muss.
+Dieses Beispiel illustriert, dass man anhand von einzelnen Beispielen eine Programmiersprache nicht vollständig beherrschen kann.
 Um wirklich zu verstehen, welche Formen von Programmen erlaubt sind, reichen daher einzelne Beispielprogramme nicht aus.
 Um ein tieferes Verständnis für den Aufbau von Programmen zu erhalten, kann es daher hilfreich sein, sich eine Grammatik für die Sprache anzuschauen.
 Im Folgenden ist ein Auszug aus einer Grammatik für Elm in [_Extended Backus-Naur form_](https://en.wikipedia.org/wiki/Extended_Backus–Naur_form) angegeben.
@@ -539,14 +544,14 @@ An dieser Stelle wollen wir nur festhalten, dass die Typen der Parameter bei meh
 Das heißt, wenn wir den Typ einer Funktion angeben, listen wir die Typen der Argumente und den Ergebnistyp auf und schreiben jeweils `->` dazwischen.
 
 Um die Funktion `pluralize` anzuwenden, schreiben wir ebenfalls die Argumente durch Leerzeichen getrennt hinter den Namen der Funktion.
-Das heißt, der folgende Ausdruck wendet die Funktion `pluralize` auf die Argumente `"Gegenstand"` und `"Gegenstände"` an.
+Das heißt, der folgende Ausdruck wendet die Funktion `pluralize` auf die Argumente `"Gegenstand"`, `"Gegenstände"` und `3` an.
 
 ``` elm
 pluralize "Gegenstand" "Gegenstände" 3
 ```
 
 Wenn eines der Argumente der Funktion `pluralize` das Ergebnis einer anderen Funktion sein soll, so muss diese Funktionsanwendung mit Klammern umschlossen werden.
-So wendet der folgende Ausdruck die Funktion `pluralize` auf `"Gegenstand"` und `"Gegenstände"` und die Summe von `1` und `2` an.
+So wendet der folgende Ausdruck die Funktion `pluralize` auf die Argumente `"Gegenstand"`, `"Gegenstände"` und die Summe von `1` und `2` an.
 
 ``` elm
 pluralize "Gegenstand" "Gegenstände" (1 + 2)
@@ -652,9 +657,10 @@ isHorizontalComplete key =
 
 Die Verwendung des Unterstrichs ist zwar praktisch, sollte aber mit Bedacht eingesetzt werden.
 Wenn wir einen weiteren Konstruktor zum Datentyp `Key` hinzufügen, würde die Funktion `isHorizontal` zum Beispiel weiterhin funktionieren.
+Es könnte aber sein, dass das _Default_-Verhalten für den neu hinzugefügten Konstruktor gar nicht korrekt ist.
 Bei der Definition `isHorizontalComplete` erhalten wir vom Elm-Compiler dagegen in diesem Fall einen Fehler, da einer der Fälle nicht abgedeckt ist.
-Das heißt, wir erhalten einen Fehler zur Kompilierzeit, also bevor der Nutzer die Anwendung verwendet.
-Es ist besser, wenn der Compiler einen Fehler liefert, da sich sonst, ohne dass wir es bemerken, Fehler in der Anwendung einschleichen können, die schwer zu finden sind.
+Wenn wir immer vollständiges _Pattern Matching_ verwenden, können wir daher nach dem Hinzufügen eines Konstruktors zu einem Datentyp alle Fehlermeldungen des Compilers durchgehen, um das Verhalten für den neu definierten Konstruktor in allen Funktionen zu definieren.
+Diese Strategie, sich vom Compiler leiten zu lassen, ist in der funktionalen Programmierung verbreitet und wird in der wissenschaftlichen Publikation [How Statically-Typed Functional Programmers Write Code](https://dl.acm.org/doi/pdf/10.1145/3485532) als _Compilers as directive tools_ bezeichnet.
 
 {% include callout-important.html content="Man sollte ein Unterstrich\-_Pattern_ nur verwenden, wenn man damit viele Fälle abdecken kann und somit den Code stark vereinfacht." %}
 
@@ -732,7 +738,7 @@ Wir werden hier die Details dieses Datentyps erst einmal ignorieren und uns vor 
 Der Datentyp heißt `List` und erhält nach einem Leerzeichen den Typ der Elemente in der Liste.
 Das heißt, wir nutzen den Typ `List Int` für eine Liste von Zahlen.
 
-{% include callout-info.html content="In Haskell nutzt der Listendatentyp eine spezielle Syntax und statt `List Int` schreiben wir `[Int]`." %}
+{% include callout-info.html content="In Haskell nutzt der Listendatentyp eine spezielle Syntax und statt `List Int` schreiben wir in Haskell `[Int]`." %}
 
 Listen werden in Elm mit eckigen Klammern konstruiert und die Elemente der Liste werden durch Kommata getrennt.
 Das heißt, die folgende Definition enthält eine konstante Liste, welche die ersten fünf ganzen Zahlen enthält.
@@ -753,6 +759,7 @@ Der Infixoperator `++` hängt zwei Listen hintereinander.
 Das heißt, der Ausdruck `[ 1, 2 ] ++ [ 3, 4 ]` liefert die Liste `[ 1, 2, 3, 4 ]`.
 Dabei ist immer zu beachten, dass in einer funktionalen Programmiersprache Datenstrukturen nicht verändert werden.
 Das heißt, der Operator `::` liefert eine neue Liste und verändert nicht etwa sein Argument.
+Gleiches gilt für Funktionen wie den Operator `++`.
 
 
 ### Benennungsstil
@@ -777,6 +784,7 @@ Im Unterschied zu Haskell, ist im offiziellen [Elm Style Guide](https://elm-lang
 > **Be Descriptive.** One character abbreviations are rarely acceptable, especially not as arguments for top-level function declarations where you have no real context about what they are.
 
 Das heißt, Elm versucht explizit längere Variablennamen zu fördern.
+Tatsächlich werden in Elm-Code bei GitHub wesentlich seltener Einbuchstabenvariablen wie `a`, `p` oder `x` verwendet als in anderen statisch-getypten funktionalen Programmiersprachen.
 
 Unabhängig davon sollte man bei der Benennung die Größe des Gültigkeitsbereichs (_Scope_) einer Variable beachten.
 Das heißt, bei einer Variable, die einen sehr kleinen _Scope_ hat, kann ein Name wie `x` angemessen sein, während er es bei einer Variable mit größerem _Scope_ auf jeden Fall nicht ist.
@@ -790,19 +798,19 @@ Stattdessen nutzt man den Unterstrich, das heißt, man nutzt Namen wir `primes_`
 " %}
 
 
-### Grundlegendes zur Benennung
+<!-- ### Grundlegendes zur Benennung
 
 An dieser Stelle soll es noch ein paar grundlegende Hinweise zu guter Benennung geben, die auch in anderen Programmiersprachen gültig sind.
 Benennungen von Variablen sollten _concise_ und _consistent_ sein[^1].
 
 Mit **konsistent** (_consistent_) ist dabei gemeint, dass identische Konzepte im Programm auch identisch benannt sein sollten.
 Das heißt zum Beispiel, wenn in der Funktion `rotate` der Winkel als `angle` bezeichnet wird, sollte diese Bezeichnung auch an anderen Stellen im Programm verwendet werden.
-Es wäre also zum Beispiel keine gute Idee, den Winkel an einer Stelle mit `angle` zu bezeichnen und an einer anderen Stelle mit `rotationAngle`.
+Es wäre also zum Beispiel keine gute Idee, den Winkel an einer Stelle mit `angle` zu bezeichnen und an einer anderen Stelle mit `rotationAngle`. -->
 
 <!-- Es gibt in der natürlichen Sprache zwei Formen von Inkonsistenzen: Homonyme und Synonyme.
 Ein Homonym ist ein Wort, dass mehrere Bedeutungen hat. -->
 
-Um das Konzept der _conciseness_ zu beschreiben, fordern wir erst einmal, dass Bezeichnungen **korrekt** sind.
+<!-- Um das Konzept der _conciseness_ zu beschreiben, fordern wir erst einmal, dass Bezeichnungen **korrekt** sind.
 Damit ist gemeint, dass der Name zumindest ein Oberbegriff des Konzeptes ist, den es beschreibt.
 Zum Beispiel wäre der folgende Funktionskopf korrekt, da das Argument der Funktion `rotate` den Mittelpunkt des Objektes beschreibt und der Begriff Punkt ein Oberbegriff von Ursprung ist.
 Wenn wir dagegen den Bezeichner `color` an Stelle von `point` wählen würden, wäre dieser nicht korrekt, da Farbe kein Oberbegriff des Konzeptes ist, auf das sich der Bezeichner bezieht.
@@ -815,7 +823,7 @@ Der Bezeichner `point` ist zwar korrekt, aber vermutlich nicht **präzise** (_co
 Wenn wir in unserer Anwendung neben dem Mittelpunkt noch eine weitere Art Punkt nutzen und beide mit dem Bezeichner `point` bezeichnen, so ist der Bezeichner nicht mehr präzise, da wir aus dem Bezeichner nicht ableiten können, welches der beiden Konzepte gemeint ist.
 Das heißt, wir versuchen bei der Benennung einen Namen zu wählen, der im Kontext der Anwendung möglichst eindeutig bestimmt, welches Konzept wir meinen.
 
-[^1]: [Concise and consistent naming](https://wwwbroy.in.tum.de/publ/papers/deissenboeck_pizka_identifier_naming.pdf) - Software Quality Journal 14 (2006): 261-282.
+[^1]: [Concise and consistent naming](https://wwwbroy.in.tum.de/publ/papers/deissenboeck_pizka_identifier_naming.pdf) - Software Quality Journal 14 (2006): 261-282. -->
 
 
 <div class="nav">
