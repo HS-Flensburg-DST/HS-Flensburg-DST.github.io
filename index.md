@@ -41,7 +41,7 @@ custom_css: toc
 
 <!-- - 2.7. [Grundlegendes zur Benennung](basics.md#grundlegendes-zur-benennung) -->
 
-<!-- ### 3. [Eine Erste Anwendung](first-application.md)
+### 3. [Eine Erste Elm-Anwendung](first-application.md)
 
 - 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
 
@@ -57,11 +57,13 @@ custom_css: toc
 
 - 4.1. [Records](data-types.md#records)
 
-- 4.2. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
+<!-- - 4.2. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
 
 - 4.3. [_Pattern Matching_](data-types.md#pattern-matching)
 
-- 4.4. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
+- 4.4. [Rekursive Datentypen](data-types.md#rekursive-datentypen) -->
+
+<!--
 
 ### 5. [Polymorphismus](polymorphism.md)
 

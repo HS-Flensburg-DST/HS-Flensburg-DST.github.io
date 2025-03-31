@@ -84,6 +84,20 @@ japanese user =
     { user | firstName = user.lastName, lastName = user.firstName }
 ```
 
+An dieser Stelle soll kurz auf die Vorteile von unveränderbaren Datenstrukturen hingewiesen werden.
+Zu diesen Zweck betrachten wir die folgende "Übersetzung" des Beispiels nach Java.
+
+```java
+public static User japanese(User user) {
+    user.setFirstName(user.getLastName());
+    user.setLastName(user.getFirstName());
+    return user;
+}
+```
+
+Diese Methode liefert nicht das gewünschte Ergebnis, da wir zuerst den Vornamen auf den Nachnamen setzen und in der folgende Zeile den zuvor gesetzen Vornamen auslesen.
+Das heißt, nach Ausführung der Methode `japanese` sind Vor- und Nachname auf den Nachnamen gesetzt.
+
 Zu guter Letzt können wir auch _Pattern Matching_ verwenden, um auf die Felder eines Records zuzugreifen.
 Zu diesem Zweck müssen wir die Variablen im _Pattern_ nennen wie die Felder des entsprechenden Recordtyps.
 
@@ -106,13 +120,26 @@ firstNames { firstName } =
 _Pattern Matching_ auf Records eignet sich sehr gut, wenn wir die Felder des Records nur lesen möchten.
 Durch das _Pattern Matching_ können wir den Code kürzen, da die Verwendung der Record-Selektoren länger ist.
 Außerdem kann es sehr sinnvoll sein, _Pattern Matching_ auf einem Record zu verwenden, wenn es schwierig ist, für den gesamten Record einen sinnvollen Namen zu vergeben.
-Ein solches Beispiel werden wir zum Beispiel weiter unten bei der Funktion `rotate` kennenlernen.
+Ein solches Beispiel werden wir weiter unten bei der Funktion `rotate` kennenlernen.
 
 Wenn wir für einen Record ein Typsynonym einführen, gibt es eine Kurzschreibweise, um einen Record zu erstellen.
 Um einen Wert vom Typ `User` zu erstellen, können wir zum Beispiel auch `User "John" "Doe" 20` schreiben.
 Dabei gibt die Reihenfolge der Felder in der Definition des Records an, in welcher Reihenfolge die Argumente übergeben werden.
 Wir werden im Kapitel [Funktionen höherer Ordnung](higher-order.md) sehen, dass diese Art der Konstruktion bei der Verwendung einer partiellen Applikation praktisch ist.
-Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann, da dadurch unser Programm ggf. nicht mehr kompilieren würde.
+Diese Konstruktion eines Records hat allerdings den Nachteil, dass in der Definition des Records die Reihenfolge der Einträge nicht ohne Weiteres geändert werden kann.
+Insbesondere besteht die Gefahr, dass wir die Reihenfolge ändern, ohne dass ein Kompilerfehler auftritt.
+Wenn wir zum Beispiel die Definition von `User` wie folgt abändern
+
+```elm
+type alias User =
+    { lastName : String
+    , firstName : String
+    , age : Int
+    }
+```
+
+und `User "John" "Doe" 20` in unserem Programm verwenden, erhalten wir keinen Fehler, die Anwendung verhält sich aber nicht mehr korrekt.
+
 
 An dieser Stelle soll noch kurz ein interessanter Anwendungsfall für Records erwähnt werden.
 Einige Programmiersprachen bieten **benannte Argumente** als Sprachfeature.
@@ -127,8 +154,12 @@ rotate angle x y =
 
 Wir können diese Funktion nun zum Beispiel mittels `rotate "50" "60" "10"` aufrufen.
 Um bei diesem Aufruf herauszufinden, welches der Argumente welche Bedeutung hat, müssen wir uns die Funktion `rotate` anschauen.
-In einer Programmiersprache mit benannten Argumenten, können wir den Argumenten einer Funktion/Methode Namen geben und diese beim Aufruf nutzen.
+In einer Programmiersprache mit benannten Argumenten, können wir den Argumenten einer Funktion/Methode Namen geben und diese Namen beim Aufruf nutzen.
+
+{% include callout-important.html content="
 In einer Programmiersprache mit Records können wir diese Funktionalität mithilfe eines Records nachstellen.
+" %}
+
 Wir können die Funktion `rotate` zum Beispiel wie folgt definieren.
 
 ```elm
@@ -137,7 +168,7 @@ rotate { angle, x, y } =
     "rotate(" ++ angle ++ "," ++ x ++ "," ++ y ++ ")"
 ```
 
-Wenn wir die Funktion `rotate` nun aufrufen, nutzen wir `rotate { angle = "50", x = "60", y = "10" }` und sehen am Argument der Funktion direkt, welche Semantik die verschiedenen Parameter haben.
+Wenn wir die Funktion `rotate` nun aufrufen, schreiben wir `rotate { angle = "50", x = "60", y = "10" }` und sehen direkt beim Aufruf, welche Semantik die verschiedenen Parameter haben.
 
 Wir können die Struktur der Funktion `rotate` noch weiter verbessern.
 Zuerst können wir observieren, dass die Argumente der Funktion `rotate` nicht alle gleichberechtigt sind.
@@ -153,6 +184,10 @@ rotate : { angle : String, origin : Point } -> String
 rotate { angle, origin } =
     "rotate(" ++ angle ++ "," ++ origin.x ++ "," ++ origin.y ++ ")"
 ```
+
+{% include callout-important.html content="
+Gute Programmierer*innen zeichnen sich dadurch aus, dass sie solche Strukturen erkennen und zur Strukturierung des Programms nutzen.
+" %}
 
 Wir können diese Implementierung aber noch in einem weiteren Aspekt verbessern.
 Aktuell arbeitet unsere Anwendung mit Werten vom Typ `String`.
@@ -178,7 +213,15 @@ rotate { angle, origin } =
 Wenn wir nun versuchen würden, den `String` `"a"` als Winkel an die Funktion `rotate` zu übergeben, würden wir direkt beim Übersetzen des Codes einen Fehler vom Compiler erhalten.
 Grundsätzlich sind Fehler zur Kompilierzeit (_Compile Time_) besser als Fehler zur Laufzeit (_Run Time_), da Fehler zur Kompilierzeit nicht bei Kund\*innen auftreten können.
 
+{% include callout-important.html content="
+Man sollte in allen Programmiersprachen mit Datentypen mit möglichst viel Struktur arbeiten.
+Der Datentyp `String` ist zum Beispiel nur die richtige Wahl, wenn es tatsächlich um einen beliebigen Text handeln kann.
+" %}
+
+{% include callout-important.html content="
 Listen können häufig genutzt werden, um repetitiven Code besser zu strukturieren.
+" %}
+
 Als Beispiel betrachten wir die Verwendung der Funktion `String.concat : List String -> String`.
 Diese Funktion erhält eine Liste von `String`s und hängt diese alle aneinander.
 Wir können diese Funktion zum Beispiel wie folgt nutzen, um die Definition von `rotate` erweiterbarer zu gestalten.
@@ -197,21 +240,37 @@ rotate { angle, origin } =
         ]
 ```
 
+Wenn wir diese Funktion noch etwas genauer betrachten, stellen wir fest, dass die Wiederholung in der Definition vor allem durch die Trennung der Argumente von `rotate` durch Kommata entsteht.
+Mithilfe der Funktion `String.join : String -> List String -> String` können wir diesen Aspekt noch klarer herausarbeiten.
+Hier verwenden wir wieder eine Liste, um das wiederholte Hinzufügen eines Kommas besser zu strukturieren.
 
-Algebraische Datentypen
+```elm
+rotate : { angle : Float, origin : Point } -> String
+rotate { angle, origin } =
+    "rotate("
+        ++ String.join ","
+            [ String.fromFloat angle
+            , String.fromFloat origin.x
+            , String.fromFloat origin.y
+            ]
+        ++ ")"
+```
+
+
+<!-- Algebraische Datentypen
 -----------------------
 
 In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte **algebraische Datentypen**[^1] definieren kann.
-Dazu wollen wir erst einmal den Namen algebraische Datentypen etwas analysieren.
+Zuerst betrachten wir, in welchen Hinsicht diese Datentypen **algebraisch** sind.
 Anstelle des Namens Aufzählungstyp verwendet man in der Programmiersprachentheorie (PLT)[^2] auch den Namen **Summentyp**.
 Dieser Name zeigt einen Zusammenhang zum Namen algebraischer Datentyp.
 Eine Algebra ist in der Mathematik eine Struktur, die eine Addition und eine Multiplikation zur Verfügung stellt.
 Neben der Addition (dem Summentyp) benötigen wir für einen algebraischen Datentyp also noch eine Multiplikation.
-Man nennt Datentypen, die diese Multiplikation modellieren Produkttypen.
+Man nennt Datentypen, die diese Multiplikation modellieren **Produkttypen**.
 
-Ein Produkttyp entspricht einem benannten Paar bzw. Tupel und wir auch Verbund genannt.
-In der Programmiersprache C wird er zum Beispiel durch das Schlüsselwort `struct` erzeugt.
-Das heißt, wie bei einem Paar kann man Werte von unterschiedlichen Typen zu einem Wert zusammenfassen.
+Ein Produkttyp entspricht einem benannten Paar bzw. Tupel und wird auch Verbund genannt.
+In der Programmiersprache C wird ein Verbund zum Beispiel mit dem Schlüsselwort `struct` definiert.
+Wie bei einem Paar kann man bei einem Produkttyp Werte von unterschiedlichen Typen zu einem Wert zusammenfassen.
 Im Unterschied zu einem klassischen Paar kann man der Kombination von Werten aber noch einen Namen geben.
 So kann man zum Beispiel auf die folgende Weise einen Datentyp für einen Punkt, zum Beispiel auf einer 2D-Zeichenfläche, definieren.
 
@@ -223,13 +282,13 @@ type Point
 Der Datentyp `Point` fasst zwei Werte vom Typ `Float` zu einem Wert vom Typ `Point` zusammen.
 
 {% include callout-important.html content="
-Das Wort `Point` hinter dem Schlüsselwort `type` ist dabei der Name des **Typs**.
-Das Wort `Point` hinter dem `=`-Zeichen nennt man wie bei den Aufzählungstypen einen **Konstruktor**.
+Der Name `Point` hinter dem Schlüsselwort `type` ist dabei der Name des **Typs**.
+Der Name `Point` hinter dem `=`-Zeichen ist wie bei den Aufzählungstypen der Name des **Konstruktors**.
 " %}
 
 Hinter dem Namen des Konstruktors folgt ein Leerzeichen und anschließend folgen, durch Leerzeichen getrennt, die Typen der Argumente des Konstruktors.
 Im Gegensatz zu Funktionen und Variablen müssen Konstruktoren und Datentypen immer mit einem großen Anfangsbuchstaben beginnen.
-Der Konstruktor `Point` erhält zwei Argumente, die beide den Typ `Float` haben.
+Der Konstruktor `Point` erhält zwei Argumente, die beide vom Typ `Float` sind.
 Um mithilfe eines Konstruktors einen Wert zu erzeugen, benutzt man den Konstruktor wie eine Funktion.
 Das heißt, man schreibt den Namen des Konstruktors und durch Leerzeichen getrennt die Argumente des Konstruktors.
 Wir können nun zum Beispiel wie folgt einen Punkt erstellen.
@@ -258,10 +317,9 @@ Die Argumente des _Pattern_ sind im Fall von `translate` Variablen, nämlich `x`
 Wenn wir die Funktion `translate` zum Beispiel mit dem Wert `examplePoint` aufrufen, werden die Variablen `x` und `y` an die Werte an der entsprechende Stelle im Wert `examplePoint` gebunden.
 Das heißt, die Variable `x` wird in diesem Beispiel an den Wert `2.3` und die Variable `y` an den Wert `4.2` gebunden.
 
-Als weiteres Beispiel können wir etwa die folgende Funktion definieren, um einen `Point` in einen `String` umzuwandeln.
+Als weiteres Beispiel können wir die folgende Funktion definieren, um einen `Point` in einen `String` umzuwandeln.
 
 ``` elm
-
 toString : Point -> String
 toString point =
     case point of
@@ -291,7 +349,7 @@ examplePlayer =
     Player "Player A" (Point 0 0)
 ```
 
-Wir können nun zum Beispiel eine Funktion definieren, die den Namen eines Spielers liefert.
+Wir können nun wie folgt eine Funktion definieren, die den Namen eines Spielers liefert.
 
 ``` elm
 playerName : Player -> String
@@ -343,6 +401,7 @@ type Product
 erzeugen wir das Product aus dem Datentyp `Bool` mit sich selbst, das heißt, wir "multiplizieren" den Typ `Bool` mit dem Typ `Bool`.
 Analog hat der Datentyp `Product` tatsächlich auch `4 = 2 * 2` mögliche Werte, nämlich `Product False False`, `Product False True`, `Product True False` und `Product True True`.
 Die Analogie zu algebraischen Regeln, wie sie aus der Mathematik bekannt sind, geht noch wesentlich weiter und lässt sich mit polymorphen Datentypen noch besser illustrieren als mit monomorphen Datentypen, wie sie hier verwendet werden.
+[Polymorphe Datentypen](polymorphism.md#polymorphe-datentypen) lernen wir erst in einem späteren Kapitel kennen.
 
 Im folgenden ist ein algebraischer Datentyp definiert.
 Der Datentyp beschreibt, ob ein Spiel unentschieden ausgegangen ist oder ob ein Spieler das Spiel gewonnen hat.
@@ -374,7 +433,7 @@ type IntOrString
 ```
 
 Der Datentyp `IntOrString` stellt entweder einen `Int` oder einen `String` dar, vereinigt also die möglichen Werte der Datentypen `Int` und `String`.
-Man nennt Typen, welche mehrere anderen Typen zu einem neuen vereinigen auch Vereinigungstyp.
+Man nennt Typen, welche mehrere andere Typen zu einem neuen vereinigen auch Vereinigungstyp.
 Im Unterschied zu einem einfachen Vereinigungstyp ist bei einem Wert vom Typ `IntOrString` durch den Konstruktor klar, um welchen Teil der Vereinigung es sich handelt, also ob es sich um einen `Int` oder einen `String` handelt.
 Anders ausgedrückt: wenn wir den Typ `IntOrString` verwenden möchten, müssen wir den jeweiligen Konstruktor verwenden.
 Diese Eigenschaft ist elementar wichtig für die Typinferenz.
@@ -692,16 +751,20 @@ Das heißt, bei Definitionen wie `find` müssen wir beachten, dass rekursive Auf
 Der Ausdruck `n == int || find n lefttree` müsste zum Beispiel beide Argumente von `||` auswerten, auch wenn der gesuchte Eintrag bereits gefunden wurde, also `n == int` als Ergebnis `True` liefert.
 
 In Elm -- wie in vielen anderen Programmiersprachen -- sind die logischen Operatoren `||` und `&&` daher als Kurzschlussoperatoren definiert.
-Das heißt, der rekursive Aufruf `find n lefttree` wird nur durchgeführt, falls die Bedingung `n == int` nicht erfüllt ist.
+Das heißt, falls das erste Argument von `||` bereits `True` ist, wird das zweite Argument nicht ausgewertet.
+Falls das erste Argument von `&&` bereits `False` ist, wird das zweite Argument ebenfalls nicht ausgewertet.
+Anders ausgedrückt sind die Operatoren `||` und `&&` nicht-strikt, obwohl die Programmiersprache Elm strikt ist.
+In vielen strikten Programmiersprachen sind die Operatoren für das logische Oder und das logische Und nicht-strikt, um unnötige Berechnungen in diesem Fall zu vermeiden.
 
 [^1]: Wikipedia-Artikel zum Thema [Algebraische Datentypen](https://en.wikipedia.org/wiki/Algebraic_data_type)
 
-[^2]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory)
+[^2]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory) -->
 
 <div class="nav">
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="first-application.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="polymorphism.html">weiter</a></li>
+        <li class="nav-item nav-right"></li>
+        <!-- <li class="nav-item nav-right"><a href="polymorphism.html">weiter</a></li> -->
     </ul>
 </div>
