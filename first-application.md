@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Eine Erste Anwendung"
+title: "Eine Erste Elm-Anwendung"
 ---
 
 In diesem Kapitel werden wir eine erste Frontend-Anwendung mit Elm entwickeln.
@@ -25,7 +25,7 @@ main =
 Unter der Adresse `localhost:8000` erhalten wir eine Auswahl aller Dateien, die sich in dem entsprechenden Verzeichnis befinden.
 Wenn wir die Datei auswählen, die unser `HelloWorld`-Beispiel enthält, erhalten wir die entsprechende HTML-Seite.
 Wenn wir die Seite im Browser neu laden, wird der Elm-Code neu in JavaScript-Code übersetzt und wir erhalten die aktualisierte Version der Anwendung.
-Die Eigenschaft, Änderungen eines Systems nutzen zu können, ohne das System stoppen und wieder starten zu müssen, bezeichnet man als **_Hot Reload_**.
+
 
 ## Modulsystem
 
@@ -37,14 +37,16 @@ Unter <https://package.elm-lang.org/packages/elm/html/latest/Html> findet sich e
 
 Wenn wir eine Definition aus dem Modul `Html` in unserem Modul verwenden wollen, müssen wir es in der Zeile `import Html exposing (Html, text)` in der Liste hinter `exposing` aufführen.
 Das heißt, statt wie zuvor `exposing (..)` zu nutzen, um alle Definitionen aus einem Modul zu importieren, listen wir hier importierte Definitionen explizit auf.
+Wenn wir Definitionen explizit auflisten, können nur diese im Modul `HelloWorld` verwendet werden.
 Im obigen Beispiel importieren wir den Typ `Html` und die Funktion `text` aus dem Modul `Html`.
 
 {% include callout-important.html content="Beim Import eines Datentyps kann man angeben, ob man nur den Typ oder auch die Konstruktoren importieren möchte." %}
 
 Wenn wir so wie oben nur den Namen des Typs angeben, importieren wir nur den Typ, dürfen die Konstruktoren aber nicht verwenden.
+Im Modul `HelloWorld` wird der Typ `Html` in der Typsignatur von `main` verwendet, es wird aber kein Konstruktor von `Html` verwendet.
 Im Fall von `Html` importieren wir nur den Typ, da die Konstruktoren durch das Modul `Html` gar nicht exportiert werden.
 Strukturen vom Typ `Html` werden immer durch Funktionen wie `text` erzeugt.
-Wenn wir auch die Konstruktoren von einem Datentyp wie `Html` importieren möchten, müssen wir in der Liste nach `exposing` die Angabe `Html(..)` machen.
+Wenn wir auch die Konstruktoren von einem Datentyp wie `Html` importieren möchten, müssen wir in der Liste nach `exposing` statt der Angabe `Html` die Angabe `Html(..)` machen.
 Auf diese Weise importieren wir den Typ und alle seine Konstruktoren.
 
 Die gleichen Angaben, die wir beim Importieren eines Moduls machen, können wir auch verwenden, um Definitionen aus einem Modul zu exportieren.
@@ -57,11 +59,12 @@ Wenn wir ein Modul importieren, können wir eine Definition immer auch **qualifi
 Eigentlich ist es guter Stil, Definitionen qualifiziert zu verwenden, um explizit anzugeben, wo die Definition herkommt.
 Im Fall des Moduls `Html` verzichtet man aber häufig darauf, um Programme übersichtlich zu halten.
 Bei den Funktionen aus dem Modul `Html` ist im Kontext einer Frontend-Anwendung bereits aus dem Namen eindeutig, um welche Funktion es sich handelt.
+Ein Aufruf der Form `Html.div` wirkt zum Beispiel unnötig verbos, da im Kontext einer HTML-Frontend-Anwendung klar ist, dass die Funktion `div` eine HTML-struktur erzeugt.
 Daher importiert man in Elm-Anwendungen die Definitionen aus dem Modul `Html` häufig unqualifiziert, also zum Beispiel mittels `Html exposing (Html, text)`.
 
 {% include callout-important.html content="Wir werden die Definitionen aus dem Modul `Html` und ähnlichen Modulen auch immer unqualifiziert verwenden.
 Das heißt, wir schreiben `text` und nicht `Html.text`.
-Dagegen verwenden wir alle anderen importierten Definitionen immer qualifiziert." %}
+Dagegen verwenden wir alle anderen importierten Definitionen **immer** qualifiziert." %}
 
 Eine ähnliche Empfehlung wird auch im offiziellen [Elm Style Guide](https://elm-lang.org/docs/style-guide) gegeben.
 
@@ -70,7 +73,8 @@ Eine ähnliche Empfehlung wird auch im offiziellen [Elm Style Guide](https://elm
 > In large files and in large projects, it becomes very very difficult to figure out where variables came from without this.
 
 Unter <https://package.elm-lang.org/packages/elm/core/latest/> finden sich Module, die der Elm-Compiler direkt mitbringt.
-Diese Module werden von jedem Elm-Modul implizit wie folgt importiert.
+Diese Module werden von jedem Elm-Modul implizit importiert.
+Der Compiler fügt im Grunde die folgenden Importe zu jedem Modulkopf hinzu.
 
 ``` elm
 import Basics exposing (..)
@@ -94,7 +98,7 @@ Aus dem Modul `String` wird nur der Typ `String` importiert.
 Das heißt, den Typ `String` können wir unqualifiziert verwenden.
 Wenn wir allerdings eine andere Definition aus dem Modul `String` verwenden möchten, müssen wir diese Definition qualifiziert nutzen.
 Zum Beispiel können wir `String.length` schreiben, um die Funktion zu nutzen, die die Länge einer Zeichenkette liefert.
-Im Fall von `Maybe` werden durch die Angabe `Maybe(..)` auch die Konstruktoren importiert.
+Im Fall von `Maybe` werden durch die Angabe `Maybe(..)` auch die Konstruktoren des Datentyps `Maybe` importiert.
 Einer der Konstruktoren des Datentyps `Maybe` heißt `Nothing`.
 Das heißt, statt `Maybe.Nothing` zu schreiben, können wir die Konstruktoren unqualifiziert nutzen und einfach `Nothing` schreiben.
 Das gleiche gilt für das Modul `Result`, auch hier werden der Typ `Result` und die Konstruktoren von `Result` unqualifiziert importiert.
@@ -103,27 +107,28 @@ Die Namen von Modulen können aus mehreren Komponenten bestehen, die durch Punkt
 Diese Art der Module werden als **hierarchische Module** bezeichnet.
 In diesem Fall führt man in einigen Fällen kürzere Namen für diese Module ein.
 Der Import `import Platform.Cmd as Cmd` bedeutet, dass das hierarchische Modul `Platform.Cmd` unter dem Namen `Cmd` importiert wird.
-Das heißt, wir können die Definitionen aus dem Modul `Platform.Cmd` qualifiziert nutzen, müssen vor den Namen der Definition aber nicht den gesamten Modulnamen `Platform.Cmd` schreiben, sondern können stattdessen `Cmd` davorschreiben.
+Das heißt, wir können die Definitionen aus dem Modul `Platform.Cmd` qualifiziert nutzen, müssen vor den Namen der Definition aber nicht den gesamten Modulnamen `Platform.Cmd` schreiben, sondern können stattdessen `Cmd` davor schreiben.
 
-Bei einer Elm-Anwendung ist es guter Stil, Funktionen qualifiziert zu nutzen, also zum Beispiel `String.fromInt` und nicht nur `fromInt`.
+Wie zuvor bereits erwähnt ist es in einer Elm-Anwendung guter Stil, Funktionen qualifiziert zu nutzen, also zum Beispiel `String.fromInt` und nicht nur `fromInt`.
 
 {% include callout-important.html content="Wenn ein Modul einen Datentyp mit identischem Namen zur Verfügung stellt, sollte man den Datentyp (samt Konstruktoren) aber unqualifiziert nutzen." %}
 
 Das heißt, wenn wir ein Modul `Color` in unserer Anwendung haben, das einen Datentyp `Color` definiert, sollten wir als Import `import Color exposing (Color(..))` nutzen.
+Würden wir den Datentyp qualifiziert nutzen, müssten wir verbose Ausdrücke wie `Color.Color` verwenden.
 
 
 Elm-Architektur
 ---------------
 
-In diesem Kapitel wollen wir uns über die Architektur einer Elm-Anwendung unterhalten.
-Die Elm-Architektur wird auch als Model-View-Update-Architektur (MVU) bezeichnet.
+In diesem Abschnitt wollen wir uns über die Architektur einer Elm-Anwendung unterhalten.
+Die Elm-Architektur wird auch als _Model_-_View_-_Update_-Architektur (MVU) bezeichnet.
 Wie der Name der Architektur schon sagt, besteht eine Elm-Anwendung aus den folgenden Bestandteilen.
 
-- **Model**: das Modell, der Zustand der Anwendung
+- **_Model_**: das Modell, der Zustand der Anwendung
 
-- **View**: eine Umwandlung des Zustandes in eine HTML-Seite
+- **_View_**: eine Umwandlung des Zustandes in eine HTML-Seite
 
-- **Update**: eine Möglichkeit, den Zustand zu aktualisieren
+- **_Update_**: eine Möglichkeit, den Zustand zu aktualisieren
 
 Eine typische Elm-Anwendung hat die folgende Struktur.
 
@@ -137,11 +142,13 @@ import Browser
 -- Model
 
 
-type alias Model = ...
+type alias Model =
+    ...
 
 
 init : Model
-init = ...
+init =
+    ...
 
 
 
@@ -149,18 +156,21 @@ init = ...
 
 
 view : Model -> Html Msg
-view model = ...
+view model =
+    ...
 
 
 
 -- Update
 
 
-type Msg = ...
+type Msg =
+    ...
 
 
 update : Msg -> Model -> Model
-update msg model = ...
+update msg model =
+    ...
 
 
 
@@ -174,9 +184,9 @@ main =
 
 Wir haben einen Typ `Model`, der den internen Zustand unserer Anwendung repräsentiert.
 Außerdem haben wir einen Typ `Msg`, der Interaktionen mit der Anwendung modelliert.
-Diese Typen sind häufig einfach Synonyme für andere Typen, können aber auch direkt als Aufzählungstyp definiert sein.
+Der Typ `Model` ist häufig ein Typsynonym und `Msg` ist häufig ein Aufzählungstyp, grundsätzlich kann man für beide aber beliebige Typen verwenden.
 Die Konstante `init` gibt an, mit welchem Zustand die Anwendung startet.
-Die Funktion `update` nimmt eine Aktion und einen aktuellen Zustand und liefert einen neuen Zustand.
+Die Funktion `update` nimmt eine Nachricht und einen aktuellen Zustand und liefert einen neuen Zustand.
 Die Funktion `view` nimmt einen Zustand und liefert eine HTML-Seite.
 Außerdem stellt das Modul `Browser` eine Funktion `sandbox` zur Verfügung, deren Details wir erst im Kapitel [Modellierung der Elm-Architektur](architecture.md) diskutieren werden.
 An dieser Stelle müssen wir nur wissen, dass wir der Funktion die Konstante `init` und die Funktionen `update` und `view`, wie oben angegeben, übergeben müssen.
@@ -186,7 +196,7 @@ Wir verweisen im `Html`-Typ also auf den Typ der Nachrichten, die wir an die Anw
 Warum genau wir den Typ der Nachrichten an den `Html`-Typ übergeben, werden wir im Kapitel [Modellierung der Elm-Architektur](architecture.md) lernen.
 Was das kleingeschriebene `msg` bedeutet, werden wir im Kapitel [Polymorphismus](polymorphism.md) erfahren.
 
-Wir wollen uns einmal ein sehr einfaches Beispiel für eine Anwendung ansehen.
+Wir wollen uns nun ein sehr einfaches Beispiel für eine Elm-Anwendung ansehen.
 Wir implementieren einen einfachen Zähler, den Nutzer\*innen hoch- und runterzählen können.
 
 ``` elm
@@ -277,8 +287,8 @@ view model =
         ]
 ```
 
-Die Funktion `button` kommt aus dem Modul `Html` und erzeugt einen Knopf in der HTML-Struktur.
-Wir nutzen hier einen `div`-_Tag_, um den Zähler und die beiden Knöpfe zusammenzufassen.
+Die Funktion `button` kommt aus dem Modul `Html` und erzeugt HTML-Element `button`.
+Wir nutzen hier ein `div`-Element, um den Zähler und die beiden Knöpfe zusammenzufassen.
 Wie Funktionen wie `div` genau funktionieren, werden wir in Kürze diskutieren.
 Das Modul `Html.Events` stellt die Funktion `onClick` zur Verfügung.
 Wir übergeben der Funktion die Nachricht, die wir bei einem Klick an die Anwendung schicken wollen.
@@ -304,7 +314,7 @@ Wenn nun Benutzer\*innen im UI des Browsers auf einen der Knöpfe drücken, wird
 Die Elm\-_Runtime_ ruft nun mit dieser Nachricht und dem aktuellen Modell die Funktion `update` auf und erhält ein neues Modell.
 Die Elm\-_Runtime_ steckt dieses neue Modell dann in die Funktion `view` und zeigt die resultierende HTML-Struktur im Browser an.
 Dabei wird aber nicht die komplette HTML-Struktur im Browser neu erzeugt.
-Stattdessen berechnet die Elm\-_Runtime_ die Unterschiede zwischen der HTML-Struktur, die zuvor angezeigt wurde und der neuen HTML-Struktur.
+Stattdessen berechnet die Elm\-_Runtime_ die Unterschiede zwischen der HTML-Struktur, die zuvor angezeigt wurde, und der neuen HTML-Struktur.
 Aus diesen Unterschieden ergeben sich die Änderungen, welche die Elm\-_Runtime_ an der HTML-Struktur vornimmt, die im Browser angezeigt wird.
 Auf diese Weise können wir im Elm-Programm deklarativ beschreiben, wie die HTML-Struktur aussehen soll.
 Die Anzeige der HTML-Struktur im Browser ist aber dennoch effizient, da die Elm\-_Runtime_ nur die Änderungen durchführt, die notwendig sind und nicht die komplette Seite neu zeichnet.
@@ -313,7 +323,8 @@ Die Anzeige der HTML-Struktur im Browser ist aber dennoch effizient, da die Elm\
 ## HTML-Kombinatoren
 
 Das Modul `Html` stellt eine ganze Reihe von Funktionen zur Verfügung, mit deren Hilfe man HTML-Seiten definieren kann.
-Als weiteres Beispiel generieren wir einmal eine HTML-Seite mit einem `div`, das zwei Text-Knoten als Kinder hat.
+Bei der Bibliothek `Html` handelt es sich um eine eingebettete domänenspezifische Sprache (eDSL) zur Definition von HTML-Seiten.
+Um weitere Aspekte dieser domänenspezifische Sprache zu illustrieren, betrachten wir das folgende Beispiel.
 
 ``` elm
 main : Html msg
@@ -326,8 +337,8 @@ Das erste Argument ist eine Liste von Attributen, die das `div`-Element erhalten
 Das zweite Argument ist eine Liste von HTML-Kindelementen.
 Wir könnten in der Liste der Kindelemente also zum Beispiel auch wieder ein `div`-Element verwenden.
 
-Um die Funktionsweise von Attributen zu illustrieren, geben wir unserem `div`-Element einmal einen CSS-Stil.
-Die Funktion `style` kommt aus dem Modul `Html.Attributes` und nimmt zwei Strings, nämlich den Namen des Stils und den entsprechenden Wert, den der Stil haben soll.
+Um die Funktionsweise von Attributen zu illustrieren, definieren wir einen CSS-Stil für das `div`-Element.
+Die Funktion `style` kommt aus dem Modul `Html.Attributes` und erhält zwei _Strings_, nämlich den Namen des Stils und den Wert des Stils.
 Analog zum Modul `Html` importieren wir alle Definitionen aus dem Modul `Html.Attributes` unqualifiziert.
 Wir erhalten somit die folgenden Importe.
 
@@ -336,7 +347,7 @@ import Html exposing (Attribute, Html, button, div, text)
 import Html.Attributes exposing (style)
 ```
 
-Das Modul exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
+Das Modul `Html.Attribute` exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
 
 ``` elm
 mainContentStyle : List (Attribute msg)
@@ -349,10 +360,10 @@ main =
     div mainContentStyle [ text "Hallo Welt", text (String.fromInt 23) ]
 ```
 
-Statt eine CSS-Datei zu nutzen, kann man in Elm sehr gut _Inline_-Stile verwenden.
+Statt eine CSS-Datei zu nutzen, kann man in Elm sehr gut solche _Inline_-Stile verwenden.
 Da diese Stile in Elm selbst definiert werden und nicht in einer externen Datei, kann man die Sprachkonstrukte von Elm zur Strukturierung der Stile nutzen.
 
-{% include callout-important.html content="Man sollte die Stil-Definitionen in Konstanten auslagern." %}
+{% include callout-important.html content="Man sollte dabei aber am besten die Stil-Definitionen in Konstanten auslagern." %}
 
 Das heißt, statt die Stile direkt als Liste an die HTML-Kombinatoren wie `div` zu übergeben, definiert man eine Konstante wie `mainContentStyle` und gibt ihr einen beschreibenden Namen.
 Dadurch hat man ähnlich wie in CSS die Möglichkeit, Kombinationen von Stilen unter einem semantischen Namen zusammenzufassen und wiederzuverwenden.
@@ -391,14 +402,14 @@ navBarLinkStyle =
 
 1. **Engere Integration:**
     Bei der Verwendung einer CSS-Datei müssen die Stile in einer separaten Datei definiert werden.
-    Die separater Definition hat den Vorteil, dass wir Darstellung von Struktur trennen.
+    Die separate Definition hat den Vorteil, dass wir Darstellung von Struktur trennen.
     Es hat aber auch den Nachteil, dass wir den Stil in einer separaten Datei nachschauen müssen, um herauszufinden, wie ein HTML-Element dargestellt wird.
     Bei der Verwendung einer eDSL können wir selbst entscheiden, ob wir die Stile dort definieren, wo wir die HTML-Struktur erzeugen oder ob wir die Stile in ein separates Modul auslagern.
 
 2. **Compilerunterstützung:**
     Bei der Verwendung einer CSS-Datei müssen Identifikatoren und Klassen verwendet werden, um Stile zu HTML-Elementen zuzuordnen.
     Wenn es einen Schreibfehler in den Namen von Identifikatoren oder Klassen gibt, fällt das nur durch eine fehlerhafte Darstellung im Browser auf.
-    Bei der Verwendung einer eDSL erhalten wir dagegen einen Kompilierfehler, wenn wir zum Beispiel `navbarLinkStyle` schreiben statt `navBarLinkStyle`.
+    Bei der Verwendung einer eDSL erhalten wir dagegen einen Kompilierfehler, wenn wir zum Beispiel `navbarLinkStyle` statt `navBarLinkStyle` schreiben.
     Die Unterstützung des Compilers hilft insbesondere beim Refactoring der Stile, etwa wenn Stildefinitionen umbenannt werden sollen.
 
 3. **Wiederverwendbarkeit:**
@@ -421,6 +432,7 @@ navBarLinkStyle =
 Neben der sehr einfachen Einbindung von Stilen durch die `style`-Funktion, gibt es für Elm noch eDSLs, die eine größere Typsicherheit bieten, etwa [elm-css](https://package.elm-lang.org/packages/rtfeldman/elm-css/latest/).
 Während die Argumente von `style` vom Typ `String` sind, definiert elm-css Abstraktionen, die etwa einen `Int` als Argument erwarten.
 Um diesen Aspekt der Programmierung im Rahmen der Vorlesung möglichst einfach zu halten, verwenden wir die vordefinierte `style`-Funktion und keine zusätzliche Bibliothek wie elm-css.
+In einem größeren Projekt ist es aber durchaus sinnvoll eine Bibliothek wie elm-css zu verwenden.
 
 {% include callout-important.html content="
 Zu guter Letzt soll an dieser Stelle noch erwähnt werden, dass wir den Ausdruck `text \"\"` beim Rendern der HTML-Seite nicht auftaucht.
