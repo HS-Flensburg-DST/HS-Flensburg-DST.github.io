@@ -41,7 +41,7 @@ custom_css: toc
 
 <!-- - 2.7. [Grundlegendes zur Benennung](basics.md#grundlegendes-zur-benennung) -->
 
-### 3. [Eine Erste Elm-Anwendung](first-application.md)
+### 3. [Eine erste Elm-Anwendung](first-application.md)
 
 - 3.1. [_Hallo Welt_-Anwendung](first-application.md#hallo-welt-anwendung)
 
@@ -53,9 +53,9 @@ custom_css: toc
 
 - 3.5. [_Print Debugging_](first-application.md#print-debugging)
 
-### 4. [Datentypen](data-types.md)
+<!-- ### 4. [Datentypen](data-types.md) -->
 
-- 4.1. [Records](data-types.md#records)
+<!-- - 4.1. [Records](data-types.md#records) -->
 
 <!-- - 4.2. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
 

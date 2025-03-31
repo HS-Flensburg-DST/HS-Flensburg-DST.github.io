@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Eine Erste Elm-Anwendung"
+title: "Eine erste Elm-Anwendung"
 ---
 
 In diesem Kapitel werden wir eine erste Frontend-Anwendung mit Elm entwickeln.
@@ -476,6 +476,7 @@ Wenn wir auf den Knopf für das Verringern des Zählers drücken, erhalten wir k
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="basics.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="data-types.html">weiter</a></li>
+        <!-- <li class="nav-item nav-right"><a href="data-types.html">weiter</a></li> -->
+        <li class="nav-item nav-right"></li>
     </ul>
 </div>
