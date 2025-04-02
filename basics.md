@@ -784,7 +784,8 @@ Im Unterschied zu Haskell, ist im offiziellen [Elm Style Guide](https://elm-lang
 > **Be Descriptive.** One character abbreviations are rarely acceptable, especially not as arguments for top-level function declarations where you have no real context about what they are.
 
 Das heißt, Elm versucht explizit längere Variablennamen zu fördern.
-Tatsächlich werden in Elm-Code bei GitHub wesentlich seltener Einbuchstabenvariablen wie `a`, `p` oder `x` verwendet als in anderen statisch-getypten funktionalen Programmiersprachen.
+Tatsächlich werden in Elm-Code bei GitHub für Variablen wesentlich seltener Einbuchstabenvariablen wie `a`, `p` oder `x` verwendet als in anderen statisch-getypten funktionalen Programmiersprachen.
+Auch die durchschnittliche Länge von Variablenbezeichnern ist in Elm wesentlich länger als in anderen statisch-getypten funktionalen Programmiersprachen.[^1]
 
 Unabhängig davon sollte man bei der Benennung die Größe des Gültigkeitsbereichs (_Scope_) einer Variable beachten.
 Das heißt, bei einer Variable, die einen sehr kleinen _Scope_ hat, kann ein Name wie `x` angemessen sein, während er es bei einer Variable mit größerem _Scope_ auf jeden Fall nicht ist.
@@ -825,6 +826,7 @@ Das heißt, wir versuchen bei der Benennung einen Namen zu wählen, der im Konte
 
 [^1]: [Concise and consistent naming](https://wwwbroy.in.tum.de/publ/papers/deissenboeck_pizka_identifier_naming.pdf) - Software Quality Journal 14 (2006): 261-282. -->
 
+[^1]: [How developers choose names in statically-typed functional programming languages](https://hs-flensburg-pltp.github.io/files/Christiansen - How developers choose names in statically-typed fu.pdf) - Unpublished Draft
 
 <div class="nav">
     <ul class="nav-row">
