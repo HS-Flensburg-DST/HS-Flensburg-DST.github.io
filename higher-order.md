@@ -220,6 +220,29 @@ infixl 0 |>
 
 Das heißt, der Operator hat die Präzedenz `0` und ist linksassoziativ.
 
+Der Operator `|>` wird in Elm nicht nur für eine Sequenz von Abarbeitungsschritten verwendet, sondern auch um Funktionen "infix" zu verwenden.
+
+{% include callout-info.html content="
+In Haskell kann man eine zweistellige Funktion infix verwenden, indem man den Namen mit _Backticks_ umschließt.
+So wendet der Ausdruck ``5 `mod` 2`` zum Beispiel die Funktion `mod` auf die Argumente `5` und `2` an.
+" %}
+
+Dem minimalistischem Ansatz von Elm folgend gibt es dieses Feature in Elm nicht.
+Wenn man den Funktionsnamen gern zwischen zwei Argumente schreiben möchte, kann man aber den Operator `|>` hierfür nutzen.
+Wir haben im Kapitel [Polymorphe Funktionen](polymorphism.md#polymorphe-funktionen) zum Beispiel die Funktion `Maybe.withDefault : a -> Maybe a -> a` kennengelernt.
+Der Name dieser Funktion deutet an, dass den Namen zwischen den Wert vom Typ `Maybe` und den _Default_-Wert schreibt.
+Mithilfe von `|>` kann man `withDefault` tatsächlich auf diese Weise nutzen.
+Zu diesem Zweck applizieren wir `withDefault` partiell auf sein erstes Argument, nämlich den _Default_-Wert.
+Als Beispiel betrachten wir die partielle Applikation `Maybe.withDefault 0.0`.
+Dieser Ausdruck hat den Typ `Maybe Float -> Float`.
+Das heißt, der Ausdruck `String.toFloat input |> Maybe.withDefault 0.0` hat den Typ `Float`.
+Der Operator `|>` erlaubt uns in Kombination mit einer partiellen Applikation also eine zweistellige Funktion zwischen ihre Argumente zu schreiben.
+
+{% include callout-important.html content="
+Im Folgenden werden wir Funktionen, deren Namen eine Infixverwendung andeuten immer infix verwenden.
+Beispiele sind `withDefault`, `modBy` und `andMap`.
+" %}
+
 Neben `|>` stellt Elm auch einen Operator `(<|) : (a -> b) -> a -> b` zur Verfügung.
 Die Operatoren `<|` und `|>` werden gern verwendet, um Klammern zu sparen.
 So kann man durch den Operator `<|` zum Beispiel eine Funktion auf ein Argument angewendet werden, ohne das Argument zu klammern.
