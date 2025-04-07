@@ -53,19 +53,17 @@ custom_css: toc
 
 - 3.5. [_Print Debugging_](first-application.md#print-debugging)
 
-<!-- ### 4. [Datentypen](data-types.md) -->
+### 4. [Datentypen](data-types.md)
 
-<!-- - 4.1. [Records](data-types.md#records) -->
+- 4.1. [Records](data-types.md#records)
 
-<!-- - 4.2. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
+- 4.2. [Algebraische Datentypen](data-types.md#algebraische-datentypen)
 
 - 4.3. [_Pattern Matching_](data-types.md#pattern-matching)
 
-- 4.4. [Rekursive Datentypen](data-types.md#rekursive-datentypen) -->
+- 4.4. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
 
-<!--
-
-### 5. [Polymorphismus](polymorphism.md)
+<!-- ### 5. [Polymorphismus](polymorphism.md)
 
 - 5.1. [Polymorphe Datentypen](polymorphism.md#polymorphe-datentypen)
 
@@ -153,7 +151,7 @@ custom_css: toc
 
 - 16.3. [Routing](other-elm-topics.md#routing)
 
-- 16.4. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung)
+- 16.4. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung) -->
 
 <!-- ### 17. [Weitere Aspekte einer Web-Anwendung](other-topics.md)
 

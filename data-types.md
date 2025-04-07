@@ -257,7 +257,7 @@ rotate { angle, origin } =
 ```
 
 
-<!-- Algebraische Datentypen
+Algebraische Datentypen
 -----------------------
 
 In diesem Abschnitt werden wir uns ansehen, wie man in Elm sogenannte **algebraische Datentypen**[^1] definieren kann.
@@ -568,6 +568,18 @@ In Haskell wird für ein _Pattern Alias_ anstelle des Schlüsselwortes `as` das 
 Das heißt, wir schreiben in Haskell zum Beispiel `point@Point x _`.
 " %}
 
+Die folgende Grammatik gibt die Konstruktionsregeln für _Pattern_ an.
+Die Grammatik illustriert -- wie die Grammatik für Ausdrücke zuvor -- die Konstruktionsprinzipien eines _Pattern_.
+
+```elm
+pattern = literal ;
+        | identifier ;
+        | "_" ;
+        | "(" pattern ")" ;
+        | "(" pattern ")" "as" identifier ;
+        | constructor { pattern } ;
+        | ...
+```
 
 Rekursive Datentypen
 --------------------
@@ -758,13 +770,13 @@ In vielen strikten Programmiersprachen sind die Operatoren für das logische Ode
 
 [^1]: Wikipedia-Artikel zum Thema [Algebraische Datentypen](https://en.wikipedia.org/wiki/Algebraic_data_type)
 
-[^2]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory) -->
+[^2]: Wikipedia-Artikel zum Thema [Programmiersprachentheorie](https://en.wikipedia.org/wiki/Programming_language_theory)
 
 <div class="nav">
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="first-application.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"></li>
         <!-- <li class="nav-item nav-right"><a href="polymorphism.html">weiter</a></li> -->
+        <li class="nav-item nav-right"></li>
     </ul>
 </div>

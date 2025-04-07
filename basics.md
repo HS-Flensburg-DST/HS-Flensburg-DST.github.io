@@ -798,6 +798,23 @@ In Elm ist das Zeichen `'` als Bestandteil von Bezeichnern nicht erlaubt.
 Stattdessen nutzt man den Unterstrich, das heißt, man nutzt Namen wir `primes_`.
 " %}
 
+<!-- Am Ende dieses Kapitels wollen wir noch betrachten, wie Definitionen in Elm benannt werden.
+Die Muster, die hier diskutiert werden, finden sich auch in anderen Programmiersprachen wie Java wieder.
+Bei der Benennung von Funktionen und Konstanten treten vor allem drei Muster auf, imperative Verbalphrasen, indikative Verbalphrasen und Nominalphrasen.
+Diese drei Kategorien werden im Folgenden erläutert.
+
+#### Imperative Verbalphrasen
+
+In diese Kategorie fallen Funktionsnamen wie `List.reverse`, `List.filter`, `List.sort`, `List.sortBy` und `List.sortWith`.
+Eine Verbalphrase ist dabei ein Verb mit einer möglichen Ergänzung.
+Die Funktionsnamen in dieser Kategorie nutzen ein Verb im Imperativ.
+Diese Art der Namen wird genutzt, wenn eine Funktion Daten nimmt und in veränderter Form zurückliefert.
+Die oben genannten Funktionen erhalten zum Beispiel alle eine Liste als Argument und liefern eine Liste als Ergebnis.
+Im Unterschied zum Elm werden imperative Verbalphrasen in Java vor allem für Methoden genutzt, die einen Seiteneffekt haben und ihr Argument verändern.
+
+#### Indikative Verbalphrasen
+
+In diese Kategorie fallen Funktionsnamen wie `List.isEmpty`, `Char,isUpper`,  -->
 
 <!-- ### Grundlegendes zur Benennung
 

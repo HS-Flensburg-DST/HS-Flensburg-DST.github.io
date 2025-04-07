@@ -319,6 +319,15 @@ Aus diesen Unterschieden ergeben sich die Änderungen, welche die Elm\-_Runtime_
 Auf diese Weise können wir im Elm-Programm deklarativ beschreiben, wie die HTML-Struktur aussehen soll.
 Die Anzeige der HTML-Struktur im Browser ist aber dennoch effizient, da die Elm\-_Runtime_ nur die Änderungen durchführt, die notwendig sind und nicht die komplette Seite neu zeichnet.
 
+{% include callout-important.html content="
+Zu guter Letzt soll an dieser Stelle noch erwähnt werden, dass die Funktionen `view` und `update` nie manuell im Code aufgerufen werden sollten.
+" %}
+
+Die Tatsache, dass nur die Elm\-_Runtime_ diese Funktionen in einer festgelegten Reihenfolge aufruft, macht das Verhalten vorhersagbar.
+Insbesondere der rekursive Aufruf der Funktion `update` ist ein häufig auftretendes Anti\-_Pattern_.
+Die Funktion `update` wird rekursiv aufgerufen, wenn die Logik für zwei unterschiedliche Nachricht ähnlich ist.
+In diesem Fall kann man die gemeinsame Logik in eine Hilfsfunktion auslagern und diese Funktion in beiden Fällen aufrufen.
+
 
 ## HTML-Kombinatoren
 
@@ -417,7 +426,7 @@ navBarLinkStyle =
     Bei der Verwendung von CSS-Dateien ist dies nur durch zusätzliche Preprozessorsprachen wir [Less](https://en.wikipedia.org/wiki/Less_(style_sheet_language)) oder [Sass](https://en.wikipedia.org/wiki/Sass_(style_sheet_language)) möglich.
     Bei der Verwendung von Less oder Sass müssen Entwickler\*innen noch eine zusätzliche Syntax lernen.
 
-4. **Dynamische Style:**
+4. **Dynamische Stile:**
     In HTML können wir ein Kontrollelement wie einen Knopf deaktivieren, indem wir das Attribut `disabled` zu den Attributen des Kontrollelementes hinzufügen.
     Im Gegensatz dazu können wir das Deaktivieren eines Knopfes im Rahmen einer eDSL durch die dynamischen Features der Programmiersprache ausdrücken.
     Das Modul `Html.Attributes` stellt zum Beispiel die folgende Funktion zur Verfügung.
@@ -476,7 +485,6 @@ Wenn wir auf den Knopf für das Verringern des Zählers drücken, erhalten wir k
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="basics.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <!-- <li class="nav-item nav-right"><a href="data-types.html">weiter</a></li> -->
-        <li class="nav-item nav-right"></li>
+        <li class="nav-item nav-right"><a href="data-types.html">weiter</a></li>
     </ul>
 </div>
