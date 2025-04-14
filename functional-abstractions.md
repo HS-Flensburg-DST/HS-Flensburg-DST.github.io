@@ -47,36 +47,36 @@ viewUsers users =
 Das Ergebnis der Funktion `viewUsers` würden wir zum Beispiel als Kinder eines `div`-Knotens in unsere `view`-Funktion einbinden.
 
 Nun nehmen wir an, dass wir eine _Dropdown_-Liste zu unserer Seite hinzufügen möchten, bei der wir alle Nutzer\*innen zur Auswahl stellen möchten.
-Zu diesem Zweck definieren wir zuerst eine Funktion, die zu einem Wert vom Typ `User` ein `option`-HTML-Element liefert.
+Zu diesem Zweck definieren wir zuerst eine Funktion, die zu einem Wert vom Typ `User` ein HTML-Element `option` liefert.
 Wir nutzen dabei die `id` als eindeutigen Wert für die Option und zeigen bei jeder Option den vollständigen Namen als Text an.
-Anhand dieses Wertes kann später identifiziert werden, welche Option gewählt wurde.
+Anhand des eindeutigen Wertes kann später identifiziert werden, welche Option gewählt wurde.
 
 ```elm
-userOption : User -> Html msg
-userOption user =
+viewUserOption : User -> Html msg
+viewUserOption user =
     option [ value (String.fromInt user.id) ] [ viewUser user ]
 ```
 
 Wir können nun wie folgt eine Funktion definieren, die eine Liste von Nutzer\*innen in eine Liste von Optionen für eine _Dropdown_-Liste umwandelt.
 
 ```elm
-userOptions : List User -> List (Html msg)
-userOptions users =
+viewUserOptions : List User -> List (Html msg)
+viewUserOptions users =
     case users of
         [] ->
             []
 
         user :: users_ ->
-            userOption user :: userOptions users_
+            viewUserOption user :: viewUserOptions users_
 ```
 
 Mithilfe der Funktion `Html.select` können wir dann wie folgt eine _Dropdown_-Liste definieren.
 Die Funktion `onInput : (String -> msg) -> Attribute msg` aus dem Modul `Html.Events` schickt den `value` der gewählten Option an die Anwendung, wenn eine Option in der _Dropdown_-Liste gewählt wird.
 
 ```elm
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
-    select [ opInput Selected ] (userOptions model.users)
+    select [ opInput Selected ] (viewUserOptions model.users)
 ```
 
 Zu guter Letzt wollen wir eine Funktion definieren, die das durchschnittliche Alter unserer Nutzer\*innen berechnet.
@@ -104,8 +104,8 @@ averageAge users =
     toFloat (List.sum (ages users)) / toFloat (List.length users)
 ```
 
-Die Funktionen `viewUsers`, `userOptions` und `ages` durchlaufen alle eine Liste von Elementen und unterscheiden sich nur in der Operation, die sie auf die Listenelemente anwenden.
-Die Funktion `viewUsers` wendet `viewUser` auf alle Elemente an und die Funktion `userOptions` wendet `userOption` auf alle Elemente an.
+Die Funktionen `viewUsers`, `viewUserOptions` und `ages` durchlaufen alle eine Liste von Elementen und unterscheiden sich nur in der Operation, die sie auf die Listenelemente anwenden.
+Die Funktion `viewUsers` wendet `viewUser` auf alle Elemente an und die Funktion `viewUserOptions` wendet `viewUserOption` auf alle Elemente an.
 Im Abschnitt [Records](basics.md#records) haben wir gelernt, dass der Ausdruck `user.age` nur eine Kurzform für `.age user` ist.
 Daher können wir die Funktion `ages` auch wie folgt definieren.
 
@@ -131,10 +131,16 @@ Diese Funktion erhält die Operation, die auf die Elemente der Liste angewendet 
 
 In Elm sind Funktionen **_First-class Citizens_**.
 Übersetzt bedeutet das in etwa, dass Funktionen die gleichen Rechte haben wie andere Werte.
-Das heißt, Funktionen können wie andere Werte, etwa Zahlen oder Zeichenketten, als Argumente und Ergebnisse in Funktionen verwendet werden.
-Außerdem können Funktionen in Datenstrukturen stecken.
 
-Die Funktion `map` hat die folgende Form.
+{% include callout-important.html content="
+Das heißt, Funktionen können wie andere Werte, etwa Zahlen oder Zeichenketten, als Argumente und Ergebnisse in Funktionen verwendet werden.
+" %}
+
+Außerdem können Funktionen in Datenstrukturen stecken.
+Wenn wir uns die Umsetzung der _Model_-_View_-_Update_-Architektur in Elm genauer anschauen, werden wir sehen, dass wir schon mehrfach die Tatsache genutzt haben, dass Funktionen in Datenstrukturen stecken können.
+
+Wie bereits erwähnt, hat das wiederkehrende rekursive Muster, das wir identifiziert haben, in der funktionalen Programmierung den Namen `map`.
+Die Funktion `map` hat in Elm die folgende Form.
 
 ``` elm
 map : (a -> b) -> List a -> List b
@@ -143,47 +149,49 @@ map func list =
         [] ->
             []
 
-        head :: restlist ->
-            func head :: map func restlist
+        head :: tail ->
+            func head :: map func tail
 ```
 
-Mithilfe der Funktion `map` können wir die Funktionen `viewUsers`, `viewOptions` und `ages` nun wie folgt definieren.
+Mithilfe der Funktion `map` können wir die Funktionen `viewUsers`, `viewUserOptions` und `ages` nun wie folgt definieren.
 
 ``` elm
 viewUsers : List User -> List (Html msg)
 viewUsers list =
     map viewUser list
 
-userOptions : List User -> List (Html msg)
-userOptions list =
-    map userOption list
+viewUserOptions : List User -> List (Html msg)
+viewUserOptions list =
+    map viewUserOption list
 
 ages : List User -> List Int
 ages list =
     map .age list
 ```
 
+{% include callout-important.html content="
 Man nennt eine Funktion, die eine andere Funktion als Argument erhält, eine **Funktion höherer Ordnung (_Higher-order Function_)**.
+" %}
 
-Neben dem Rekursionsmuster für `map`, wollen wir an dieser Stelle noch ein weiteres Rekursionsmuster vorstellen.
+Neben dem rekursiven Muster für `map`, wollen wir an dieser Stelle noch ein weiteres rekursives Muster vorstellen.
 Stellen wir uns vor, dass wir aus einer Liste von Nutzer\*innen alle extrahieren möchten, deren Nachname mit `A` beginnt.
 Dazu können wir die folgende Funktion definieren.
 
 ``` elm
-startWithA : List User -> List User
-startWithA users =
+usersWithA : List User -> List User
+usersWithA users =
     case users of
         [] ->
             []
 
         user :: users_ ->
             if String.startsWith "A" user.firstName then
-                user :: startWithA users_
+                user :: usersWithA users_
             else
-                startWithA users_
+                usersWithA users_
 ```
 
-Als nächstes nehmen wir an, wir wollen das Durchschnittsalter aller Nutzer\*innen über 18 berechnen.
+Als nächstes nehmen wir an, wir wollen das Durchschnittsalter aller Nutzer\*innen über 18 Jahren berechnen.
 Dazu definieren wir die folgende Funktion.
 
 ``` elm
@@ -217,11 +225,11 @@ filter isGood list =
         [] ->
             []
 
-        head :: restlist ->
+        head :: tail ->
             if isGood x then
-                head :: filter isGood restlist
+                head :: filter isGood tail
             else
-                filter isGood restlist
+                filter isGood tail
 ```
 
 Dieses Mal übergeben wir eine Funktion, die angibt, ob ein Element in die Ergebnisliste kommt oder nicht.
@@ -256,6 +264,10 @@ IEnumerable<TResult> Select<TSource,TResult>(IEnumerable<TSource>, Func<TSource,
 IEnumerable<TSource> Where<TSource> (this IEnumerable<TSource> source, Func<TSource,bool> predicate)
 ```
 
+##### Kotlin
+
+In Kotlin stellt das _Interface_ `Iterable` Methoden `map` und `filter` zur Verfügung.
+
 ##### JavaScript
 
 Der Prototyp `Array` bietet Methoden `map` und `filter`, welche die
@@ -279,7 +291,7 @@ _Top Level_-Definitionen sind die Definitionen, die wir bisher kennengelernt hab
 Im Kontrast dazu ist der _Scope_ einer **lokalen Definition** auf einen bestimmten Ausdruck eingeschränkt.
 Wir betrachten zuerst die Definition einer Konstante mit einer lokalen Definition.
 
-Eine lokale Definition wird mithilfe eines `let`-Ausdrucks eingeführt.
+Eine lokale Definition wird in Elm mithilfe eines `let`-Ausdrucks eingeführt.
 
 ``` elm
 quartic : Int -> Int
@@ -291,19 +303,27 @@ quartic n =
     square * square
 ```
 
+{% include callout-info.html content="
+In Haskell kann eine lokale Definition neben einem `let`-Ausdruck auch mit einer `where`-_Clause_ definiert werden, diese Möglichkeit gibt es in Elm nicht.
+" %}
+
 Ein `let`-Ausdruck startet mit dem Schlüsselwort `let`, definiert dann beliebig viele Konstanten und Funktionen und schließt schließlich mit dem Schlüsselwort `in` ab.
 Die Definitionen, die ein `let`-Ausdruck einführt, stehen nur in dem Ausdruck nach dem `in` zur Verfügung.
-Das heißt, wir können `square` hier in `square * square` verwenden, aber nicht außerhalb der Definition `quartic`.
-Die lokalen Definitionen wie hier `square` können auch auf die Argumente der umschließenden Funktion zugreifen, hier `n`.
+Das heißt, wir können `square` hier im Ausdruck `square * square` verwenden, aber nicht außerhalb der Definition `quartic`.
 
-Man kann in einem `let`-Ausdruck auch **Funktionen** definieren, die dann auch nur in dem Ausdruck nach dem `in` sichtbar sind.
+{% include callout-important.html content="
+Lokale Definitionen können auch auf die Argumente der umschließenden Funktion zugreifen.
+" %}
+
+Die Funktion `square` verwendet in unserem Beispiel etwa das Argument `n`.
+Man kann in einem `let`-Ausdruck auch lokale **Funktionen** definieren.
 Die Definition einer lokalen Funktion ist zum Beispiel sehr praktisch, wenn wir Listen verarbeiten.
 Dort wird häufig die Verarbeitung eines einzelnen Listenelementes als lokale Funktion definiert.
 Im folgenden Beispiel wird eine lokale Funktion definiert, die eine Zahl um einen erhöht.
 
 ``` elm
-res : Int
-res =
+result : Int
+result =
     let
         inc n =
             n + 1
@@ -311,7 +331,10 @@ res =
     inc 41
 ```
 
+{% include callout-important.html content="
 Wie andere Programmiersprachen, zum Beispiel Python, Elixir und Haskell, nutzt Elm eine _**Off-side Rule**_.
+" %}
+
 Das heißt, die Einrückung eines Programms wird genutzt, um Klammerung auszudrücken und somit Klammern einzusparen.
 In objektorientierten Sprachen wie Java wird diese Klammerung explizit durch geschweifte Klammern ausgedrückt.
 Dagegen muss die Liste der Definitionen in einem `let` zum Beispiel nicht geklammert werden, sondern wird durch ihre Einrückung dem `let`-Block zugeordnet.
@@ -335,8 +358,8 @@ badLayout1 =
 ```
 
 Das Schlüsselwort `let` definiert eine Spalte.
-Alle Definitionen im `let` müssen in einer Spalte rechts vom Schlüsselwort `let` starten.
-Die erste Definition, die in der Spalte des `let` oder weiter links steht, beendet die Sequenz der Definitionen.
+Alle Definitionen im `let`-Ausdruck müssen in einer Spalte rechts vom Schlüsselwort `let` starten.
+Die erste Definition, die in der Spalte des `let`-Ausdrucks oder weiter links steht, beendet die Sequenz der Definitionen.
 Die Definition `badLayout1` wird nicht akzeptiert, da die Sequenz der Definitionen durch das `x` beendet wird, was aber keine valide Syntax ist, da die Sequenz mit dem Schlüsselwort `in` beendet werden muss.
 
 Als weiteres Beispiel betrachten wir die folgende Definition, die ebenfalls aufgrund der Einrückung nicht akzeptiert wird.
@@ -355,8 +378,8 @@ badLayout2 =
 ```
 
 Die erste Definition in einem `let`-Ausdruck, also hier das `x`, definiert ebenfalls eine Spalte.
-Alle Zeilen, die links von der ersten Definition starten, beenden die Liste der Definitionen.
-Alle Zeilen, die rechts von einer Definition starten, werden noch zu dieser Definition gezählt.
+Alle Zeilen, die in der gleichen Spalte wie die erste Definition oder weiter links starten, beenden die Liste der Definitionen.
+Alle Zeilen, die weiter rechts starten, werden noch zu dieser Definition gezählt.
 Das heißt, in diesem Beispiel geht der Compiler davon aus, dass die Definition von `y` eine Fortsetzung der Definition von `x` ist.
 Dies ist auch wieder keine valide Syntax, da damit hinter dem `=` der "Ausdruck" `1 y = 2` steht.
 Dies ist aber kein valider Ausdruck.
@@ -379,8 +402,8 @@ Das `let`-Konstrukt ist ein Ausdruck, kann also an allen Stellen stehen, an dene
 Um diesen Aspekt zu illustrieren, betrachten wir die folgende, nicht sehr sinnvolle, aber vom Compiler akzeptierte Definition.
 
 ```elm
-letExpr : Int
-letExpr =
+letExpression : Int
+letExpression =
     (let
         x =
             1
@@ -411,7 +434,7 @@ unnecessaryCalculation decision =
         result
 ```
 
-Der Ausdruck `expensiveCalculation` wird immer berechnet, auch wenn die Variable `decision` den Wert `False` hat.
+Da Elm eine strikte Programmiersprache ist, also als Auswertungsstrategie _call-by value_ nutzt, wird der Ausdruck `expensiveCalculation` immer berechnet, auch wenn die Variable `decision` den Wert `False` hat.
 Falls die Variable `decision` den Wert `False` hat, benötigen wir den Wert von `result` aber gar nicht.
 Daher sollte man den _Scope_ eines `let`-Ausdrucks so klein halten, wie möglich.
 Im Beispiel `unnecessaryCalculation` ist die Variable `result` zum Beispiel im gesamten `if`-Ausdruck sichtbar.
@@ -462,7 +485,7 @@ Außerdem bindet man auf diese Weise die Position der Definition `viewUser` an d
 Das heißt, es kann nicht passieren, dass man im Modul springen muss, um die Definition von `viewUser` zu suchen.
 
 Es gibt keine feste Regel, wann man eine Funktion wie `viewUser` lokal und wann auf _Top Level_ definieren sollte.
-Grundsätzlich kann man sich überlegen, ob man die Funktionsweise einer Funktion erklären kann, ohne darauf einzugehen, wie die verwendet wird.
+Grundsätzlich kann man sich überlegen, ob man die Funktionsweise einer Funktion erklären kann, ohne darauf einzugehen, wie sie verwendet wird.
 Falls es möglich ist, eine Funktion in diesem Fall zu erklären, kann sie vermutlich auf _Top Level_ definiert werden.
 Darüber hinaus kann man noch darüber nachdenken, wie hoch die Wahrscheinlichkeit ist, dass die Funktion auch noch in einem anderen Kontext verwendet wird.
 Falls die Funktion auch in einem anderen Kontext Verwendung finden könnte, ist es durchaus sinnvoll, sie auf _Top Level_ zu definieren.
@@ -471,23 +494,23 @@ Falls die Funktion auch in einem anderen Kontext Verwendung finden könnte, ist 
 Anonyme Funktionen
 ------------------
 
-Um die Funktion `startWithA` mithilfe von `filter` zu definieren, müssten wir das folgende Prädikat definieren.
+Um die Funktion `usersWithA` mithilfe von `filter` zu definieren, müssten wir das folgende Prädikat definieren.
 
 ```elm
-userStartsWithA : User -> Bool
-userStartsWithA { firstName } =
+startsWithA : User -> Bool
+startsWithA { firstName } =
     String.startsWith "A" firstName
 ```
 
-Es ist recht umständlich extra die Funktionen `userStartsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden, unabhängig davon, ob wir die Funktion lokal definieren oder nicht.
+Es ist recht umständlich extra die Funktionen `startsWithA` zu definieren, nur, um sie in der Definition von `startWithA` einmal zu verwenden, unabhängig davon, ob wir die Funktion lokal definieren oder nicht.
 Stattdessen kann man anonyme Funktionen verwenden.
 Anonyme Funktionen sind einfach Funktionen, die keinen Namen erhalten.
-Die Funktion `userStartsWithA` kann zum Beispiel wie folgt mithilfe einer anonymen Funktion definiert werden.
+Die Funktion `startsWithA` kann zum Beispiel wie folgt mithilfe einer anonymen Funktion definiert werden.
 
 ``` elm
-startWithA : List User -> List User
-startWithA users =
-    List.filter (\{ firstName } -> String.startsWith "A" firstName) users
+usersWithA : List User -> List User
+usersWithA users =
+    List.filter (\user -> String.startsWith "A" user.firstName) users
 ```
 
 Dabei stellt der Ausdruck `\user -> String.startsWith "A" user.firstName` die anonyme Funktion dar.
@@ -496,7 +519,7 @@ Analog können wir die Funktion `viewUsers` mithilfe einer anonymen Funktion wie
 ``` elm
 viewUsers : List User -> List (Html msg)
 viewUsers users =
-    List.map (\{ firstName, lastName } -> text (firstName ++ " " ++ lastName)) users
+    List.map (\user -> text (user.firstName ++ " " ++ user.lastName)) users
 ```
 
 **Anonyme Funktionen**, auch als **Lambda-Ausdrücke** oder **Lambda-Funktionen** bezeichnet[^3], starten mit dem Zeichen `\` und listen dann eine Reihe von Argumenten auf, nach den Argumenten folgen die Zeichen `->` und schließlich die rechte Seite der Funktion.
@@ -510,8 +533,25 @@ f x y = expression
 Der einzige Unterschied ist, dass wir die Funktion nicht verwenden, indem wir ihren Namen schreiben, sondern indem wir den gesamten Lambda-Ausdruck angeben.
 Während wir `f` zum Beispiel auf Argumente anwenden, indem wir `f 1 2` schreiben, wenden wir den Lambda-Ausdruck an, indem wir `(\x y -> e) 1 2` schreiben.
 
+In den Argumenten einer anonymen Funktion können wir analog zur Definition einer _Top Level_-Funktion auch _Pattern_ verwenden.
+Daher können wir die Funktion `usersViewA` auch wie folgt definieren, indem wir ein _Record Pattern_ im Argument der anonymen Funktion nutzen.
+
+``` elm
+usersWithA : List User -> List User
+usersWithA users =
+    List.filter (\{ firstName } -> String.startsWith "A" firstName) users
+```
+
+Analog können wir die Funktion `viewUsers` wie folgt definieren.
+
+``` elm
+viewUsers : List User -> List (Html msg)
+viewUsers users =
+    List.map (\{firstName, lastName} -> text (firstName ++ " " ++ lastName)) users
+```
+
 Wir haben im Abschnitt [Fallunterscheidungen](basics.md#fallunterscheidungen) eine Grammatik für Ausdrücke gesehen.
-Dieses Kapitel illustriert nun, dass es die Grammatik zwei weitere mögliche Ausprägungen aufweist, nämlich Let-Ausdrücke und Lambda-Funktionen.
+Dieses Kapitel illustriert nun, dass die Grammatik zwei weitere mögliche Ausprägungen aufweist, nämlich Let-Ausdrücke und Lambda-Funktionen.
 
 ```elm
 expression = ...
@@ -522,7 +562,7 @@ expression = ...
 
 [^1]: <https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/linq>
 
-[^2]: Peter J. Landin (<https://en.wikipedia.org/wiki/Peter_Landin>) war einer der Begründer der funktionalen Programmierung.
+[^2]: [Peter J. Landin](<https://en.wikipedia.org/wiki/Peter_Landin>) war einer der Begründer der funktionalen Programmierung.
 
 [^3]: Der Name Lambda-Ausdruck stammt vom Lambda-Kalkül. Durch den Lambda-Kalkül wird formal beschrieben, welche Arten von Berechnungen man in einer Programmiersprache ausdrücken kann. Der Lambda-Kalkül hat die Grundidee für funktionale Programmiersprachen geliefert. Im Lambda-Kalkül sind Lambda-Funktionen ein sehr wichtiger Bestandteil, daher hat dieses Konstrukt den Präfix Lambda erhalten. Das Zeichen `\` wird für Lambda-Ausdrücke verwendet, da es dem kleinen Lambda ähnelt.
 
@@ -530,6 +570,7 @@ expression = ...
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="polymorphism.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="architecture.html">weiter</a></li>
+        <!-- <li class="nav-item nav-right"><a href="architecture.html">weiter</a></li> -->
+        <li class="nav-item nav-right"></li>
     </ul>
 </div>

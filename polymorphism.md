@@ -210,7 +210,7 @@ parse userInput =
             fromInt int
 
         Nothing ->
-            Err ("Error parsing \"" ++ userInput ++ "\" as Int")
+            Err ("Fehler beim Parsen von \"" ++ userInput ++ "\" als Int")
 
 
 fromInt : Int -> Result String Month
@@ -253,7 +253,7 @@ fromInt int =
             Ok Dec
 
         _ ->
-            Err ("Invalid month " ++ String.fromInt month)
+            Err ("Invalider Monat " ++ String.fromInt month)
 ```
 
 Der Aufruf `parse "a"` liefert in dieser Implementierung `Err "Error parsing \"a\" as Int"`.
@@ -280,10 +280,10 @@ description : Error -> String
 description error =
     case error of
         ParseError userInput ->
-            "Error parsing \"" ++ userInput ++ "\" as Int"
+            "Fehler beim Parsen von \"" ++ userInput ++ "\" als Int"
 
         InvalidMonth month ->
-            "Invalid month " ++ String.fromInt month
+            "Invalider Monat " ++ String.fromInt month
 ```
 
 Da der Datentyp `Result` polymorph im Typ des Fehlers ist, können wir den Datentyp `Result` auch mit unserem Datentyp `Error` verwenden.
@@ -380,7 +380,7 @@ toUpper string =
 Neben Paaren bietet Elm auch Tupel anderer Stelligkeiten.
 
 {% include callout-important.html content="
-Tupel kommen selten zum Einsatz und sollten nur von sehr allgemein verwendtbaren Bibliotheksfunktionen genutzt werden, da ein Tupel sehr wenig Dokumentationscharakter hat.
+Tupel kommen selten zum Einsatz und sollten nur von sehr allgemein verwendbaren Bibliotheksfunktionen genutzt werden, da ein Tupel sehr wenig Dokumentationscharakter hat.
 " %}
 
 Daher bietet sich als Alternative für ein Tupel fast immer ein algebraischer Datentyp oder ein Record an.
@@ -652,7 +652,7 @@ An dieser Stelle ist es wieder wichtig zu verstehen, dass es die Kategorie Typ g
 
 [^2]: Der Begriff [syntaktischer Zucker](https://de.wikipedia.org/wiki/Syntaktischer_Zucker) geht ebenfalls auf Peter J. Landin zurück.
 
-[^3]: [Sir Charles Antony Richard (C. A. R.) bzw. Tony Hoare](https://en.wikipedia.org/wiki/Tony_Hoare) ist einer der bedeutensten Informatiker der frühern Jahre der Informatik.
+[^3]: [Sir Charles Antony Richard (C. A. R.) bzw. Tony Hoare](https://en.wikipedia.org/wiki/Tony_Hoare) ist einer der bedeutendsten Informatiker der früheren Jahre der Informatik.
 
 [^4]: Vortrag ["Null References: The Billion Dollar Mistake"](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/) aus dem Jahr 2009 von Tony Hoare.
 

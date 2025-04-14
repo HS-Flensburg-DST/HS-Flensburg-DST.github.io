@@ -63,7 +63,7 @@ custom_css: toc
 
 - 4.4. [Rekursive Datentypen](data-types.md#rekursive-datentypen)
 
-<!-- ### 5. [Polymorphismus](polymorphism.md)
+### 5. [Polymorphismus](polymorphism.md)
 
 - 5.1. [Polymorphe Datentypen](polymorphism.md#polymorphe-datentypen)
 
@@ -77,7 +77,7 @@ custom_css: toc
 
 - 6.3. [Anonyme Funktionen](functional-abstractions.md#anonyme-funktionen)
 
-### 7. [Modellierung der Elm-Architektur](architecture.md)
+<!-- ### 7. [Modellierung der Elm-Architektur](architecture.md)
 
 ### 8. [Design von Datentypen](design.md)
 

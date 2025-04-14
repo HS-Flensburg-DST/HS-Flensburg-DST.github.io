@@ -147,13 +147,13 @@ Diese Regel identifiziert eine spezielle Form von Code-Duplikation.
 Wir betrachten das folgende Code-Beispiel.
 
 ```elm
-heatMapSquare : Int -> Svg Msg
-heatMapSquare value =
+viewHeatMapSquare : Int -> Svg Msg
+viewHeatMapSquare value =
     if value < 50 then
-        drawSquare 100 Yellow
+        viewSquare 100 Yellow
 
     else
-        drawSquare 100 Red
+        viewSquare 100 Red
 ```
 
 Wir nehmen an, dass wir eine _Heat Map_ aus Quadraten zeichnen.
@@ -161,14 +161,14 @@ Die Farbe der Quadrate hängt von einem Zahlenwert ab.
 Ab dem Wert `50` soll das Quadrat rot gezeichnet werden, ansonsten gelb.
 
 Die Regel `RemoveCodeDuplication` würde bei dieser Funktion eine Code-Duplikation erkennen.
-In beiden Fällen des `if`-Ausdrucks wird die Funktion `drawSquare` aufgerufen und in beiden Fällen wird als Seitengröße `100` übergeben.
+In beiden Fällen des `if`-Ausdrucks wird die Funktion `viewSquare` aufgerufen und in beiden Fällen wird als Seitengröße `100` übergeben.
 Die Aufrufe unterscheiden sich nur darin, welche Farbe die Quadrate erhalten.
 Daher kann die Definition wie folgt umgeformt werden.
 
 ```elm
-heatMapSquare : Int -> Svg Msg
-heatMapSquare value =
-    drawSquare 100
+viewHeatMapSquare : Int -> Svg Msg
+viewHeatMapSquare value =
+    viewSquare 100
         (if value < 50 then
             Yellow
 
@@ -177,7 +177,7 @@ heatMapSquare value =
         )
 ```
 
-Das heißt, wir können den Aufruf der Funktion `drawSquare` aus den Zweigen des `if`-Ausdrucks herausziehen.
+Das heißt, wir können den Aufruf der Funktion `viewSquare` aus den Zweigen des `if`-Ausdrucks herausziehen.
 Bei diesem Code ist viel klarer, in welcher Hinsicht sich die beiden Fälle unterscheiden, nämlich nur in Bezug auf die Farbe.
 
 Die Anwendung dieser Regel führt nicht immer zu besser lesbarem Code.
@@ -187,8 +187,8 @@ Um diese Invariante expliziter im Code auszudrücken, kann es sinnvoll sein, nac
 Wir können unser Beispiel etwa wie folgt definieren.
 
 ```elm
-heatMapSquare : Int -> Svg Msg
-heatMapSquare value =
+viewHeatMapSquare : Int -> Svg Msg
+viewHeatMapSquare value =
     drawSquare 100 (heatMapColor value)
 
 

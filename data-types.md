@@ -776,7 +776,6 @@ In vielen strikten Programmiersprachen sind die Operatoren für das logische Ode
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="first-application.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <!-- <li class="nav-item nav-right"><a href="polymorphism.html">weiter</a></li> -->
-        <li class="nav-item nav-right"></li>
+        <li class="nav-item nav-right"><a href="polymorphism.html">weiter</a></li>
     </ul>
 </div>
