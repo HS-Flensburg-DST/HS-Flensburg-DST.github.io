@@ -17,15 +17,15 @@ sandbox :
 ```
 
 Zuerst können wir feststellen, dass die Funktion einen Record als Argument erhält.
-Wir haben die Idee, einen Record an eine Funktion zu übergeben, um die Argumente zu benennen, bereits im Abschnitt [Records](basics.md#records) kennengelernt.
+Wir haben die Idee, einen Record an eine Funktion zu übergeben, um die Argumente zu benennen, bereits im Abschnitt [Records](data-types.md#records) kennengelernt.
 Der Record, der an `sandbox` übergeben wird, hat drei Einträge, die `init`, `view` und `update` heißen.
 Die Funktion ist polymorph über zwei Typvariablen, nämlich `model` und `msg`.
 Der Eintrag `init` ist vom Typ `model`.
 Daher können wir die Funktion `sandbox` nicht nur mit einem festen Typ verwenden, sondern die Typen für das Modell und die Nachrichten wählen.
-Wir müssen dabei nur beachten, dass wir gleiche Typvariablen durch den gleichen Typ ersetzen.
+Wir müssen dabei nur beachten, dass wir alle Vorkommen einer Typvariable durch den gleichen Typ ersetzen.
 
 Die Typen der Einträge `view` und `update` unterscheiden sich von den Typen, die wir bisher in Records verwendet haben, da es sich um Funktionstypen handelt.
-Im Kapitel [Funktionen höherer Ordnung](higher-order.md) haben wir bereits gesehen, dass wir in der Programmiersprache Elm Funktionen als Argumente übergeben können.
+Im Kapitel [Funktionale Abstraktionen](functional-abstractions.md) haben wir bereits gesehen, dass wir in der Programmiersprache Elm Funktionen als Argumente übergeben können.
 In einer Sprache, in der Funktionen *First-class Citizens* sind, können wir Funktionen aber nicht nur als Argument übergeben, wir können sie auch in Datenstrukturen ablegen.
 Daher kann ein Record auch Funktionen enthalten, wie es im Argument von `sandbox` der Fall ist.
 Das heißt, `sandbox` ist eine Funktion höherer Ordnung, die einen Record erhält.
@@ -99,7 +99,7 @@ main =
     Browser.sandbox { init = init, view = view, update = update }
 ```
 
-Dieses Beispiel ist eine leichte Abwandlung unseres initialen Beispiels.
+Dieses Beispiel ist eine leichte Abwandlung unseres initialen Beispiels aus dem Kapitel [Eine erste Elm-Anwendung](first-application.md).
 Dieses Programm kompiliert nicht, da die Funktion `view` eine HTML-Struktur vom Typ `Html Msg` erstellt, die `onClick`-*Handler*, die verwendet werden, aber Nachrichten vom Typ `Bool` und vom Typ `Int` versenden.
 
 Um das Beispiel besser zu verstehen, werfen wir einen Blick auf die Signaturen der Funktionen `div` und `onClick`.

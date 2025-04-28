@@ -22,20 +22,32 @@ Dieses Phänomen tritt etwa bei der Kodierung von Fehlercodes als _Integer_ auf.
 Als Beispiel für _Boolean Blindness_ betrachten wir die folgende Funktion in einer Elm-Anwendung, die einen _Button_ liefert.
 
 ```elm
-mainButton : Msg -> Bool -> Html Msg
-mainButton msg isDisabled =
+mainButton : String -> Bool -> msg -> Html msg
+mainButton label isDisabled onClick =
     button
-        (buttonStyle ++ [ disabled isDisabled, onClick msg ]) 
-        [ text (buttonLabel msg) ]
+        (buttonStyle ++ [ disabled isDisabled, Events.onClick onClick ])
+        [ text label ]
 ```
 
-Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton Increase False` schwierig.
-Im Abschnitt [Records](basics.md#records) haben wir bereits einen Ansatz kennengelernt, um dieses Problem zu beheben.
+Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton "+" False IncreaseCounter` schwierig.
+Im Abschnitt [Records](data-types.md#records) haben wir bereits einen Ansatz kennengelernt, um dieses Problem zu beheben.
 Wir können einen Record verwenden, um den Argumenten einer Funktion sprechende Namen zuzuordnen.
-Wenn wir den booleschen Wert durch eine Anwendung reichen, müssten wir dann aber an allen Stellen einen Record verwenden oder sogar den Record durch die Anwendung reichen.
-Das heißt, das Prinzip funktioniert nur, solange der boolesche Wert fest mit den Recordfeld verbunden ist.
+Wir können die Funktion `mainButton` zum Beispiel wie folgt definieren.
 
-Ein alternativer Ansatz, um die Interpretation von `False` und `True` explizit zu machen, ist die Verwendung von nutzerdefinierten Aufzählungstypen.
+```elm
+mainButton : { label : String, isDisabled : Bool, onClick : msg } -> Html msg
+mainButton { label, isDisabled, onClick } =
+    button
+        (buttonStyle ++ [ disabled isDisabled, Events.onClick onClick ])
+        [ text label ]
+```
+
+Ein Aufruf dieser Funktion hat nun die Form `mainButton { label = "+", isDisabled = False, onClick = IncreaseCounter}` und ist damit sehr viel aussagekräftiger.
+
+Wenn der boolesche Wert aber zum Beispiel nicht direkt im Argument der Funktion `mainButton` bestimmt wird, sondern zum Beispiel aus dem Zustand der Anwendung stammt, müssen an allen Stellen einen Record verwenden und diesen Record durch die Anwendung reichen.
+Wenn der Record wie im Beispiel `mainButton` zwei Felder hat, können wir diesen Record nicht verwenden, um die Daten durch die Anwendung zu reichen, da die beiden Informationen aus unterschiedlichen Quellen stammen können.
+
+Ein alternativer Ansatz, um die Interpretation von `False` und `True` explizit zu machen, ist die Verwendung von benutzerdefinierten Aufzählungstypen.
 Das heißt, statt den Datentyp `Bool` zu verwenden, definieren wir uns einen Datentyp der folgenden Art.
 
 ```elm
@@ -44,7 +56,7 @@ type Interaction
     | Disabled
 ```
 
-Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton Increase Disabled`.
+Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton "+" Enabled IncreaseCounter`.
 Bei diesem Aufruf können wir am Aufruf selbst bereits erkennen, dass der _Button_ deaktiviert wird.
 
 In den Elm-Standardbibliotheken werden trotz der _Boolean Blindness_ häufig boolesche Werte verwendet.
@@ -57,13 +69,12 @@ filter : (a -> Bool) -> List a -> List a
 
 ist nicht klar, ob das Prädikat für diejenigen Elemente `True` liefert, die in der Liste verbleiben sollen, oder für die Elemente, die aus der Liste entfernt werden sollen.
 
-Wir haben im Abschnitt [Records](basics.md#records) gelernt, dass wir einen Record nutzen können, um Argumenten eine Semantik zuzuordnen.
-Diese Art des Tricks können wir tatsächlich auch für Ergebnistypen nutzen.
+Auch in diesem Beispiel können wir grundsätzlich einen Record verwenden, um dem booleschen Wert eine Semantik zuzuordnen.
 Wir können zum Beispiel die folgenden Definition von `filter` nutzen, um die Bedeutung des Typs `Bool` zu signalisieren.
 Hier erkennt man aber gut, dass dieser Ansatz seine Grenzen hat.
 
 ```elm
-filter : (a -> { isGood : Bool }) -> List a -> List a
+filter : (a -> { keep : Bool }) -> List a -> List a
 ```
 
 Wenn wir stattdessen den folgenden Datentyp definieren
@@ -100,8 +111,15 @@ startWithA users =
 In diesem Code ist sehr explizit, wann ein Element in der Liste verbleibt und wann es entfernt wird.
 Das Beispiel illustriert aber auch gut die Grenzen dieses Ansatzes.
 Durch die Verwendung von selbstdefinierten Aufzählungstypen müssen an vielen Stellen Umwandlungen zwischen diesen Typen implementiert werden.
-Im Beispiel `startWithA` muss etwa der Typ `Bool`, den die Funktion `String.startsWith` liefert in den Typ `Decision` der Funktion `filter` umgewandelt werden.
+Im Beispiel `startWithA` muss etwa der Typ `Bool`, den die Funktion `String.startsWith` liefert, in den Typ `Decision` der Funktion `filter` umgewandelt werden.
 Das heißt, wie häufig in der Programmierung, gibt es einen _Tradeoff_  zwischen Explizitheit und Komplexität des Codes.
+
+{% include callout-important.html content="
+Man sollte dennoch bei jeder Verwendung des Typs `Bool` darüber nachdenken, ob ein selbstdefinierter Aufzählungstyp besser geeignet ist.
+" %}
+
+Insbesondere ist es bei einem Aufzählungstyp möglich, weitere Fälle hinzuzufügen.
+Während es zu Anfang ggf. nur zwei Zustände gibt, kommt es häufig vor, dass im Laufe der Zeit weitere Zustände hinzukommen.
 
 
 ## Impossible States
@@ -111,14 +129,17 @@ Eine weitere _Best Practice_ wird im Kontext von Elm als
 > Making Impossible States Impossible
 
 bezeichnet und geht auf den Vortrag [Making Impossible States Impossible](https://www.youtube.com/watch?v=IcgmSRJHu_8) von Richard Feldman aus dem Jahr 2016 zurück.
-Allgemeiner im Kontext funktionaler Programmierung wurde das gleiche Konzept under dem Slogan
+Allgemeiner im Kontext funktionaler Programmierung wurde das gleiche Konzept unter dem Slogan
 
 > Make Illegal States Unrepresentable
 
 schon im Jahr 2010 von [Yaron Minsky](https://blog.janestreet.com/effective-ml-video/) postuliert.
 Grundsätzlich ist aber anzunehmen, dass diese Idee noch sehr viel älter ist.
 
+{% include callout-important.html content="
 In der Programmierung in Elm aber auch ganz allgemein in anderen Programmiersprachen sollte man sich bemühen, Datentypen so zu strukturieren, dass nur valide Zustände modelliert werden können.
+" %}
+
 Um diesen Punkt zu illustrieren, betrachten wir das folgende Modell einer Elm-Anwendung.
 
 ``` elm
@@ -150,13 +171,13 @@ Alternativ könnte die Anwendung auch im Zustand `Loading` sein, es könnten abe
 
 Zusätzliche Regeln, die von einem Datentyp eingehalten werden müssen, bezeichnet man als **Invarianten**.
 Grundsätzlich sind Invarianten ein wichtiges Konzept bei der Modellierung von Daten.
-Wenn ein Datentyp Invarianten erfordert, müssen wir diese aber entweder zur Laufzeit überprüfen und einen Fehler werfen, wenn sie nicht eingehalten werden oder wir müssen ignorieren, ob die Invarianten erfüllt sind oder nicht.
+Wenn ein Datentyp Invarianten erfordert, müssen wir diese aber entweder zur Laufzeit überprüfen und einen Fehler werfen, wenn sie nicht eingehalten werden, oder wir müssen ignorieren, ob die Invarianten erfüllt sind oder nicht.
 Außerdem müssen Entwickler\*innen beim Erstellen und Verändern von Daten darauf achten, dass die Invarianten eingehalten werden.
 Daher sind Invarianten, die durch die Struktur der Datentypen ausgedrückt werden, ein großer Vorteil.
 Das heißt, wir möchten den Datentyp gern so umstrukturieren, dass man möglichst wenige invalide Zustände erstellen kann und somit mit möglichst wenig impliziten Invarianten auskommt.
 
 Zuerst einmal sollte es nur im Zustand `Success` auch Daten geben.
-Daher verändern wir die Struktur des Datentyps so, dass die `List Item` ein Argument des Konstruktors `Success` ist.
+Daher verändern wir die Struktur des Datentyps so, dass der Wert vom Typ `List Item` ein Argument des Konstruktors `Success` ist.
 Ein Fehler sollte wiederum nur auftreten, wenn wir im Zustand `Failure` sind.
 Daher erhält der Konstruktor `Failure` als Argument einen `Error`.
 In diesem Fall können wir den `Maybe`-Kontext entfernen, da wir auch immer eine Fehlermeldung vom Typ `Error` haben sollten, wenn ein Fehler aufgetreten ist.
@@ -190,10 +211,12 @@ Dort wird illustriert, dass die ursprüngliche Modellierung des Datentyps zu ein
 Es gibt noch eine Vielzahl von anderen Beispielen für das Konzept _Making Impossible States Impossible_ etwa die [Modellierung von zwei Dropdows zur Wahl einer Stadt in einem Land](https://medium.com/elm-shorts/how-to-make-impossible-states-impossible-c12a07e907b5) oder die [Modellierung von Kontaktbucheinträgen](https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/).
 Unter diesen Slogan oder dem Slogan _Make Illegal States Unrepresentable_ lassen sich auch Beispiele in anderen Programmiersprachen finden.
 
+
 <div class="nav">
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="architecture.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="structure.html">weiter</a></li>
+        <!-- <li class="nav-item nav-right"><a href="structure.html">weiter</a></li> -->
+        <li class="nav-item nav-right"></li>
     </ul>
 </div>

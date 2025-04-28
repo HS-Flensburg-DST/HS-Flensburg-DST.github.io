@@ -77,7 +77,7 @@ custom_css: toc
 
 - 6.3. [Anonyme Funktionen](functional-abstractions.md#anonyme-funktionen)
 
-<!-- ### 7. [Modellierung der Elm-Architektur](architecture.md)
+### 7. [Modellierung der Elm-Architektur](architecture.md)
 
 ### 8. [Design von Datentypen](design.md)
 
@@ -85,7 +85,7 @@ custom_css: toc
 
 - 8.2. [_Impossible States_](design.md#impossible-states)
 
-### 9. [Strukturierung einer Anwendung](structure.md)
+<!-- ### 9. [Strukturierung einer Anwendung](structure.md)
 
 - 9.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
 
@@ -96,18 +96,6 @@ custom_css: toc
 - 9.4. [Modell strukturieren](structure.md#modell-strukturieren)
 
 - 9.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
-
-### 10. [Funktionen höherer Ordnung](higher-order.md)
-
-- 10.1. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
-
-- 10.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
-
-- 10.3. [Piping](higher-order.md#piping)
-
-- 10.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
-
-- 10.5. [Funktionskomposition](higher-order.md#funktionskomposition)
 
 ### 11. [JSON-Daten](json.md)
 
