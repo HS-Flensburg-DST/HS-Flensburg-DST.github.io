@@ -76,7 +76,7 @@ Die Idee, Funktionen mit mehreren Argumenten als Funktion zu repräsentieren, di
 Die Definition von `pluralize` ist im Grunde nur eine vereinfachte Schreibweise der folgenden Definition.
 
 ``` elm
-pluralizeLambda : Int -> Float -> String
+pluralizeLambda : String -> String -> Int -> String
 pluralizeLambda =
     \singular ->
         \plural ->
