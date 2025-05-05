@@ -91,11 +91,20 @@ custom_css: toc
 
 - 9.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-- 9.3. [Piping](higher-order.md#piping)
+<!-- - 9.3. [Piping](higher-order.md#piping)
 
 - 9.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
 - 9.5. [Funktionskomposition](higher-order.md#funktionskomposition)
+
+### 10. [Abonnements](subscriptions.md) -->
+
+<!--
+### 11. [JSON-Daten](json.md)
+
+- 11.1. [Decoder](json.md#decoder)
+
+- 11.2. [Encode](json.md#encode) -->
 
 <!-- ### 10. [Strukturierung einer Anwendung](structure.md)
 
@@ -110,14 +119,6 @@ custom_css: toc
 - 10.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
  -->
 <!--
-
-### 11. [JSON-Daten](json.md)
-
-- 11.1. [Decoder](json.md#decoder)
-
-- 11.2. [Encode](json.md#encode)
-
-### 12. [Abonnements](subscriptions.md)
 
 ### 13. [Kommandos](commands.md)
 
