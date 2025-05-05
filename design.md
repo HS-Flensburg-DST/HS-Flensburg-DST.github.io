@@ -216,7 +216,6 @@ Unter diesen Slogan oder dem Slogan _Make Illegal States Unrepresentable_ lassen
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="architecture.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <!-- <li class="nav-item nav-right"><a href="structure.html">weiter</a></li> -->
-        <li class="nav-item nav-right"></li>
+        <li class="nav-item nav-right"><a href="higher-order.html">weiter</a></li>
     </ul>
 </div>

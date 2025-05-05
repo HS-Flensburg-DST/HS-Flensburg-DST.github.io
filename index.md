@@ -85,17 +85,31 @@ custom_css: toc
 
 - 8.2. [_Impossible States_](design.md#impossible-states)
 
-<!-- ### 9. [Strukturierung einer Anwendung](structure.md)
+### 9. [Funktionen höherer Ordnung](higher-order.md)
 
-- 9.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+- 9.1. [Gecurryte Funktionen](higher-order.md#gecurryte-funktionen)
 
-- 9.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+- 9.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-- 9.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
+- 9.3. [Piping](higher-order.md#piping)
 
-- 9.4. [Modell strukturieren](structure.md#modell-strukturieren)
+- 9.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
-- 9.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
+- 9.5. [Funktionskomposition](higher-order.md#funktionskomposition)
+
+<!-- ### 10. [Strukturierung einer Anwendung](structure.md)
+
+- 10.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+
+- 10.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+
+- 10.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
+
+- 10.4. [Modell strukturieren](structure.md#modell-strukturieren)
+
+- 10.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
+ -->
+<!--
 
 ### 11. [JSON-Daten](json.md)
 

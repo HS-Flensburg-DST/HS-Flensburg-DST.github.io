@@ -530,7 +530,7 @@ Falls wir eine leere Liste an `head` übergeben, liefert die Funktion den Wert `
 
 Als weiteres Beispiel wollen wir uns noch eine Funktion auf dem Datentyp `Result` anschauen.
 Die folgende Funktion kann genutzt werden, um einen *Default*-Wert für die Verwendung einer fehlgeschlagenen Berechnung anzugeben.
-Das heißt, falls die Berechnung erfolgreich war, verwenden wir den Wert, der im `Result`-Typ zur Verfügung steht und für den Fehlerfall geben wir einen *Default*-Wert an.
+Das heißt, falls die Berechnung erfolgreich war, verwenden wir den Wert, der im `Result`-Typ zur Verfügung steht und für den Fehlerfall geben wir einen *Default*-Wert an.[^5]
 
 ``` elm
 withDefault : a -> Result x a -> a
@@ -655,6 +655,8 @@ An dieser Stelle ist es wieder wichtig zu verstehen, dass es die Kategorie Typ g
 [^3]: [Sir Charles Antony Richard (C. A. R.) bzw. Tony Hoare](https://en.wikipedia.org/wiki/Tony_Hoare) ist einer der bedeutendsten Informatiker der früheren Jahre der Informatik.
 
 [^4]: Vortrag ["Null References: The Billion Dollar Mistake"](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/) aus dem Jahr 2009 von Tony Hoare.
+
+[^5]: Neben der Funktion `Result.withDefault : a -> Result x a -> a` gibt es auch die Funktion `Maybe.withDefault : a -> Maybe a -> a`.
 
 <div class="nav">
     <ul class="nav-row">
