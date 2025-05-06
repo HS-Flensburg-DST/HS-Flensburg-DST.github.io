@@ -164,6 +164,8 @@ custom_css: toc
 
 - 17.1. [Authentifizierung](supabase.md#authentifizierung) -->
 
-### A. [Programmierregeln](linter-rules.md)
+### A. [Versionskontrolle](version-control.md)
 
-### B. [Versionskontrolle](version-control.md)
+### B. [Programmierregeln](linter-rules.md)
+
+### C. [Testfälle](tests.md)
