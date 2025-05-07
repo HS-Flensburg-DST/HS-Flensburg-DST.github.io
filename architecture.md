@@ -3,6 +3,8 @@ layout: post
 title: "Modellierung der Elm-Architektur"
 ---
 
+{% include embed-audio.html src="/assets/podcasts/Modeling the Elm Architecture.mp3" %}
+
 Nachdem wir uns die Grundlagen erarbeitet haben, wollen wir ein paar Aspekte der Implementierung der Elm-Architektur näher betrachten.
 Zuerst einmal wollen wir den Typ der Funktion `sandbox` diskutieren, die wir verwendet haben, um eine Elm-Anwendung zu erstellen.
 Die Funktion hat die folgende Signatur.
@@ -165,7 +167,11 @@ view model =
 ```
 
 Dieses Programm kompiliert nicht, da wir versuchen eine HTML-Struktur vom Typ `Html ()` mit einer HTML-Struktur vom Typ `Html Msg` zu kombinieren.
+
+{% include callout-important.html content="
 Um solche Fälle zu vermeiden, sollten wir einer HTML-Struktur, die gar keine Nachrichten versendet immer einen polymorphen Typ geben.
+" %}
+
 Das heißt, wir sollten die folgende Definition verwenden.
 
 ```elm

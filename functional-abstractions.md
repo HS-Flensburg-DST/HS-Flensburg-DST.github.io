@@ -3,6 +3,8 @@ layout: post
 title: "Funktionale Abstraktionen"
 ---
 
+{% include embed-audio.html src="/assets/podcasts/Functional Abstractions.mp3" %}
+
 In diesem Kapitel wollen wir uns intensiver mit dem Thema Rekursion auseinandersetzen.
 Wie wir bereits gesehen haben, kann man mithilfe von Rekursion Funktionen in Elm definieren.
 Wenn man sich etwas länger mit rekursiven Funktionen beschäftigt, wird aber schnell klar, dass es unter diesen rekursiven Funktionen wiederkehrende Muster gibt.
@@ -157,16 +159,16 @@ Mithilfe der Funktion `map` können wir die Funktionen `viewUsers`, `viewUserOpt
 
 ``` elm
 viewUsers : List User -> List (Html msg)
-viewUsers list =
-    map viewUser list
+viewUsers users =
+    map viewUser users
 
 viewUserOptions : List User -> List (Html msg)
-viewUserOptions list =
-    map viewUserOption list
+viewUserOptions users =
+    map viewUserOption users
 
 ages : List User -> List Int
-ages list =
-    map .age list
+ages users =
+    map .age users
 ```
 
 {% include callout-important.html content="

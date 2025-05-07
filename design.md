@@ -3,6 +3,8 @@ layout: post
 title: "Design von Datentypen"
 ---
 
+{% include embed-audio.html src="/assets/podcasts/Design of Data Types.mp3" %}
+
 In diesem Kapitel wollen wir uns mit zwei _Best Practices_ beim Entwurf von Datentypen beschäftigen.
 Diese _Best Practices_ lassen sich nicht nur auf Elm anwenden, sondern sind auf andere Programmiersprachen übertragbar.
 
