@@ -95,9 +95,9 @@ custom_css: toc
 
 - 9.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
-- 9.5. [Funktionskomposition](higher-order.md#funktionskomposition)
+- 9.5. [Funktionskomposition](higher-order.md#funktionskomposition) -->
 
-### 10. [Abonnements](subscriptions.md) -->
+### 10. [Abonnements](subscriptions.md)
 
 <!--
 ### 11. [JSON-Daten](json.md)
