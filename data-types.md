@@ -578,8 +578,18 @@ pattern = literal ;
         | "(" pattern ")" ;
         | "(" pattern ")" "as" identifier ;
         | constructor { pattern } ;
+        | "{" fieldName { "," fieldName } "}" ;
         | ...
 ```
+
+An dieser Stelle soll kurz auf die Grammatik für Record\-_Pattern_ eingegangen werden.
+Die Grammatik besagt, dass man geschweifte Klammern nutzt und die Einträge durch Kommata trennt.
+Im Unterschied zu den anderen Regeln, stehen hier in den Einträgen aber nicht `pattern` sondern `fieldName`.
+Das heißt, die Einträge in eine Record\-_Pattern_ sind nicht selbst wieder _Pattern_ sondern Feldnamen.
+Wenn in einem Record\-_Pattern_ wieder _Pattern_ stehen würden, könnte man nicht immer eindeutig identifizieren auf welchen Eintrag im Record sich das _Pattern_ bezieht.
+Daher müssen in einem Record\-_Pattern_ im Gegensatz zu allen anderen Formen von _Pattern_ immer die Namen von Feldern stehen.
+Man kann also bei einem Record\-_Pattern_ zum Beispiel kein tiefes _Pattern Matching_ durchführen.
+
 
 Rekursive Datentypen
 --------------------
