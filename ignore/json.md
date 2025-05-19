@@ -6,26 +6,38 @@ title: "JSON-Daten"
 Die Kommunikation mit einem Server läuft über ein Austauschformat, zumeist JSON oder XML.
 In diesem Kapitel beschäftigen wir uns damit, wie wir Daten im JSON-Format mit einem Server austauschen.
 Der Abschnitt [Decoder](#decoder) beschreibt, wie wir Daten, die wir im JSON-Format erhalten, in Elm-Datentypen umwandeln können.
-Der Abschnitt [Encoder](#encoder) beschreibt, wie wir Daten aus unserer Anwendung in das JSON-Format umwandeln.
+Der Abschnitt [Encode](#encode) beschreibt, wie wir Daten aus unserer Anwendung in das JSON-Format umwandeln.
 
 
 ## Decoder
 
-Wenn wir HTTP-Anfragen durchführen, erhalten wir vom Server häufig eine Antwort in Form vom JSON.
+Wenn wir HTTP-Anfragen durchführen, erhalten wir vom Server häufig eine Antwort in Form von JSON.
 Diese Antwort erhalten wir aber in Form eines _Strings_.
 Das heißt, um die Informationen, die wir benötigen zu extrahieren, müssen wir den _String_ verarbeiten.
-Wir wollen in unserer Anwendung aber nicht mit den _String_ hantieren, den wir vom Server erhalten haben, sondern mit einem strukturierten Elm-Datentyp arbeiten.
+Wir wollen in unserer Anwendung aber nicht mit dem _String_ hantieren, den wir vom Server erhalten haben, sondern mit einem strukturierten Elm-Datentyp arbeiten.
 Um diese Aufgabe umzusetzen, werden in Elm `Decoder` verwendet.
 
 ![You shall not parse, syntax error on line 1](/assets/images/parse-error.png){: width="400px" .centered}
 
-Ein `Decoder` ist eine Elm-spezifische Variante des allgemeineren Konzeptes eines **Parser-Kombinators**.
-Parser-Kombinatoren sind eine leichtgewichtige Implementierung von Parsern.
-Ein Parser ist eine Anwendung, die einen _String_ erhält und prüft, ob der _String_ einem vorgegebenen Format folgt.
+Ein `Decoder` ist eine elm-spezifische Variante des allgemeineren Konzeptes eines **Parser-Kombinators**.
+Parser-Kombinatoren sind eine leichtgewichtige Implementierung eines Parsers.
+
+{% include callout-important.html content="
+Ein **Parser** ist ein Programm, das einen _String_ erhält und prüft, ob der _String_ einem vorgegebenen Format folgt.
+Der Parser liefert ein strukturiertes Format, das die Inhalte des _Strings_ darstellt.
+" %}
+
 Jeder Compiler nutzt zum Beispiel einen Parser, um Programmtext auf syntaktische Korrektheit zu prüfen.
-Neben der Überprüfung, ob der _String_ einem Format entspricht, wird der _String_ für gewöhnlich auch noch in ein strukturiertes Format umgewandelt.
 Im Fall von Elm, wird der _String_ zum Beispiel in Werte von algebraischen Datentypen umgewandelt.
 In einer objektorientierten Programmiersprache würde ein Parser einen _String_ erhalten und ein Objekt liefern, das eine strukturierte Beschreibung des _Strings_ zur Verfügung stellt.
+Funktionen wie `String.toInt : String -> Maybe Int` sind eine sehr einfache Form eines Parsers.
+Diese Funktion erhält einen _String_ als Eingabe.
+Die Funktion überprüft, ob es sich bei dem _String_ um eine Zahl handelt, also ob der _String_ sich an das Format "ist eine Zahl" hält.
+Da ein Parser überprüft, ob die Eingabe sich an das Format hält, liefert ein Parser potentiell einen Fehler zurück.
+Daher liefert die Funktion `String.toInt` als Result einen Wert vom Typ `Maybe`, um auszudrücken, falls die Eingabe sich nicht an das Format hält.
+Falls das Parsen erfolgreich ist, liefert ein Parser eine strukturierte Darstellung der Eingabe.
+Im Fall von `String.toInt` liefert die Funktion im Erfolgsfall einen Wert vom Typ `Int` zurück.
+Dies ist die strukturierte Darstellung des entsprechenden _Strings_.
 
 Um in einer Elm-Anwendung einen `Decoder` zu nutzen, müssen wir zuerst den folgenden Befehl ausführen.
 
@@ -34,6 +46,9 @@ elm install elm/json
 ```
 
 Die Bibliothek `elm/json` ist eine **eingebettete domänenspezifische Sprache** und stellt eine **deklarative Technik** dar, um `Decoder` zur Verarbeitung von JSON zu beschreiben.
+`Decoder` sind eine Form von Parser-Kombinatoren.
+Bei Parser-Kombinatoren kombiniert man einfache Parser miteinander, um einen komplexeren Parser zu definieren.
+Wir schauen uns als nächstes an, wie dieses Kombinieren im Fall des Typs `Decoder` in Elm funktioniert.
 
 Der Typkonstruktor `Decoder` ist im Modul `Json.Decode`[^1] definiert.
 Das Modul stellt eine Funktion
@@ -71,13 +86,14 @@ Das heißt, der `String` `"42"` wird erfolgreich mit dem `Decoder` `int` verarbe
 Decoder.decodeString Decoder.int "a"
 ```
 
-liefert dagegen als Ergebnis
+liefert dagegen das folgende Ergebnis.
 
 ```elm
 Err (Failure ("This is not valid JSON! Unexpected token a in JSON at position 0"))
 ```
 
-da der `String` `"a"` nicht der Spezifikation des Formates entspricht, da es sich nicht um einen `Int` handelt.
+Der `String` `"a"` entspricht in diesem Fall nicht dem Format, da es sich nicht um einen `Int` handelt.
+Daher liefert der Parser einen Fehler.
 
 Die Idee der Funktion `map`, die wir für Listen kennengelernt haben, lässt sich auch auf andere Datenstrukturen anwenden. Genauer gesagt, kann man `map` für die meisten Typkonstruktoren definieren.
 Da `Decoder` ein Typkonstruktor ist, können wir `map` für `Decoder` definieren.
@@ -113,7 +129,7 @@ In den meisten Fällen wird das Alter des Nutzers auf JSON-Ebene nicht als einze
 }
 ```
 
-Auf diese Struktur können wir unseren `Decoder` nicht anwenden, da der `Decoder` `int` nur Zahlen parsen kann.
+Auf diese Struktur können wir `userDecoder` nicht anwenden, da `Decoder.int` nur Zahlen parsen kann.
 Um dieses Problem zu lösen, nutzt man in Elm die folgende Funktion.
 
 ```elm
@@ -153,9 +169,9 @@ Für diesen Zweck stellt Elm die Funktion
 map2 : (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c
 ```
 
-zur Verfügung, mit der wir zwei `Decoder` zu einem kombinieren können.
+zur Verfügung, mit der wir zwei `Decoder` zu einem komplexeren `Decoder` kombinieren können.
 
-Wir erweitern unseren Datentyp wie folgt.
+Um die Verwendung von `Decoder.map2` zu illustrieren, erweitern wir unseren Datentyp `User` wie folgt.
 
 ``` elm
 type alias User =
@@ -196,7 +212,7 @@ Im Folgenden wollen wir uns ein komplexeres Beispiel anschauen.
 Für unser Beispiel gehen wir davon aus, dass die JSON-Struktur, die wir von einem Server erhalten, ein Feld mit der Version der Schnittstelle hat.
 Abhängig von der Version wollen wir jetzt den einen oder anderen `Decoder` verwenden.
 
-Zuerst betrachten wir zwei primitive `Decoder`, die für dich allein genommen, eher nutzlos erscheinen, um Zusammenspiel mit weiteren Funktionen aber sehr nützlich sind.
+Zuerst betrachten wir zwei primitive `Decoder`, die für sich allein genommen, eher nutzlos erscheinen, im Zusammenspiel mit weiteren Funktionen aber sehr nützlich sind.
 Die Funktion `succeed :: a -> Decoder a` liefert einen `Decoder`, der immer erfolgreich ist.
 Das heißt, der folgende Aufruf
 
@@ -212,7 +228,7 @@ Das heißt, der folgende Aufruf
 decodeString (Decoder.fail "Error message") "{ \"name\": \"Max Mustermann\", \"age\": 18}"
 ```
 
-liefert dagegen als Ergebnis
+liefert das folgende Ergebnis.
 
 ```elm
 Err (Failure ("Error message"))
@@ -245,9 +261,10 @@ booleanDecoder =
 
 Wir möchten jetzt gern einen `Decoder` definieren, der abhängig von der Version entweder `boolDecoder` oder `booleanDecoder` verwendet.
 Diese Art von `Decoder` können wir mithilfe von `map` und `map2` aber nicht definieren.
-Das Problem besteht darin, dass wir abhängig von einem Wert des Felder `version` den `Decoder` bestimmen möchten, mit dem wir die restlichen Felder verarbeiten.
+Das Problem besteht darin, dass wir abhängig vom Wert, der im Feld `version` steht, den `Decoder` bestimmen möchten, mit dem wir die restlichen Felder verarbeiten.
 Die Funktionen `map` und `map2` haben aber die Typen `(a -> b) -> Decoder a -> Decoder b` und `(a -> b -> c) -> Decoder a -> Decoder b -> Decoder c`.
-Das heißt, die Funktion, die wir an `map` und `map2` übergeben, können sich als Ergebnis nicht für einen `Decoder` entscheiden. 
+Das heißt, die Funktion, die wir an `map` und `map2` übergeben, können sich als Ergebnis nicht für einen `Decoder` entscheiden.
+Beide Funktionen können nur auf dem Ergebnistyp des `Decoder` arbeiten.
 
 Wir können die gewünschte Funktionalität aber mit der folgenden Funktion implementieren.
 
@@ -260,8 +277,8 @@ Das heißt, wir können abhängig vom konkreten Wert, der vom Typ `a` übergeben
 Wir können damit den folgenden `Decoder` definieren.
 
 ``` elm
-decoder : Decoder Bool
-decoder =
+versionedDecoder : Decoder Bool
+versionedDecoder =
     let
         chooseVersion version =
             case version of
@@ -275,52 +292,131 @@ decoder =
                     Decoder.fail
                         ("Version "
                             ++ String.fromInt version
-                            ++ " not supported"
+                            ++ " is not supported."
                         )
     in
     Decoder.andThen chooseVersion versionDecoder
 ```
 
 Die Funktion `Decoder.fail` liefert einen `Decoder`, der immer fehlschlägt.
-Das heißt, wenn wir eine Version parsen und es sich weder um Version `1` noch um Version `2` handelt, liefert `decoder` einen Fehler.
-Dieses Beispiel illustriert, dass wir mithilfe von `andThen` abhängig von einem Wert, den wir zuvor geparset haben, verschiedene `Decoder` ausführen können.
+Das heißt, wenn wir eine Version parsen und es sich weder um Version `1` noch um Version `2` handelt, liefert `versionedDecoder` einen Fehler.
+Dieses Beispiel illustriert, dass wir mithilfe von `andThen` abhängig von einem Wert, den wir zuvor geparst haben, verschiedene `Decoder` ausführen können.
 
-Die Reihenfolge der Argumente im Aufruf `Decoder.andThen chooseVersion versionDecoder` ist unglücklich, da wir zuerst den `Decoder` `versionDecoder` durchführen und anschließend die Funktion `chooseVersion`.
+Es stellt sich die Frage, warum die Funktion `Decoder.andThen` als erstes Argument die Funktion erhält.
+Bei einem Aufruf wie `Decoder.andThen chooseVersion versionDecoder` ist die Reihenfolge der Argumente unglücklich, da wir zuerst den `Decoder` `versionDecoder` durchführen und anschließend die Funktion `chooseVersion`.
 Es stellt sich also die Frage, warum die Funktion `Decoder.andThen` ihre Argumente in dieser Reihenfolge erhält.
-Der Grund besteht darin, dass man die Funktion `Decoder.andThen` zusammen mit dem Operator `|>` nutzt.
-Das heißt, man nutzt bei der Definition von `Decoder`n häufig [Piping](higher-order.md#piping).
+Der Grund besteht darin, dass man die Funktion `Decoder.andThen` infix verwendet, wie es im Kapitel [Piping](higher-order.md#piping) erläutert wurde.
+Das heißt, wir nutzen die Schreibweise `|> Decoder.andThen`, um die Funktion infix zu verwenden.
 
-Um Piping anzuwenden, benötigen wir eine einstellige Funktion.
+Um den Operator `|>` anzuwenden, benötigen wir eine einstellige Funktion.
 Die Funktion `Decoder.andThen` ist aber zweistellig.
 Daher wird die Funktion `Decoder.andThen` zuerst partiell auf das Argument `chooseVersion` appliziert.
 Wir erhalten somit, `Decoder.andThen chooseVersion`, also eine einstellige Version.
 Diese Funktion können wir mithilfe von `|>` auf ihr Argument anwenden.
-Wir erhalten damit die folgende Definition.
-Aus didaktischen Gründen haben wir zuvor die Konstante `versionDecoder` definiert.
-In einer "realen" Anwendung würde man auf die Definition dieser Konstante aber eher verzichten.
+Aus didaktischen Gründen haben wir die Definitionen `boolDecoder`, `booleanDecoder` und `versionDecoder` eingeführt, bevor wir die Definition von `versionedDecoder` angegeben haben.
+In einer realen Implementierung würde man für diese `Decoder` keine eigenständigen _Top Level_-Definitionen angeben und den `Decoder` eher wie folgt definieren.
 
 ``` elm
-decoder : Decoder Bool
-decoder =
+versionedDecoder : Decoder Bool
+versionedDecoder =
     let
         chooseVersion version =
             case version of
                 1 ->
-                    boolDecoder
+                    Decoder.field "bool" Decoder.bool
 
                 2 ->
-                    booleanDecoder
+                    Decoder.field "boolean" Decoder.bool
 
                 _ ->
                     Decoder.fail
                         ("Version "
                             ++ String.fromInt version
-                            ++ " not supported"
+                            ++ " is not supported."
                         )
     in
     Decoder.field "version" Decoder.int
         |> Decoder.andThen chooseVersion
 ```
+
+Wir können mithilfe von `Decoder.andThen` aber nicht nur auf unterschiedliche Felder der JSON-Struktur zugreifen, wir können die Felder auch ganz unterschiedlich behandeln.
+Wir nehmen einmal an, dass in Version `1` unserer JSON-Struktur der boolesche Wert durch einen `Int` kodiert wurde.
+Um diesen `Int` zu verarbeiten definieren wir zuerst den folgenden `Decoder`, der den `Int` in einen `Bool` umwandelt.
+
+``` elm
+intAsBoolDecoder : Decoder Bool
+intAsBoolDecoder =
+    let
+        boolDecoder int =
+            case int of
+                0 ->
+                    Decoder.succeed False
+
+                1 ->
+                    Decoder.succeed True
+
+                _ ->
+                    Decoder.fail 
+                        ("The value "
+                            ++ String.fromInt int
+                            ++ " should be 0 or 1.")
+    in
+    Decoder.int
+        |> Decoder.andThen boolDecoder
+```
+
+Auf Grundlage dieses `Decoder`s können wir nun den folgenden `Decoder` definieren, der in Version `1` der Schnittstelle den `Int` einen `Bool` umwandelt.
+
+```elm
+versionedDecoder : Decoder Bool
+versionedDecoder =
+    let
+        chooseVersion version =
+            case version of
+                1 ->
+                    Decoder.field "bool" intAsBoolDecoder
+
+                2 ->
+                    Decoder.field "boolean" Decoder.bool
+
+                _ ->
+                    Decoder.fail
+                        ("Version "
+                            ++ String.fromInt version
+                            ++ " is not supported."
+                        )
+    in
+    Decoder.field "version" Decoder.int
+        |> Decoder.andThen chooseVersion
+```
+
+Um noch einmal zu illustrieren, dass die Funktion `Decoder.andThen` mächtiger ist als die Funktion `Decoder.map` wollen wir versuchen, die Funktionsweise von `intAsBoolDecoder` mithilfe von `Decoder.map` zu implementieren.
+
+``` elm
+badIntAsBoolDecoder : Decoder Bool
+badIntAsBoolDecoder =
+    let
+        boolFromInt int =
+            case int of
+                0 ->
+                    False
+
+                1 ->
+                    True
+
+                _ ->
+                    False
+
+    in
+    Decoder.map boolFromInt Decoder.int
+```
+
+Aufgrund des Typs von `Decoder.map` bleibt uns nichts anderes übrig als für Zahlen, die nicht `0` oder `1` sind, einen _Default_-Wert zu nutzen.
+Damit verschleiern wir aber einen Fehlerfall.
+
+{% include callout-important.html content="
+Das Verschleiern von Fehlerfällen ist eine ganz schlechte Idee, da es damit später sehr schwierig ist, den Fehler in der Anwendung zu finden.
+" %}
 
 Um die Funktion `Decoder.andThen` noch etwas zu illustrieren, wollen wir den `Decoder` `userDecoder`, den wir zuvor bereits definiert haben, noch einmal mithilfe von `Decoder.andThen` definieren.
 
@@ -348,41 +444,18 @@ Auf diese Weise, können wir die Entscheidung, die in der Funktion vom Typ `a ->
 Wir könnten in der Definition von `user` zum Beispiel abhängig von den Werten von `id` **und** `name` den Decoder erfolgreich ein Ergebnis liefern oder scheitern lassen.
 
 {% include callout-info.html content="
+Die Funktion `andThen` ist die Elm-Variante des _Bind_-Operators `>>=` in Haskell.
+" %}
+
+{% include callout-info.html content="
 Die Programmiersprache Haskell stellt die `do`-Notation zur Verfügung, um Funktionen übersichtlicher zu gestalten, wenn sie mehrere Aufrufe einer Funktion wie `andThen` enthalten.
 " %}
 
-Als weiteres Beispiel für die Verwendung von `andThen` betrachten wir den Fall, dass wir auf dem Server einen Wert vom Typ `String` speichern, in der Anwendung aber einen Aufzählungstyp zur Darstellung verwenden.
-Wir betrachten an dieser Stellen den folgenden Datentyp, der verschiedene Benutzerrollen definiert.
-
-```elm
-type Role
-    = Admin
-    | User
-```
-
-Auf dem Server wird der Eintrag `Role` mithilfe eines `String` dargestellt.
-Daher benötigen wir einen `Decoder`, der das Feld in Form eines `String` parset und anschließend in unseren Datentyp `Role` umwandelt.
-Dabei kann es vorkommen, dass in der Datenbank ein Wert steht, den wir nicht erwarten.
-Daher müssen wir auch den Fall behandeln, dass der `String` in der Datenbank weder `"Admin"` noch `"User"` ist.
-
-```elm
-roleDecoder : Decoder Role
-roleDecoder =
-    let
-        decodeRole string =
-            case string of
-                "Admin" ->
-                    Decoder.succeed Admin
-
-                "User" ->
-                    Decoder.succeed User
-
-                _ ->
-                    Decoder.fail (string ++ " is not a valid value of type Role")
-    in
-    Decoder.field "role" Decoder.string
-        |> Decoder.andThen decodeRole
-```
+Die Funktion `andThen` bzw. `>>=` ist Teil des allgemeineren Konzeptes einer Monade.
+Man kann eine Funktion wie `andThen` bzw. `>>=` für viele Strukturen definieren, nicht nur für Parser bzw. `Decoder`.
+Auch wenn das Konzept einer Monade in anderen Programmiersprachen nicht explizit genutzt wird, taucht diese Struktur bei der Programmierung häufig auf.
+Die JavaScript-Funktion `then` für `Promise` ist etwa ein Beispiel hierfür.
+Diese Funktion erhält nämlich einen `Promise a` und eine Funktion `a -> Promise b`, ist also sehr ähnlich zur Funktion `Decoder.andThen`, nur dass sie für den Datentyp `Promise` genutzt wird und nicht für den Datentyp `Decoder`.
 
 
 ## Encode
@@ -402,7 +475,7 @@ Wir wollen einen `User` als JSON-Objekt mit zwei Feldern darstellen.
 Daher verwenden wir die Funktion `object : List ( String, Value ) -> Value`.
 Die erste Komponente der Paare in der Liste gibt dabei die Namen der Felder an.
 Die zweite Komponente der Paare ist ein JSON-Wert.
-Neben der Funktion `object` stellt das Modul `Json.Encode` zum Beispiel die Funktion `string : String -> Value` zur Verfügung, um aus einem `String` auf Elm-Ebene einen entsprechenden `JSON-Wert` zu machen.
+Neben der Funktion `object` stellt das Modul `Json.Encode` zum Beispiel die Funktion `string : String -> Value` zur Verfügung, um aus einem `String` auf Elm-Ebene einen entsprechenden JSON-Wert zu machen.
 
 Der folgende Aufruf
 
@@ -438,7 +511,7 @@ encode { name, age } =
         ]
 ```
 
-[^1]: Dieses Modul wird hier mittels `import Json.Decoder as Decode exposing (Decoder)` importiert.
+[^1]: Dieses Modul wird hier mittels `import Json.Decode as Decoder exposing (Decoder)` importiert.
       Wir benennen das Modul in `Decoder` um, da der Name `Decode` unglücklich gewählt ist, da das Modul den Typ `Decoder` exportiert.
 
 [^2]: Dieses Modul wird hier mittels `import Json.Encode as Encode` importiert.
@@ -449,6 +522,7 @@ encode { name, age } =
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="higher-order.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="subscriptions.html">weiter</a></li>
+        <!-- <li class="nav-item nav-right"><a href="subscriptions.html">weiter</a></li> -->
+        <li class="nav-item nav-right"></li>
     </ul>
 </div>

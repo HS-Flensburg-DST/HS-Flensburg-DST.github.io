@@ -91,11 +91,11 @@ custom_css: toc
 
 - 9.2. [Partielle Applikationen](higher-order.md#partielle-applikationen)
 
-<!-- - 9.3. [Piping](higher-order.md#piping)
+- 9.3. [Piping](higher-order.md#piping)
 
 - 9.4. [Eta-Reduktion und -Expansion](higher-order.md#eta-reduktion-und--expansion)
 
-- 9.5. [Funktionskomposition](higher-order.md#funktionskomposition) -->
+- 9.5. [Funktionskomposition](higher-order.md#funktionskomposition)
 
 ### 10. [Abonnements](subscriptions.md)
 
@@ -169,3 +169,4 @@ custom_css: toc
 ### B. [Programmierregeln](linter-rules.md)
 
 ### C. [Testfälle](tests.md)
+

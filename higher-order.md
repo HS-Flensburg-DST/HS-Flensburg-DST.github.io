@@ -215,7 +215,7 @@ Partielle Applikationen mit _Left_ und _Right Sections_, also Ausdrücke der For
 " %}
 
 
-<!-- Piping
+Piping
 ------
 
 Funktionen höherer Ordnung haben viele Verwendungen.
@@ -492,7 +492,7 @@ sumOfAdultAges =
         >> List.sum
 ```
 
-Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funktion `List.map .age` angewendet, dann wird `List.filter (\age -> age >>= 18)` angewendet und zu guter Letzt `List.sum`. -->
+Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funktion `List.map .age` angewendet, dann wird `List.filter (\age -> age >>= 18)` angewendet und zu guter Letzt `List.sum`.
 
 [^1]: <https://en.wikipedia.org/wiki/Haskell_Curry>
 
@@ -504,7 +504,7 @@ Das heißt, auf das Argument der Funktion `sumOfAdultAges` wird zuerst die Funkt
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="structure.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="design.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
         <li class="nav-item nav-right"><a href="subscriptions.html">weiter</a></li>
     </ul>

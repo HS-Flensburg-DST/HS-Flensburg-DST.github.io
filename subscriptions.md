@@ -414,7 +414,7 @@ Wir sollten uns aber über die verschiedenen Optionen bewusst sein, um eine qual
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="higher-order.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <!-- <li class="nav-item nav-right"><a href="commands.html">weiter</a></li> -->
+        <!-- <li class="nav-item nav-right"><a href="json.html">weiter</a></li> -->
         <li class="nav-item nav-right"></li>
     </ul>
 </div>

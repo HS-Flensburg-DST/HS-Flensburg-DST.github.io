@@ -542,6 +542,15 @@ Es gibt aber zahlreiche Anwendungsfälle, in denen die Anfrage erst durch die Ak
 In diesen Fällen ist es sinnvoll, zum Datentyp `ResponseData` einen Fall `Uninitiated` hinzuzufügen.
 Dieser Fall wird verwendet, um zu signalisieren, dass noch keine Anfrage durchgeführt wurde.
 
+Zu guter Letzt wollen wir noch zwei Varianten illustrieren, mit denen mehrere HTTP-Anfragen ausgeführt werden können.
+Zwei HTTP-Anfragen können dabei entweder sequentiell, also nacheinander, oder parallel ausgeführt werden.
+Zuerst betrachten wir die Möglichkeit, zwei HTTP-Anfragen parallel zu bearbeiten.
+
+
+TODO!!!!!!!
+
+
+
 [^1]: <https://github.com/public-apis/public-apis#science--math>
 
 <div class="nav">

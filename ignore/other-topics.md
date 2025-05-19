@@ -5,6 +5,8 @@ title: "Weitere Aspekte einer Web-Anwendung"
 
 In diesem Kapitel werden weitere Themen im Kontext einer Web-Anwendung diskutiert.
 
+
+
 Lokalisierte Zeit
 -----------------
 
@@ -44,6 +46,8 @@ Wir gehen in unserem Beispiel davon aus, dass der Server die Zeitzone `Europe/Be
 Der PostgreSQL-Server nutzt intern die [IANA time zone database)](https://en.wikipedia.org/wiki/Tz_database), das heißt, der Server weiß, wann Sommer- zu Winterzeit gewechselt wird.
 Daher ist er in der Lage, die Uhrzeit in der Darstellung anzugeben, die wir auch bei uns auf der Uhr erwarten würde.
 Wenn wir nur diese Information hätten könnten wir um die Zeitumstellung herum aber Zeitpunkt nicht mehr sequentiell zuordnen.
+
+
 
 
 

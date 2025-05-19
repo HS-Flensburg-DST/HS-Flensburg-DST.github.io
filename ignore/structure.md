@@ -5,10 +5,25 @@ title: "Strukturierung einer Anwendung"
 
 In diesem Kapitel werden mehrere Aspekte der Strukturierung einer Elm-Anwendung diskutiert.
 Die Struktur des Modells einer Anwendung geht dabei sehr stark mit einer guten Modularisierung der Anwendung einher.
+
+{% include callout-important.html content="
 Das heißt, ein gut strukturiertes Modell führt häufig zu einer guten Aufteilung der Anwendung in mehrere Module und ein schlecht strukturiertes Modell führt zu einer monolithischen Anwendung oder zu einer Aufteilung in Module, die schlecht wartbar ist.
+" %}
+
 In einer sehr einfachen Elm-Anwendung kann das Modell häufig mithilfe eines flachen Records dargestellt werden, also einem Record, der als Felder nur vordefinierte Datentypen verwendet.
 Wenn die Anwendung komplexer wird, verhindert ein solcher flacher Record aber häufig eine gute Modularisierung.
 Viele der Beispiele in diesem Kapitel sind durch den Vortrag [Scaling Elm Apps](https://www.youtube.com/watch?v=DoA4Txr4GUs) von Richard Feldman inspiriert.
+
+Eine weitere motivierende Kraft für die Strukturierung einer Anwendung ist das **_Domain-driven Design_ (DDD)**.
+Beim _Domain-driven Design_ teilen die Domänenexperten, also in den meisten Fällen die Auftraggeber einer Anwendung, und die Entwickler\*innen ein gemeines mentales Modell.
+Ein gemeinsames mentales Modell ist sehr wichtig, um die Anforderungen einer Anwendung optimal umzusetzen.
+Beim _Domain-driven Design_ soll zusätzlich der Quelltext der Anwendung dieses Modell ebenfalls widerspiegeln.
+Wenn der Quelltext das mentale Modell möglichst gut widerspiegelt, kann das mentale Modell auf diese Weise an andere Entwickler\*innen weitergegeben werden.
+Die Ideen zur Anwendung von _Domain-driven Design_ in diesem Kapitel sind zum Teil durch das Buch [Domain Modeling Made Functional](https://pragprog.com/titles/swdddf/domain-modeling-made-functional/) inspiriert.
+
+In diesem Abschnitt werden wir die Strukturierung verschiedener Komponenten einer Anwendung betrachten.
+Die Komponenten werden in diesem Kapitel einzeln betrachtet, um die Inhalte aufzuteilen.
+Die einzelnen Komponenten sind aber sehr stark miteinander verwoben und lassen sich häufig nur in einem Zug verbessern.
 
 
 ## Funktionen strukturieren
@@ -71,7 +86,8 @@ Wir können die Funktionen aktuell nur aufrufen, wenn wir ein komplettes `Model`
 Dadurch können wir die Funktionen aber unter Umständen nicht mehr aufrufen, obwohl wir ggf. alle Informationen zur Verfügung haben, welche die Funktionen benötigen.
 Wir werden später in diesem Kapitel illustrieren, wie wir diesen Aspekt der Modellierung verbessern können.
 
-Wir können versuchen, ein ähnliches Muster auch auf die Funktion `update` anzuwenden.
+Wir haben gesehen, wie wir die Funktion `view` mithilfe von Hilfsfunktionen in kleinere Einheiten zerlegen können.
+Wir wollen nun versuchen, ein ähnliches Muster auch auf die Funktion `update` anzuwenden.
 Das heißt, wir könnten `update` zum Beispiel wie folgt definieren.
 
 ```elm
@@ -90,7 +106,7 @@ Auf diese Weise kann es zum Beispiel wichtig sein, dass diese Funktionen in der 
 All diese Eigenschaften führen mittel- oder langfristig häufig zu schlechtem Code.
 
 {% include callout-important.html content="
-Daher sollten Funktionen, die auf dem kompletten Modell arbeiten **nicht** nacheinander auf das Modell angewendet werden.
+Daher sollten Funktionen, die auf dem kompletten Modell arbeiten, **nicht** nacheinander auf das Modell angewendet werden.
 " %}
 
 Um die Funktion `update` besser zu strukturieren, müssen wir die Nachrichten, die an unsere Anwendung geschickt werden, strukturieren.
@@ -109,7 +125,6 @@ type Msg
     | RightKey
     | UpKey
     | DownKey
-    | UnknownKey
     | ChangeFirstName String
     | ChangeLastName String
 ```
@@ -118,6 +133,7 @@ Die Anwendung kann verschiedene Tasten verarbeiten und es gibt die Möglichkeit 
 
 In diesem Datentyp steckt eine geschachtelte Struktur, die sich auch schon etwas durch unsere Namensgebung ausdrückt.
 Wir können diese Struktur nutzen, um unsere Anwendung besser zu strukturieren.
+Die folgenden Datentypen machen die Struktur, die sich in unseren Nachrichten befindet, sichtbar.
 
 ```elm
 type Key
@@ -126,7 +142,6 @@ type Key
     | Right
     | Up
     | Down
-    | Unknown
 
 
 type Name
@@ -140,7 +155,11 @@ type Msg
 ```
 
 Die neue Struktur erlaubt es viel besser zu erkennen, dass die Anwendung zwei Arten von Interaktionen ermöglicht.
-Außerdem können wir die neuen Datentypen nutzen, um die `update`-Funktion durch Hilfsfunktionen zu strukturieren.
+Außerdem bilden diese neuen Datentypen die Domäne der Anwendung viel besser ab.
+In unserer ursprünglichen Modellierung gab es nur Nachrichten.
+Das Konzept einer Nachricht ist aber kein Domänen-Konzept, sondern ein Konzept der _Model_-_View_-_Update_-Architektur.
+
+Durch die bessere Struktur im Datentyp `Msg` können wir nun die `update`-Funktion durch Hilfsfunktionen strukturieren.
 
 ```elm
 update : Msg -> Model -> Model
@@ -166,6 +185,7 @@ changeUserName name model =
 Die Semantik der Funktion `update` ist "Verarbeite die Nachricht".
 Das heißt, durch eine Funktion wie `update` lernen wir im Grunde nichts über die Struktur der Anwendung.
 Eine Funktion wie `changeUserName` hat aber eine viel spezifischere Semantik.
+Auch hier arbeiten wir wieder auf der Ebene der Domäne.
 Das heißt, durch die Zerlegung der Funktion haben wir auch erreicht, dass Leser\*innen des Codes direkt sehen, dass in der Anwendung ein Name geändert werden kann.
 
 
@@ -262,6 +282,16 @@ main =
 
 In dieser Definition von `main` können wir ganz explizit sehen, dass die HTML-Struktur Nachrichten der Form `ChangeName` verschickt, während wir durch ein Abonnement Nachrichten der Form `HandleKey` erhalten.
 
+Man sollte diese Technik mit Bedacht einsetzen.
+Falls man den Typ einer Funktion einschränken kann, sollte man den Typ einschränken, um Leser\*innen zu kommunizieren, welche Aktionen aus dem Code heraus ausgelöst werden können.
+
+{% include callout-important.html content="
+Man sollte die Struktur des Typs für Nachrichten aber nicht ändern, nur um die Typen der `view`-Funktionen einschränken zu können.
+" %}
+
+In diesem Fall würde man die Struktur des Datentyps an die Struktur des UI binden.
+Die Tatsache, dass der Name aus dem _Footer_ heraus geändert wird, ist aber vermutlich eine kurzlebige Eigenschaft, die sich ggf. schnell ändert.
+
 
 ## Modell strukturieren
 
@@ -290,7 +320,7 @@ Um die Wiederverwendbarkeit von Funktionen zu erhöhen, sollte man Funktionen nu
 " %}
 
 Das heißt, wenn die Funktionen `viewHeader`, `viewBoard` und `viewFooter` aus Abschnitt [Funktionen strukturieren](#funktionen-strukturieren) nur Teile des Modells benötigen, sollten auch nur diese Teile übergeben werden.
-Da unser Modell flach ist, müssten wir die einzelnen Felder, die benötigt werden als einzelne Argumente an die Funktionen übergeben.
+Da unser Modell flach ist, müssten wir die einzelnen Felder, die benötigt werden, als einzelne Argumente an die Funktionen übergeben.
 Stattdessen sollten wir an dieser Stelle die Gelegenheit nutzen, um zu überprüfen, ob unser Modell besser strukturiert werden kann.
 
 Wir observieren zuerst, dass Vor- und Nachname zusammen Benutzer\*innen definieren.
@@ -301,11 +331,12 @@ Wir erhalten dadurch die folgende Struktur.
 type User =
     { firstName : String
     , lastName : String
+    , score : Score
     }
 
 
 type Board =
-    { position : Int
+    { position : Point
     , enemies : List Point
     }
 
@@ -316,32 +347,36 @@ type Score =
 
 type Model =
     { user : User
-    , score : Score
     , board : Board
     , highscoreUser : User
-    , highscore : Score
     }
 ```
 
-Welche Struktur am besten geeignet ist, hängt sehr davon ab, welche Daten wir zusammen verarbeiten wollen.
-Wenn die Punktzahl zum Beispiel sehr eng an Nutzer\*innen gekoppelt ist, da in der Anwendung beide Informationen immer zusammen auftreten, könnte es sinnvoll sein, das Feld `points` ebenfalls zum Record `User` hinzuzufügen.
+{% include callout-important.html content="
+Zur Strukturierung der Datentypen sollten wir wieder Prinzipien aus dem Ansatz _Domain-driven Design_ anwenden.
+" %}
+
+Das heißt, wir fassen Daten zusammen, die in der Domäne der Anwendung auch zusammen auftreten.
+Wenn die Punktzahl zum Beispiel nie zusammen mit dem `User` verwendet wird, ist es vermutlich sinnvoll, den `score` aus dem `User` zu entfernen.
+Im Grunde müssen wir uns fragen, ob wir unseren Datentyp einer Person erklären können, welche die Domäne kennt, aber keine Programmierkenntnisse hat.
 
 Mit der gewählten Strukturierung des Modells können wir die Typen der Funktionen `viewHeader`, `viewBoard` und `viewFooter` nun wie folgt spezialisieren.
 Die Funktionen arbeiten nun nur noch auf einem Teil des Modells.
-Wir können an den Typen der Funktionen bereits identifizieren, dass der _Header_ den `User` und die Punktzahl anzeigt und der _Footer_ den _Highscore_ und den `User` mit dem _Highscore_.
+Wir können an den Typen der Funktionen bereits identifizieren, dass der _Header_ den `User` anzeigt und der _Footer_ den `User` mit dem _Highscore_.
+Wenn wir weder in `viewHeader` noch in `viewFooter` die jeweilige Punktzahl benötigen, ist das eventuell ein Indiz dafür, dass die Punktzahl nicht zum `User` gehört.
 
 ```elm
 view : Model -> Html Msg
 view model =
     div []
-        [ viewHeader model.user model.points
+        [ viewHeader model.user
         , viewBoard model.board
-        , viewFooter model.highscoreUser model.highscore
+        , viewFooter model.highscoreUser
         ]
 
 
-viewHeader : User -> Score -> Html Msg
-viewHeader user score =
+viewHeader : User -> Html Msg
+viewHeader user =
     ...
 
 
@@ -350,8 +385,8 @@ viewBoard board =
     ...
 
 
-viewFooter : User -> Score -> Html Msg
-viewFooter user highscore =
+viewFooter : User -> Html Msg
+viewFooter highscoreUser =
     ...
 ```
 
@@ -379,11 +414,25 @@ changeUserName name user =
 ```
 
 Während die Funktionen `moveCharacter` und `changeUserName` zuvor als Argument einen Wert vom Typ `Modell` erhalten haben, arbeiten sie nun nur noch auf einem Teil des Modells.
-Der Typ der Funktion liefert nun zusätzliche Dokumentation dazu, welches Verhalten die Funktionen haben.
+Der Typ der Funktion liefert nun zusätzliche Dokumentation dazu, welches Verhalten die Funktion hat.
 Dieser Teil des Modells kann ggf. nun auch in ein eigenes Modul ausgelagert werden, da die Logik der Funktionen häufig unabhängig von der konkreten Anwendung sind.
 Das heißt, wir können zum Beispiel die Verwaltung von Nutzer\*innen in ein Modul `User` auslagern.
 
-Ein weiterer Vorteil dieser Art der Strukturierung ist, dass nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
+{% include callout-important.html content="
+Diese Überlegung folgt dem folgenden wichtigen Ansatz in der Software-Architektur.
+
+> Code that changes together belongs together.
+"%}
+
+Das heißt, Funktionen, die auf einem Datentyp arbeiten, sollten in der Nähe (in einem eigenen Modul oder vor bzw. nach dem Datentyp) definiert sein.
+Man sollte sich dabei aber immer überlegen, ob der Code sich tatsächlich zusammen ändert.
+Die `view`-Funktionen sollten zum Beispiel häufig nicht in dem Modul definiert sein, in dem der entsprechende Datentyp definiert ist.
+Auf der einen Seite müssen wir den Code der `view`-Funktionen ändern, wenn der Datentyp sich ändert.
+In vielen Fällen ändern wir den Code der `view`-Funktionen aber eher, weil sich das Design unserer Anwendung ändert.
+Zum Beispiel, wenn sich die HTML-Struktur ändert.
+In diesem Fall wollen wir lieber alle Funktionen, die zur grundsätzlichen Struktur der HTML-Seite gehören zusammen haben, da diese sich häufig zusammen ändern werden.
+
+Ein weiterer Vorteil des nicht-flachen Modells ist, dass nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
 Da die Hilfsfunktionen jetzt nur noch auf einem Teil des Modells arbeiten, können wir jetzt in einem Fall auch mehrere Hilfsfunktionen verwenden.
 Wenn wir mehrere Änderungen am Modell vornehmen möchten, könnte unsere Anwendung zum Beispiel wie folgt aussehen.
 
@@ -412,176 +461,6 @@ changeUserName name user =
 
 Im Unterschied zu Funktionen, die auf dem gesamten Modell arbeiten, sind die Funktionen `moveCharacter` und `changeUserName` offensichtlich unabhängig voneinander, da sie auf disjunkten Teilen des Modells arbeiten.
 Diese Form der Strukturierung mithilfe von Funktionen können wir nur erreichen, wenn wir den Modell-Datentyp strukturieren.
-
-
-## Fehlerbehandlung
-
-Am Ende dieses Kapitels wollen wir uns noch über ein wichtiges Thema in jeder Anwendung unterhalten, über die Behandlung von Fehlern.
-An dieser Stelle wird ein _Code Smell_[^1] vorgestellt, der bei Anfänger\*innen in der funktionalen Programmierung häufig auftritt.
-Wir haben im Kapitel [Polymorphismus](polymorphism.md) gelernt, dass man einen fehlenden Wert in der funktionalen Programmierung durch den Datentyp `Maybe` modellieren sollte.
-Zum Beispiel könnte es sein, dass unser Modell einen Wert vom Typ `Maybe Int` enthält.
-Wenn dieser Wert nun benötigt wird, tendieren viele Anfänger\*innen dazu, die Funktion `Maybe.withDefault` (oder eine entsprechende Logik mittels _Pattern Matching_) zu nutzen, um auf jeden Fall einen Wert zur Verfügung zu haben.
-Einen fehlenden Wert durch einen _Default_-Wert zu ersetzen ist aber nur in wenigen Fällen sinnvoll.
-Wir wollen an dieser Stelle ein paar Klassen von Fällen diskutieren, in denen wir ggf. mit einem `Maybe`-Datentyp arbeiten.
-
-### Fehlerhafte Nutzereingabe
-
-Es kann vorkommen, dass die Eingabe von Nutzer\*innen nicht den Erwartungen entspricht.
-Dieser Fall tritt vor allem auf, wenn Eingaben über ein Textfeld getätigt werden können.
-Falls die Eingabe nicht den Anforderungen entspricht, sollte ein erklärender Fehler angezeigt und zu einer erneuten Eingabe aufgefordert werden.
-Das heißt, die Information, dass ein Wert nicht vorhanden ist, sollte bis zur Nutzerschnittstelle propagiert werden.
-Somit sollte der `Maybe`-Wert nicht verworfen, sondern bis zur `view`-Funktion propagiert werden.
-
-Der folgende Ausschnitt aus einer Elm-Anwendung illustriert noch einmal das Beispiel.
-
-{% include callout-important.html content="
-Dieses Beispiel illustriert einen _Code Smell_.
-Die Funktion `Maybe.withDefault` sollte nicht auf diese Weise in einer Anwendung verwendet werden.
-" %}
-
-```elm
-type alias Model =
-    { choosenNumber : Float }
-
-
-type Msg
-    = UpdateInput String
-
-
-update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        UpdateInput input ->
-            { choosenNumber = Maybe.withDefault 0.0 (String.toFloat input) }
-```
-
-Hier wird die Information, dass die Eingabe keine Zahl war einfach verworfen und durch einen _Default_-Wert ersetzt.
-Daher kann diese Information auch niemals an die Nutzerschnittstelle gelangen.
-
-
-### Fehlgeschlagene Anfrage
-
-Die Anfrage an eine externe Ressource kann aus verschiedenen Gründen fehlschlagen.
-Beispiele sind etwa, dass das Netz kurzzeitig nicht zur Verfügung steht oder dass es einen _Timeout_ bei einer Anfrage gab.
-In diesem Fall sollte auf jeden Fall darauf hingewiesen werden, dass Informationen nicht angezeigt werden können.
-Daher muss der `Maybe`-Wert hier ebenfalls bis zur `view`-Funktion propagiert werden.
-Es muss unterschieden werden, ob die fehlenden Daten für die weitere Funktionalität der Anwendung wichtig sind.
-Falls die Anwendung nicht sinnvoll fortgeführt werden kann, sollte es eine Möglichkeit geben, die Anfrage zu wiederholen.
-Das heißt, es gibt zum Beispiel einen Knopf, der dafür sorgt, dass die Anfrage erneut durchgeführt wird.
-
-Der folgende Ausschnitt aus einer Elm-Anwendung illustriert noch einmal das Beispiel.
-Im Fall einer fehlgeschlagenen Anfrage wird in den meisten Fällen der Typ `Result` und nicht `Maybe` verwendet, da die Bibliothek `elm/http` diesen zur Verfügung stellt.
-
-{% include callout-important.html content="
-Dieses Beispiel illustriert einen _Code Smell_.
-Die Funktion `Result.withDefault` sollte nicht auf diese Weise in einer Anwendung verwendet werden.
-" %}
-
-```elm
-type alias Model =
-    { number : Int
-    , isEven : Bool
-    }
-
-
-type Msg
-    = CheckNumber
-    | ReceivedResponse (Result Http.Error Bool)
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        CheckNumber ->
-            ( model
-            , isEvenCmd model.number )
-
-        ReceivedResponse result ->
-            ( { model | isEven = Result.withDefault False result }
-            , Cmd.none )
-```
-
-In diesem Beispiel wird die Information, dass Daten fehlen ebenfalls verworfen, bevor sie im Modell gespeichert werden.
-Daher kann diese Information bei einer solchen Implementierung nicht angezeigt werden.
-
-
-### Nicht-erfüllte Invarianten
-
-In einer Anwendung gibt es häufig Invarianten, bei deren Nicht-Erfüllung die Anwendung nicht sinnvoll fortgeführt werden kann.
-Dies kann zum Beispiel passieren, wenn in einer Liste ein Element mit einer bestimmten Eigenschaft gesucht, aber nicht gefunden wird.
-Wenn eine solche Invariante nicht erfüllt ist, bedeutet das in den allermeisten Fällen, dass ein Bug in der Anwendung vorliegt.
-Auch in diesem Fall sollte die Information, dass es einen internen Fehler gibt, an die Nutzerschnittstelle propagiert werden.
-In einer produktiven Anwendung sollte die Information außerdem an einen Logging-Server weitergegeben werden, damit das Problem untersucht werden kann.
-
-Der folgende Ausschnitt aus einer Elm-Anwendung illustriert noch einmal das Beispiel.
-
-{% include callout-important.html content="
-Dieses Beispiel illustriert einen _Code Smell_.
-Die Funktion `Maybe.withDefault` sollte nicht auf diese Weise in einer Anwendung verwendet werden.
-" %}
-
-```elm
-type alias User =
-    { id : Int
-    , name : String
-    }
-
-
-findNameById : Int -> List User -> String
-findNameById targetId users =
-    Maybe.withDefault "" (List.head (List.filter (\user -> user.id == targetId) users))
-```
-
-Hier wird die Information, dass der `User` nicht gefunden wurde, "weit unten" in der Anwendung verworfen.
-Daher kann diese Information nie an die Nutzerschnittstelle gelangen.
-
-Alle drei Beispiele haben gemeinsam, dass der `Nothing`-Fall verworfen wird, bevor er im Modell gespeichert wird.
-In allen drei Fällen sollte diese Information aber zur `view`-Funktion gelangen.
-Zur `view`-Funktion kann die Information aber nur gelangen, wenn sie in irgendeiner Form im Modell gespeichert wird.
-Wir müssen die Information nicht notwendigerweise durch einen `Maybe`-Typ im Modell kodieren.
-Zum Beispiel könnte das Modell einen eigenen Konstruktor haben, der kodiert, dass ein Fehler aufgetreten ist.
-In allen drei Beispielen wird der `Nothing`-Fall aber auf einen ansonsten validen Wert abgebildet, nämlich auf `0.0`, `False` und `""`.
-In diesen Fällen können wir also später auf jeden Fall nicht mehr unterscheiden, ob Werte wie `""` durch `Just ""` oder durch `Nothing` entstanden sind.
-Das heißt, wir verwerfen in diesen Fällen Information.
-Dies sollte nie geschehen.
-Stattdessen sollte diese Information bis zur Nutzerschnittstelle, also bis zur `view`-Funktion erhalten bleiben.
-
-<!-- ### Modellierung eines _Default_-Falles
-
-Es gibt einen Fall, in dem es sinnvoll ist, einen `Maybe`-Wert durch eine Funktion wie `Maybe.withDefault` zu behandeln.
-Diese ist der Fall, wenn der `Maybe`-Wert tatsächlich genutzt wird, um einen _Default_-Fall zu modellieren.
-Zum Beispiel wäre es möglich, dass Nutzer\*innen auch die Option haben, keinen Wert auszuwählen.
-Dies kann zum Beispiel bei _Dropdown_-Auswahlen der Fall sein.
-In diesem Fall würde der Wert `Nothing` tatsächlich ausdrücken, dass ein _Default_-Wert verwendet werden soll und somit ist es natürlich auch sinnvoll, den `Nothing`-Fall mithilfe einer Funktion wie `Maybe.withDefault` zu behandeln.
-
-```elm
-type alias Model =
-    { selectedOption : Maybe String }
-
-
-type Msg
-    = SelectOption String
-
-
-init : Model
-init =
-    { selectedOption = Nothing }
-
-
-update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        SelectOption newOption ->
-            { model | selectedOption = Just newOption }
-
-
-view : Model -> Html Msg
-view model =
-    div []
-        [ select [ onInput SelectOption ] (options model.selectedOption)
-        , text ("Ausgewählte Option: " ++ Maybe.withDefault "keine" model.selectedOption)
-        ]
-``` -->
 
 [^1]: [Wikipedia-Artikel zum Thema _Code Smell_](https://de.wikipedia.org/wiki/Code-Smell)
 

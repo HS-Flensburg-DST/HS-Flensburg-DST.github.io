@@ -5,6 +5,12 @@ author:
   email: jan.christiansen@hs-flensburg.de
 description: >
   Hochschule Flensburg / Fachbereich 3 Information und Kommunikation / Angewandte Informatik
+exclude:
+  - ignore/*.md
+
+default_lang: de
+languages: ["de", "en"]
+permalink:
 
 markdown: kramdown
 remote_theme: jekyll/minima
