@@ -243,7 +243,7 @@ zur Verfügung mit dessen Hilfe wir die Reihenfolge der Verarbeitungsschritte um
 Wir können die Funktion mithilfe dieses Operators wie folgt definieren.
 
 ``` elm
-sumOfAdultAges : List Int -> Int
+sumOfAdultAges : List User -> Int
 sumOfAdultAges users =
     users
         |> List.map .age
