@@ -526,7 +526,7 @@ Das heißt, all diese Konstrukte können als _Scrutinee_ verwendet werden.
 Bisher haben wir nur Funktionen kennengelernt, die ein einzelnes Argument erhalten.
 Um eine mehrstellige Funktion zu definieren, werden die Parameter der Funktion einfach durch Leerzeichen getrennt aufgelistet.
 Wir können zum Beispiel wie folgt eine Verallgemeinerung der Funktion `items` definieren.
-Die Funktion `pluralize` nimmt die Singular- und die Pluralform eines Wortes und eine Anzahl und verwendet je nach Anzahl die Singular- oder Pluralform.
+Die Funktion `pluralize` nimmt die Singular- und die Pluralform eines Wortes und eine Anzahl und verwendet je nach Anzahl die Singular- oder Pluralform[^1].
 
 ``` elm
 pluralize : String -> String -> Int -> String
@@ -785,7 +785,7 @@ Im Unterschied zu Haskell, ist im offiziellen [Elm Style Guide](https://elm-lang
 
 Das heißt, Elm versucht explizit längere Variablennamen zu fördern.
 Tatsächlich werden in Elm-Code bei GitHub für Variablen wesentlich seltener Einbuchstabenvariablen wie `a`, `p` oder `x` verwendet als in anderen statisch-getypten funktionalen Programmiersprachen.
-Auch die durchschnittliche Länge von Variablenbezeichnern ist in Elm wesentlich länger als in anderen statisch-getypten funktionalen Programmiersprachen.[^1]
+Auch die durchschnittliche Länge von Variablenbezeichnern ist in Elm wesentlich länger als in anderen statisch-getypten funktionalen Programmiersprachen.[^2]
 
 Unabhängig davon sollte man bei der Benennung die Größe des Gültigkeitsbereichs (_Scope_) einer Variable beachten.
 Das heißt, bei einer Variable, die einen sehr kleinen _Scope_ hat, kann ein Name wie `x` angemessen sein, während er es bei einer Variable mit größerem _Scope_ auf jeden Fall nicht ist.
@@ -843,7 +843,10 @@ Das heißt, wir versuchen bei der Benennung einen Namen zu wählen, der im Konte
 
 [^1]: [Concise and consistent naming](https://wwwbroy.in.tum.de/publ/papers/deissenboeck_pizka_identifier_naming.pdf) - Software Quality Journal 14 (2006): 261-282. -->
 
-[^1]: [How developers choose names in statically-typed functional programming languages](https://hs-flensburg-pltp.github.io/files/Christiansen - How developers choose names in statically-typed fu.pdf) - Unpublished Draft
+[^1]: Die Funktion `pluralize` ist im Paket [elm-community/string-extra](https://package.elm-lang.org/packages/elm-community/string-extra/latest/String-Extra#pluralize) definiert.
+      Das Paket enthält eine Reihe von Funktionen, die bei der Arbeit mit Zeichenketten nützlich sind.
+
+[^2]: [How developers choose names in statically-typed functional programming languages](https://hs-flensburg-pltp.github.io/files/Christiansen - How developers choose names in statically-typed fu.pdf) - Unpublished Draft
 
 <div class="nav">
     <ul class="nav-row">
