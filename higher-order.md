@@ -342,6 +342,8 @@ Den Wechsel von `\user -> viewUser user` zu `viewUser` bezeichnet man als Eta-Re
 Den Wechsel von `viewUser` zu `\user -> viewUser user` bezeichnet man als Eta-Expansion.
 Ganz allgemein kann man durch die Anwendung der Eta-Reduktion einen Ausdruck der Form `\x -> f x` in `f` umwandeln.
 Durch die Eta-Expansion kann man einen Ausdruck der Form `f` in `\x -> f x` umwandeln, wenn `f` eine Funktion ist, die mindestens ein Argument nimmt.
+Dabei muss `f` nicht unbedingt der Name einer Funktion sein.
+Bei `f` muss es sich lediglich um einen Ausdruck handeln, der einen funktionalen Typ hat.
 
 Das Konzept der Eta-Reduktion und -Expansion lässt sich aber nicht nur auf Lambda-Funktionen sondern ganz allgemein auf die Definition von Funktionen anwenden.
 Als Beispiel betrachten wir noch einmal die folgende Definition aus dem  Abschnitt [Wiederkehrende rekursive Muster](functional-abstractions.md#wiederkehrende-rekursive-muster).
@@ -369,6 +371,14 @@ viewUsers =
 ```
 
 Das heißt, wenn wir eine Funktion definieren und diese Funktion ruft nur eine andere Funktion mit dem Argument auf, dann können wir dieses Argument durch die Anwendung von Eta-Reduktion auch weglassen.
+
+{% include callout-important.html content="
+In einer Programmiersprache wie Elm werden Funktionen nicht syntaktisch identifiziert, sondern anhand ihres Typs.
+" %}
+
+So hat die Funktion `viewUsers` zum Beispiel kein Argument.
+Trotzdem handelt es sich um eine Funktion, da der Typ der Konstante `viewUsers` der Typ der partiellen Anwendung `List.map viewUser` ist.
+Der Ausdruck `List.map viewUser` wiederum hat einen funktionalen Typ, da die Funktion `List.map` zwei Argumente erwartet und wir nur ein Argument übergeben.
 
 Anders ausgedrückt stellen die beiden Varianten von `viewUsers` einfach unterschiedliche Sichtweisen auf die Definition einer Funktion dar.
 In der Variante mit dem expliziten Argument `users` wird eine Funktion definiert, indem beschrieben wird, was die Funktion mit ihrem Argument macht.
