@@ -99,12 +99,23 @@ custom_css: toc
 
 ### 10. [Abonnements](subscriptions.md)
 
-<!--
 ### 11. [JSON-Daten](json.md)
 
 - 11.1. [Decoder](json.md#decoder)
 
-- 11.2. [Encode](json.md#encode) -->
+- 11.2. [Encode](json.md#encode)
+
+<!--
+
+### 12. [Kommandos](commands.md)
+
+- 12.1. [Zufall](commands.md#zufall)
+
+- 12.2. [HTTP-Anfragen](commands.md#http-anfragen)
+
+    - 12.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
+
+    - 12.2.2. [Weitere Aspekte](commands.md#weitere-aspekte) -->
 
 <!-- ### 10. [Strukturierung einer Anwendung](structure.md)
 
@@ -118,19 +129,8 @@ custom_css: toc
 
 - 10.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
  -->
-<!--
 
-### 13. [Kommandos](commands.md)
-
-- 13.1. [Zufall](commands.md#zufall)
-
-- 13.2. [HTTP-Anfragen](commands.md#http-anfragen)
-
-    - 13.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
-
-    - 13.2.2. [Weitere Aspekte](commands.md#weitere-aspekte)
-
-### 14. [Faltungen](folds.md)
+<!-- ### 14. [Faltungen](folds.md)
 
 - 14.1. [Rechtsfaltung für Listen](folds.md#rechtsfaltung-für-listen)
 
