@@ -105,17 +105,9 @@ custom_css: toc
 
 - 11.2. [Encode](json.md#encode)
 
-<!--
-
 ### 12. [Kommandos](commands.md)
 
-- 12.1. [Zufall](commands.md#zufall)
-
-- 12.2. [HTTP-Anfragen](commands.md#http-anfragen)
-
-    - 12.2.1. [Grundlegendes Beispiel](commands.md#grundlegendes-beispiel)
-
-    - 12.2.2. [Weitere Aspekte](commands.md#weitere-aspekte) -->
+- 12.1. [HTTP-Anfragen](commands.md#http-anfragen)
 
 <!-- ### 10. [Strukturierung einer Anwendung](structure.md)
 
