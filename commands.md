@@ -114,7 +114,7 @@ Die Anwendung wird später für den aktuellen Wert des Zählers die API anfragen
 ``` elm
 type Msg
     = Number Change
-    | ReceivedResponse (Result Http.Error IsEven)
+    | ReceivedResponse (Result Http.Error ParityInfo)
 
 
 type Change
@@ -209,7 +209,7 @@ Wir nutzen zur Modellierung des internen Zustands unserer Anwendung den folgende
 ``` elm
 type alias Model =
     { number : Int
-    , responseData : ResponseData IsEvenInfo
+    , responseData : ResponseData ParityInfo
     }
 ```
 
@@ -353,7 +353,7 @@ get { number, onResponse } =
     Http.request
         { method = "GET"
         , headers = []
-        , url = Url.Builder.crossOrigin Api.Config.baseURL [ "api", "iseven", String.fromInt number ] []
+        , url = Url.Builder.crossOrigin Api.Config.baseURL [ "iseven", String.fromInt number ] []
         , body = Http.emptyBody
         , expect = Http.expectJson onResponse decoder
         , timeout = Just 5000
@@ -392,7 +392,7 @@ Um die Anfrage zu wiederholen, müssen wir noch den entsprechenden Fall zum Date
 ``` elm
 type Msg
     = Number Change
-    | ReceivedResponse (Result Http.Error IsEven)
+    | ReceivedResponse (Result Http.Error ParityInfo)
     | RetryRequest
 
 
