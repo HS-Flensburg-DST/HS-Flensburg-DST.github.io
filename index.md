@@ -109,18 +109,27 @@ custom_css: toc
 
 - 12.1. [HTTP-Anfragen](commands.md#http-anfragen)
 
-<!-- ### 10. [Strukturierung einer Anwendung](structure.md)
+- 12.2. [Zufall](commands.md#zufall)
 
-- 10.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
+### 13. [Strukturierung einer Anwendung](structure.md)
 
-- 10.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
+- 13.1. [Funktionen strukturieren](structure.md#funktionen-strukturieren)
 
-- 10.3. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
+- 13.2. [Nachrichten strukturieren](structure.md#nachrichten-strukturieren)
 
-- 10.4. [Modell strukturieren](structure.md#modell-strukturieren)
+- 13.3. [Modell strukturieren](structure.md#modell-strukturieren)
 
-- 10.5. [Fehlerbehandlung](structure.md#fehlerbehandlung)
- -->
+- 13.4. [Mögliche Effekte einschränken](structure.md#mögliche-effekte-einschränken)
+
+### 14. [Umgang mit Fehlern](error-handling.md)
+
+- 14.1. [Fehlerzustände in der MVU-Architektur](error-handling.md#fehlerzustände-in-der-mvu-architektur)
+
+- 14.2. [Fehlerhafte Nutzereingabe](error-handling.md#fehlerhafte-nutzereingabe)
+
+- 14.3. [Fehlgeschlagene Anfrage](error-handling.md#fehlgeschlagene-anfrage)
+
+- 14.4. [Nicht-erfüllte Invarianten](error-handling.md#nicht-erfüllte-invarianten)
 
 <!-- ### 14. [Faltungen](folds.md)
 
@@ -137,24 +146,17 @@ custom_css: toc
 - 15.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
 - 15.3. [Monaden](abstractions.md#monaden)
+-->
 
-### 16. [Weitere Aspekte einer Elm-Anwendung](other-elm-topics.md)
+### 15. [Weitere Aspekte einer Elm-Anwendung](other-elm-topics.md)
 
-- 16.1. [Spezielle Typvariablen](other-elm-topics.md#spezielle-typvariablen)
+- 15.1. [Spezielle Typvariablen](other-elm-topics.md#spezielle-typvariablen)
 
-- 16.2. [Interop mit JavaScript](other-elm-topics.md#interop-mit-javascript)
+- 15.2. [Interop mit JavaScript](other-elm-topics.md#interop-mit-javascript)
 
-- 16.3. [Routing](other-elm-topics.md#routing)
+- 15.3. [Routing](other-elm-topics.md#routing)
 
-- 16.4. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung) -->
-
-<!-- ### 17. [Weitere Aspekte einer Web-Anwendung](other-topics.md)
-
-- 17.1. [Lokalisierte Zeit](other-topics.md#lokalisierte-zeit) -->
-
-<!-- ### 17. [Supabase](supabase.md)
-
-- 17.1. [Authentifizierung](supabase.md#authentifizierung) -->
+- 15.4. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung)
 
 ### A. [Versionskontrolle](version-control.md)
 

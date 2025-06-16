@@ -15,7 +15,7 @@ Wenn die Anwendung komplexer wird, verhindert ein solcher flacher Record aber h�
 Viele der Beispiele in diesem Kapitel sind durch den Vortrag [Scaling Elm Apps](https://www.youtube.com/watch?v=DoA4Txr4GUs) von Richard Feldman inspiriert.
 
 Eine weitere motivierende Kraft für die Strukturierung einer Anwendung ist das **_Domain-driven Design_ (DDD)**.
-Beim _Domain-driven Design_ teilen die Domänenexperten, also in den meisten Fällen die Auftraggeber einer Anwendung, und die Entwickler\*innen ein gemeines mentales Modell.
+Beim _Domain-driven Design_ teilen die Domänenexperten, also in den meisten Fällen die Auftraggeber einer Anwendung, und die Entwickler\*innen ein gemeinsames mentales Modell.
 Ein gemeinsames mentales Modell ist sehr wichtig, um die Anforderungen einer Anwendung optimal umzusetzen.
 Beim _Domain-driven Design_ soll zusätzlich der Quelltext der Anwendung dieses Modell ebenfalls widerspiegeln.
 Wenn der Quelltext das mentale Modell möglichst gut widerspiegelt, kann das mentale Modell auf diese Weise an andere Entwickler\*innen weitergegeben werden.
@@ -74,7 +74,7 @@ viewFooter model =
 ```
 
 Das heißt, wir nutzen logische Bestandteile der HTML-Seite, um Hilfsfunktionen zum Rendern dieser Teile zu identifizieren.
-Durch das Definieren von Hilfsfunktionen, haben wir nun statt einer großen Funktion, drei kleinere Funktionen.
+Durch das Definieren von Hilfsfunktionen haben wir nun statt einer großen Funktion, drei kleinere Funktionen.
 Außerdem haben wir die Darstellung der HTML-Struktur in Teile zerlegt, die wir einzeln verstehen und verändern können.
 
 {% include callout-important.html content="
@@ -150,14 +150,15 @@ type Name
 
 
 type Msg
-    = HandleKey Key
-    | ChangeName Name
+    = Pressed Key
+    | Change Name
 ```
 
 Die neue Struktur erlaubt es viel besser zu erkennen, dass die Anwendung zwei Arten von Interaktionen ermöglicht.
 Außerdem bilden diese neuen Datentypen die Domäne der Anwendung viel besser ab.
 In unserer ursprünglichen Modellierung gab es nur Nachrichten.
 Das Konzept einer Nachricht ist aber kein Domänen-Konzept, sondern ein Konzept der _Model_-_View_-_Update_-Architektur.
+In der neuen Modellierung gibt es die Konzepte `Taste` und `Name`, bei denen es sich um Begriffe der Domäne handelt.
 
 Durch die bessere Struktur im Datentyp `Msg` können wir nun die `update`-Funktion durch Hilfsfunktionen strukturieren.
 
@@ -165,10 +166,10 @@ Durch die bessere Struktur im Datentyp `Msg` können wir nun die `update`-Funkti
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        HandleKey key ->
+        Pressed key ->
             moveCharacter key model
 
-        ChangeName name ->
+        Change name ->
             changeUserName name model
 
 
@@ -187,110 +188,6 @@ Das heißt, durch eine Funktion wie `update` lernen wir im Grunde nichts über d
 Eine Funktion wie `changeUserName` hat aber eine viel spezifischere Semantik.
 Auch hier arbeiten wir wieder auf der Ebene der Domäne.
 Das heißt, durch die Zerlegung der Funktion haben wir auch erreicht, dass Leser\*innen des Codes direkt sehen, dass in der Anwendung ein Name geändert werden kann.
-
-
-## Mögliche Effekte einschränken
-
-Im Kapitel [Modellierung der Elm-Architektur](architecture.md) haben wir gelernt, dass die verschiedenen Komponenten der Elm-Architektur Typkonstruktoren bzw. polymorphe Datentypen nutzen, um zu kodieren, welche Arten von Nachrichten an die Anwendung geschickt werden können.
-Zum Beispiel drückt der Typ `Html Msg` aus, dass aus der entsprechenden HTML-Struktur Nachrichten vom Typ `Msg` verschickt werden können.
-Grundsätzlich können wir, wie im vorherigen Abschnitt gesehen, für jede `view`-Funktion, die wir definieren, den Ergebnistyp `Html Msg` verwenden.
-Es ist aber besser, den Typ stärker einzuschränken und damit Leser\*innen zu kommunizieren, welche Arten von Nachrichten überhaupt aus der Struktur heraus verschickt werden können.
-Wir nehmen zum Beispiel einmal an, dass _Header_ und _Board_ keine Art von Interaktion erlauben.
-In diesem Fall sollten die entsprechenden `view`-Funktionen polymorph im Typ der Nachrichten sein.
-
-```elm
-viewHeader : Model -> Html msg
-viewHeader model =
-    ...
-
-
-viewBoard : Model -> Html msg
-viewBoard model =
-    ...
-```
-
-Im _Footer_ befinden sich Eingabefelder, um den Vor- und Nachnamen zu ändern.
-Wir könnten für die Funktion `viewFooter` nun den Ergebnistyp `Html Msg` verwenden.
-Wir würden damit aber nicht ausdrücken, dass nur Nachrichten vom Typ `Name` verschickt werden können.
-Stattdessen können wir auch eine Definition der folgenden Form verwenden.
-Diese Funktion liefert eine HTML-Struktur vom Typ `Html Name`, da alle Nachrichten, die wir aus der HTML-Struktur verschicken, vom Typ `Name` sind.
-
-```elm
-viewFooter : Model -> Html Name
-viewFooter model =
-    div []
-        [ input
-            [ placeholder "Vorname"
-            , value model.textInput
-            , onInput FirstName
-            ]
-            []
-        , input
-            [ placeholder "Nachname"
-            , value model.textInput
-            , onInput LastName
-            ]
-            []
-        ]
-```
-
-Da `viewHeader` und `viewBoard` jeweils polymorph in der HTML-Struktur sind, können wir nun die folgende Funktion definieren.
-
-```elm
-view : Model -> Html Name
-view model =
-    div []
-        [ viewHeader model
-        , viewBoard model
-        , viewFooter model
-        ]
-```
-
-Die folgende Definition erzeugt nun allerdings einen Typfehler.
-Wir gehen im folgenden davon aus, dass die Konstante `keyDecoder` den Typ `Decoder Key` hat.
-Im Kapitel [Abonnements](subscriptions.md) werden wir genauer lernen, wofür der Eintrag `subscriptions` genutzt wird.
-An dieser Stelle müssen wir nur wissen, dass der Ausdruck `onKeyDown keyDecoder` den Typ `Sub Key` hat und dieser Typ kodiert, dass durch diese Komponente Nachrichten vom Typ `Key` an die Anwendung geschickt werden können.
-
-``` elm
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , subscriptions = \_ -> onKeyDown keyDecoder
-        , view = view
-        , update = update
-        }
-```
-
-Die Funktion `view` liefert Nachrichten vom Typ `Name`, während `onKeyDown keyDecoder` Nachrichten vom Typ `Key` liefert.
-Außerdem behauptet der Typ `Program () Model Msg`, dass die gesamte Anwendung Nachrichten vom Typ `Msg` liefert.
-Für Typkonstruktoren wie `Html` und `Sub` können wir `map`-Funktionen definieren.
-Im Kapitel [Funktoren](abstractions.md#funktoren) werden wir noch einmal ausführlicher diskutieren, was diese `map`-Funktionen gemeinsam haben.
-Wir können diese `map`-Funktionen nutzen, um die Nachrichten, die die verschiedenen Strukturen verschicken können, in eine gemeinsame Datenstruktur einzupacken.
-Wir erhalten zum Beispiel wie folgt eine typkorrekte Definition.
-
-``` elm
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , subscriptions = \_ -> Sub.map HandleKey (onKeyDown keyDecoder)
-        , view = \model -> Html.map ChangeName (view model)
-        , update = update
-        }
-```
-
-In dieser Definition von `main` können wir ganz explizit sehen, dass die HTML-Struktur Nachrichten der Form `ChangeName` verschickt, während wir durch ein Abonnement Nachrichten der Form `HandleKey` erhalten.
-
-Man sollte diese Technik mit Bedacht einsetzen.
-Falls man den Typ einer Funktion einschränken kann, sollte man den Typ einschränken, um Leser\*innen zu kommunizieren, welche Aktionen aus dem Code heraus ausgelöst werden können.
-
-{% include callout-important.html content="
-Man sollte die Struktur des Typs für Nachrichten aber nicht ändern, nur um die Typen der `view`-Funktionen einschränken zu können.
-" %}
-
-In diesem Fall würde man die Struktur des Datentyps an die Struktur des UI binden.
-Die Tatsache, dass der Name aus dem _Footer_ heraus geändert wird, ist aber vermutlich eine kurzlebige Eigenschaft, die sich ggf. schnell ändert.
 
 
 ## Modell strukturieren
@@ -358,12 +255,11 @@ Zur Strukturierung der Datentypen sollten wir wieder Prinzipien aus dem Ansatz _
 
 Das heißt, wir fassen Daten zusammen, die in der Domäne der Anwendung auch zusammen auftreten.
 Wenn die Punktzahl zum Beispiel nie zusammen mit dem `User` verwendet wird, ist es vermutlich sinnvoll, den `score` aus dem `User` zu entfernen.
-Im Grunde müssen wir uns fragen, ob wir unseren Datentyp einer Person erklären können, welche die Domäne kennt, aber keine Programmierkenntnisse hat.
+Im Grunde sollten wir uns fragen, ob wir unseren Datentyp einer Person erklären können, welche die Domäne kennt, aber keine Programmierkenntnisse hat.
 
 Mit der gewählten Strukturierung des Modells können wir die Typen der Funktionen `viewHeader`, `viewBoard` und `viewFooter` nun wie folgt spezialisieren.
 Die Funktionen arbeiten nun nur noch auf einem Teil des Modells.
-Wir können an den Typen der Funktionen bereits identifizieren, dass der _Header_ den `User` anzeigt und der _Footer_ den `User` mit dem _Highscore_.
-Wenn wir weder in `viewHeader` noch in `viewFooter` die jeweilige Punktzahl benötigen, ist das eventuell ein Indiz dafür, dass die Punktzahl nicht zum `User` gehört.
+Wir können an den Typen der Funktionen bereits identifizieren, dass der _Header_ und _Footer_ jeweils einen `User` anzeigen.
 
 ```elm
 view : Model -> Html Msg
@@ -390,7 +286,7 @@ viewFooter highscoreUser =
     ...
 ```
 
-Ähnlich wie bei der Funktion `view`, können wir durch die Strukturierung des Modells die `update`-Funktionen, die wir zuvor definieren haben, nun auf Teile des Modell spezialisieren.
+Ähnlich wie bei der Funktion `view`, können wir durch die Strukturierung des Modells die `update`-Funktion, die wir zuvor definiert haben, nun auf Teile des Modells spezialisieren.
 
 ```elm
 update : Msg -> Model -> Model
@@ -430,9 +326,9 @@ Die `view`-Funktionen sollten zum Beispiel häufig nicht in dem Modul definiert 
 Auf der einen Seite müssen wir den Code der `view`-Funktionen ändern, wenn der Datentyp sich ändert.
 In vielen Fällen ändern wir den Code der `view`-Funktionen aber eher, weil sich das Design unserer Anwendung ändert.
 Zum Beispiel, wenn sich die HTML-Struktur ändert.
-In diesem Fall wollen wir lieber alle Funktionen, die zur grundsätzlichen Struktur der HTML-Seite gehören zusammen haben, da diese sich häufig zusammen ändern werden.
+In diesem Fall wollen wir lieber alle Funktionen, die zur grundsätzlichen Struktur der HTML-Seite gehören, zusammen haben, da diese sich häufig zusammen ändern werden.
 
-Ein weiterer Vorteil des nicht-flachen Modells ist, dass nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
+Ein weiterer Vorteil des nicht-flachen Modells ist, dass wir nun nicht nur Hilfsfunktionen für verschiedene Nachrichten einführen können.
 Da die Hilfsfunktionen jetzt nur noch auf einem Teil des Modells arbeiten, können wir jetzt in einem Fall auch mehrere Hilfsfunktionen verwenden.
 Wenn wir mehrere Änderungen am Modell vornehmen möchten, könnte unsere Anwendung zum Beispiel wie folgt aussehen.
 
@@ -462,12 +358,114 @@ changeUserName name user =
 Im Unterschied zu Funktionen, die auf dem gesamten Modell arbeiten, sind die Funktionen `moveCharacter` und `changeUserName` offensichtlich unabhängig voneinander, da sie auf disjunkten Teilen des Modells arbeiten.
 Diese Form der Strukturierung mithilfe von Funktionen können wir nur erreichen, wenn wir den Modell-Datentyp strukturieren.
 
-[^1]: [Wikipedia-Artikel zum Thema _Code Smell_](https://de.wikipedia.org/wiki/Code-Smell)
+
+## Mögliche Effekte einschränken
+
+Im Kapitel [Modellierung der Elm-Architektur](architecture.md) haben wir gelernt, dass die verschiedenen Komponenten der Elm-Architektur Typkonstruktoren bzw. polymorphe Datentypen nutzen, um zu kodieren, welche Arten von Nachrichten an die Anwendung geschickt werden können.
+Zum Beispiel drückt der Typ `Html Msg` aus, dass aus der entsprechenden HTML-Struktur Nachrichten vom Typ `Msg` verschickt werden können.
+Grundsätzlich können wir, wie im vorherigen Abschnitt gesehen, für jede `view`-Funktion, die wir definieren, den Ergebnistyp `Html Msg` verwenden.
+Es ist aber besser, den Typ stärker einzuschränken und damit Leser\*innen zu kommunizieren, welche Arten von Nachrichten überhaupt aus der Struktur heraus verschickt werden können.
+Wir nehmen zum Beispiel einmal an, dass _Header_ und _Board_ keine Art von Interaktion erlauben.
+In diesem Fall sollten die entsprechenden `view`-Funktionen polymorph im Typ der Nachrichten sein.
+
+```elm
+viewHeader : Model -> Html msg
+viewHeader model =
+    ...
+
+
+viewBoard : Model -> Html msg
+viewBoard model =
+    ...
+```
+
+Im _Footer_ befinden sich Eingabefelder, um den Vor- und Nachnamen zu ändern.
+Wir könnten für die Funktion `viewFooter` nun den Ergebnistyp `Html Msg` verwenden.
+Wir würden damit aber nicht ausdrücken, dass nur Nachrichten vom Typ `Name` verschickt werden können.
+Stattdessen können wir auch eine Definition der folgenden Form verwenden.
+Diese Funktion liefert eine HTML-Struktur vom Typ `Html Name`, da alle Nachrichten, die wir aus der HTML-Struktur verschicken, vom Typ `Name` sind.
+
+```elm
+viewFooter : Model -> Html Name
+viewFooter model =
+    div []
+        [ input
+            [ placeholder "Vorname"
+            , value model.textInput
+            , onInput FirstName
+            ]
+            []
+        , input
+            [ placeholder "Nachname"
+            , value model.textInput
+            , onInput LastName
+            ]
+            []
+        ]
+```
+
+Da `viewHeader` und `viewBoard` jeweils polymorph in der HTML-Struktur sind, können wir nun die folgende Funktion definieren.
+
+```elm
+view : Model -> Html Name
+view model =
+    div []
+        [ viewHeader model
+        , viewBoard model
+        , viewFooter model
+        ]
+```
+
+Die folgende Definition erzeugt nun allerdings einen Typfehler.
+Wir gehen im folgenden davon aus, dass die Konstante `keyDecoder` den Typ `Decoder Key` hat.
+<!-- Im Kapitel [Abonnements](subscriptions.md) werden wir genauer lernen, wofür der Eintrag `subscriptions` genutzt wird.
+An dieser Stelle müssen wir nur wissen, dass der Ausdruck `onKeyDown keyDecoder` den Typ `Sub Key` hat und dieser Typ kodiert, dass durch diese Komponente Nachrichten vom Typ `Key` an die Anwendung geschickt werden können. -->
+
+``` elm
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , subscriptions = \_ -> onKeyDown keyDecoder
+        , view = view
+        , update = update
+        }
+```
+
+Die Funktion `view` liefert Nachrichten vom Typ `Name`, während `onKeyDown keyDecoder` Nachrichten vom Typ `Key` liefert.
+Außerdem behauptet der Typ `Program () Model Msg`, dass die gesamte Anwendung Nachrichten vom Typ `Msg` liefert.
+Für Typkonstruktoren wie `Html` und `Sub` können wir `map`-Funktionen definieren.
+<!-- Im Kapitel [Funktoren](abstractions.md#funktoren) werden wir noch einmal ausführlicher diskutieren, was diese `map`-Funktionen gemeinsam haben. -->
+Wir können diese `map`-Funktionen nutzen, um die Nachrichten, die die verschiedenen Strukturen verschicken können, in eine gemeinsame Datenstruktur einzupacken.
+Wir erhalten zum Beispiel wie folgt eine typkorrekte Definition.
+
+``` elm
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , subscriptions = \_ -> Sub.map HandleKey (onKeyDown keyDecoder)
+        , view = \model -> Html.map ChangeName (view model)
+        , update = update
+        }
+```
+
+In dieser Definition von `main` können wir ganz explizit sehen, dass die HTML-Struktur Nachrichten der Form `ChangeName` verschickt, während wir durch ein Abonnement Nachrichten der Form `HandleKey` erhalten.
+
+Man sollte diese Technik mit Bedacht einsetzen.
+Falls man den Typ einer Funktion einschränken kann, sollte man den Typ einschränken, um Leser\*innen zu kommunizieren, welche Aktionen aus dem Code heraus ausgelöst werden können.
+
+{% include callout-important.html content="
+Man sollte die Struktur des Typs für Nachrichten aber nicht ändern, nur um die Typen der `view`-Funktionen einschränken zu können.
+" %}
+
+In diesem Fall würde man die Struktur des Datentyps an die Struktur des UI binden.
+Die Tatsache, dass der Name aus dem _Footer_ heraus geändert wird, ist aber vermutlich eine kurzlebige Eigenschaft, die sich ggf. schnell ändert.
 
 <div class="nav">
     <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="design.html">zurück</a></li>
+        <li class="nav-item nav-left"><a href="commands.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="higher-order.html">weiter</a></li>
+        <li class="nav-item nav-right"><a href="error-handling.html">weiter</a></li>
     </ul>
 </div>

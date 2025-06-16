@@ -3,8 +3,6 @@ layout: post
 title: "Design von Datentypen"
 ---
 
-{% include embed-audio.html src="/assets/podcasts/Design of Data Types.mp3" %}
-
 In diesem Kapitel wollen wir uns mit zwei _Best Practices_ beim Entwurf von Datentypen beschäftigen.
 Diese _Best Practices_ lassen sich nicht nur auf Elm anwenden, sondern sind auf andere Programmiersprachen übertragbar.
 
@@ -212,6 +210,85 @@ Dort wird illustriert, dass die ursprüngliche Modellierung des Datentyps zu ein
 
 Es gibt noch eine Vielzahl von anderen Beispielen für das Konzept _Making Impossible States Impossible_ etwa die [Modellierung von zwei Dropdows zur Wahl einer Stadt in einem Land](https://medium.com/elm-shorts/how-to-make-impossible-states-impossible-c12a07e907b5) oder die [Modellierung von Kontaktbucheinträgen](https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/).
 Unter diesen Slogan oder dem Slogan _Make Illegal States Unrepresentable_ lassen sich auch Beispiele in anderen Programmiersprachen finden.
+
+Wir wollen die Strukturierung mithilfe eines algebraischen Datentyps noch an einem weiteren Beispiel aus dem Buch [Domain Modeling Made Functional](https://pragprog.com/titles/swdddf/domain-modeling-made-functional/) illustrieren.
+Wir nehmen an, dass wir eine Art Web-Shop implementieren wollen.
+Im Rahmen der Anwendung muss ein digitaler Einkaufswagen modelliert werden.
+Dieser Einkaufswagen besitzt drei Zustände.
+Der Einkaufswagen kann leer, aktiv und bezahlt sein.
+Im Zustand aktiv ist der Einkaufswagen nicht leer, ist aber auch noch noch bezahlt.
+Wir modellieren den Zustand eines leeren Einkaufswagens durch einen zusätzlichen Konstruktor `EmptyCart` und nicht durch eine leere Liste, damit Entwickler\*innen gezwungen werden, diesen Fall explizit zu behandeln.
+
+```elm
+type Model
+    = EmptyCart
+    | ActiveCart ActiveShoppingCart
+    | PaidCart PaidShoppingCart
+```
+
+Um _impossible states_ zu vermeiden, müssen wir jetzt dafür sorgen, dass der `ActiveShoppingCart` und der `PaidShoppingCart` keine leere Liste von Gegenständen enthalten können.
+Um dies zu erreichen erhalten beide Strukturen neben der `List Item` noch ein zusätzliches `Item`.
+Auf diese Weise ist immer mindestens ein Gegenstand vorhanden.
+
+```elm
+type alias ActiveShoppingCart =
+    { item : Item
+    , items : List Item
+    }
+
+
+type alias PaidShoppingCart =
+    { item : Item
+    , items : List Item
+    , payment : Float
+    }
+```
+
+Für unser Modell wollen wir nun die folgende Logik umsetzen.
+Wir können Gegenstände zu unserem Einkaufswagen hinzufügen und den Einkaufswagen bezahlen.
+Diese Funktionsweise wird durch die folgende `update`-Funktion modelliert.
+
+```elm
+type Msg
+    = AddItem Item
+    | Pay Float
+
+
+update : Model -> Msg -> Model
+update model msg =
+    case msg of
+        AddItem newItem ->
+            case model of
+                EmptyCart ->
+                    ActiveCart { item = newItem, items = [] }
+
+                ActiveCart { item, items } ->
+                    ActiveCart { item = newItem, items = item :: items }
+
+                PaidCart _ ->
+                    model
+
+        PayCart payment ->
+            case model of
+                EmptyCart ->
+                    model
+
+                ActiveCart { item, items } ->
+                    PaidCart { item = item, items = items, payment = payment }
+
+                PaidCart _ ->
+                    model
+```
+
+In diesem Beispiel ignorieren wir Kombinationen aus Nachrichten und Modellzuständen, die nicht auftreten sollten.
+Zum Beispiel sollte es nicht möglich sein, den Einkaufswagen zu bezahlen, wenn er noch leer ist.
+
+{% include callout-important.html content="
+In einer realen Anwendung sollten wir diese Zustände an einen Logging-Server melden.
+" %}
+
+Eine entsprechende Implementierung können wir aber erst umsetzen, wenn wir im Abschnitt [HTTP-Anfragen](commands.md#http-anfragen) gelernt haben, wie man HTTP-Anfragen in Elm durchführt.
+Wenn wir so weit sind, können wir in den Fällen, in denen wir aktuell `model` als Ergebnis zurückliefern, eine Nachricht an den Logging-Server senden, der es uns erlaubt, den Fehler in unserer Anwendung zu beheben.
 
 
 <div class="nav">

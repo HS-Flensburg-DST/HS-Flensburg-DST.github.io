@@ -431,11 +431,11 @@ Dieser Fall wird verwendet, um zu signalisieren, dass noch keine Anfrage durchge
 Zwei HTTP-Anfragen können dabei entweder sequentiell, also nacheinander, oder parallel ausgeführt werden.
 Zuerst betrachten wir die Möglichkeit, zwei HTTP-Anfragen parallel zu bearbeiten. -->
 
-<!-- 
 
 Zufall
 ------
 
+Als zweiten Anwendungsfall von Kommandos wollen wir die Generierung von Zufallszahlen anschauen.
 Wir wollen eine Anwendung schreiben, mit der man einen Würfel werfen kann.
 Zuerst installieren wir das Paket `elm/random`.
 Als nächstes modellieren wir die möglichen Ergebnisse eines Würfels.
@@ -617,7 +617,7 @@ Wenn man einen Infixoperator mit Klammern umschließt, kann man den eigentlich i
 
 Zum Beispiel kann man statt `1 + 2` auch `(+) 1 2` schreiben.
 Das heißt, statt `Random.map2 (\x y -> x + y) pips pips` können wir auch `Random.map2 (\x y -> (+) x y) pips pips` schreiben.
-Mittels zwei Anwendungen von Eta-Reduktion können wir diesen Ausdruck dann zu `Random.map2 (+) pips pips` vereinfachen. -->
+Mittels zwei Anwendungen von Eta-Reduktion können wir diesen Ausdruck dann zu `Random.map2 (+) pips pips` vereinfachen.
 
 [^1]: <https://github.com/public-apis/public-apis#science--math>
 
@@ -625,7 +625,6 @@ Mittels zwei Anwendungen von Eta-Reduktion können wir diesen Ausdruck dann zu `
     <ul class="nav-row">
         <li class="nav-item nav-left"><a href="json.html">zurück</a></li>
         <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <!-- <li class="nav-item nav-right"><a href="folds.html">weiter</a></li> -->
-        <li class="nav-item nav-right"></li>
+        <li class="nav-item nav-right"><a href="structure.html">weiter</a></li>
     </ul>
 </div>
