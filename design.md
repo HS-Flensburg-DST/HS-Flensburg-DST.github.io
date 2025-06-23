@@ -246,6 +246,14 @@ type alias PaidShoppingCart =
 
 Für unser Modell wollen wir nun die folgende Logik umsetzen.
 Wir können Gegenstände zu unserem Einkaufswagen hinzufügen und den Einkaufswagen bezahlen.
+Einige Kombinationen aus `Model` und `Msg` sollten dabei nicht auftreten.
+Zum Beispiel sollten wir keine Nachricht mehr erhalten, wenn wir uns im Zustand `PaidCart` befinden.
+
+{% include callout-important.html content="
+Wir sollten uns **nicht** nur darauf verlassen, dass solche Nachrichten durch deaktivierte Knöpfe oder ähnliches nicht an `update` verschickt werden.
+" %}
+
+Stattdessen sollten wir Kombinationen, die nicht auftreten dürfen auch in `update` ignorieren.
 Diese Funktionsweise wird durch die folgende `update`-Funktion modelliert.
 
 ```elm

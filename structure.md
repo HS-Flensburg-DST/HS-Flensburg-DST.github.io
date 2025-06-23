@@ -48,6 +48,10 @@ Das heißt, statt eine monolithische HTML-Struktur in der Funktion `view` zu erz
 Wir gehen in diesem Beispiel davon aus, dass wir ein Spiel implementieren, dessen visuelle Darstellung aus einem _Header_, einem _Footer_ und dem eigentlichen Spielbrett besteht.
 Es wäre zum Beispiel möglich, dass wir die Funktion wie folgt in Teile zerlegen.
 
+{% include callout-important.html content="
+Funktionen, die eine HTML-Struktur liefern, sollten den Präfix `view` und Funktionen, die eine SVG-Struktur liefern, sollten den Präfix `draw` verwenden.
+" %}
+
 ```elm
 view : Model -> Html Msg
 view model =
@@ -199,7 +203,7 @@ Wir betrachten das folgende Beispiel-Modell.
 type Model =
     { firstName : String
     , lastName : String
-    , points : Int
+    , score : Int
     , position : Point
     , enemies : List Point
     , highscoreFirstName : String
@@ -436,6 +440,16 @@ Die Funktion `view` liefert Nachrichten vom Typ `Name`, während `onKeyDown keyD
 Außerdem behauptet der Typ `Program () Model Msg`, dass die gesamte Anwendung Nachrichten vom Typ `Msg` liefert.
 Für Typkonstruktoren wie `Html` und `Sub` können wir `map`-Funktionen definieren.
 <!-- Im Kapitel [Funktoren](abstractions.md#funktoren) werden wir noch einmal ausführlicher diskutieren, was diese `map`-Funktionen gemeinsam haben. -->
+Die Module `Html` und `Platform.Sub` stellen zum Beispiel die folgenden Funktionen zur Verfügung.
+
+```elm
+map : (a -> b) -> Html a -> Html b
+```
+
+```elm
+map : (a -> b) -> Sub  a -> Sub  b
+```
+
 Wir können diese `map`-Funktionen nutzen, um die Nachrichten, die die verschiedenen Strukturen verschicken können, in eine gemeinsame Datenstruktur einzupacken.
 Wir erhalten zum Beispiel wie folgt eine typkorrekte Definition.
 
