@@ -114,7 +114,7 @@ Die Anwendung wird später für den aktuellen Wert des Zählers die API anfragen
 ``` elm
 type Msg
     = Number Change
-    | ReceivedResponse (Result Http.Error ParityInfo)
+    | ReceivedResult (Result Http.Error ParityInfo)
 
 
 type Change
@@ -209,24 +209,25 @@ Wir nutzen zur Modellierung des internen Zustands unserer Anwendung den folgende
 ``` elm
 type alias Model =
     { number : Int
-    , responseData : ResponseData ParityInfo
+    , apiData : Api.Data ParityInfo
     }
 ```
 
-Der Datentyp `ResponseData` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
+Der Datentyp `Api.Data` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
+Der Datentyp wird hier in ein Modul `Api.Data` geschrieben.
 
 ```elm
-type ResponseData value
+type Data value
     = Loading
     | Failure Http.Error
     | Success value
 ```
 
-Für den Datentyp `ResponseData` nutzen wir außerdem die folgende Funktion.
+Für den Datentyp `Data` nutzen wir außerdem die folgende Funktion.
 
 ``` elm
-fromResult : Result Http.Error a -> ResponseData a
-fromResult result =
+dataFromResult : Result Http.Error a -> Data a
+dataFromResult result =
     case result of
         Err error ->
             Failure error
@@ -237,7 +238,7 @@ fromResult result =
 
 Nun haben wir alle Komponenten zusammen, um die Funktion `update` für unsere Anwendung zu definieren.
 Im Fall `Number` führen wir eine Anfrage an die API durch.
-Im Fall `ReceivedResponse` aktualisieren wir unser Modell mit den Daten der API.
+Im Fall `ReceivedResult` aktualisieren wir unser Modell mit den Daten der API.
 
 ``` elm
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -246,11 +247,11 @@ update msg model =
         Number change ->
             let newNumber = updateNumber change model.number
             in
-            ( { model | number = newNumber, responseData = Loading }
-            , Api.ParityInfo.get { number = newNumber, onResponse = ReceivedResponse } )
+            ( { model | number = newNumber, apiData = Api.Loading }
+            , Api.ParityInfo.get { number = newNumber, onResponse = ReceivedResult } )
 
-        ReceivedResponse result ->
-            ( { model | responseData = ResponseData.fromResult result }
+        ReceivedResult result ->
+            ( { model | apiData = Api.dataFromResult result }
             , Cmd.none )
 
 
@@ -269,42 +270,42 @@ Außerdem stellen wir Knöpfe für die verschiedenen Aktionen zur Verfügung.
 
 ``` elm
 view : Model -> Html Msg
-view { number, responseData } =
+view { number, apiData } =
     div []
         [ div []
             [ button [ onClick (Number Decrease) ] [ text "-" ]
             , text (String.fromInt number)
             , button [ onClick (Number Increase) ] [ text "+" ]
             ]
-        , viewResponseData responseData
+        , viewApiData apiData
         ]
 
 
-viewResponseData : ResponseData ParityInfo -> Html msg
-viewResponseData responseData =
-    case responseData of
-        Loading ->
+viewApiData : Api.Data ParityInfo -> Html msg
+viewApiData apiData =
+    case apiData of
+        Api.Loading ->
             text "Lade Daten ..."
 
-        Success info ->
+        Api.Success info ->
             viewParityInfo info
 
-        Failure error ->
+        Api.Failure error ->
             text ("Der folgende Fehler ist aufgetreten:\n" ++ Debug.toString error)
 
 
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \() -> ( { number = 0, responseData = Loading }
-                       , Api.ParityInfo.get { number = 0, onResponse = ReceivedResponse } )
+        { init = \() -> ( { number = 0, apiData = Api.Loading }
+                       , Api.ParityInfo.get { number = 0, onResponse = ReceivedResult } )
         , subscriptions = \_ -> Sub.none
         , view = view
         , update = update
         }
 ```
 
-Die Funktion `viewResponseData` nutzt zur Vereinfachung die Funktion `Debug.toString`.
+Die Funktion `viewApiData` nutzt zur Vereinfachung die Funktion `Debug.toString`.
 
 {% include callout-important.html content="
 Die Funktion `Debug.toString` kann einen beliebigen Elm-Wert in einen `String` umwandeln und ist eigentlich nur zum Debugging einer Anwendung gedacht.
@@ -367,22 +368,22 @@ Daher stellen wir Nutzer\*innen die Möglichkeit zur Verfügung, die Anfrage zu 
 Da der Datentyp `Error`, den wir von einer fehlschlagenden Anfrage zurückerhalten, einfach ein algebraischer Datentyp ist, können wir den Fall, dass ein _Timeout_ aufgetreten ist, wie folgt gesondert behandeln.
 
 ```elm
-viewResponseData : ResponseData ParityInfo -> Html msg
-viewResponseData responseData =
-    case responseData of
-        Loading ->
+viewApiData : Api.Data ParityInfo -> Html msg
+viewApiData apiData =
+    case apiData of
+        Api.Loading ->
             text "Lade Daten ..."
 
-        Success info ->
+        Api.Success info ->
             viewParityInfo info
 
-        Failure Timeout ->
+        Api.Failure Http.Timeout ->
             div []
                 [ text "Die Anfrage benötigte zu viel Zeit, vermutlich ist die Internetverbindung schlecht."
                 , button [ onClick RetryRequest ] [ text "Noch einmal probieren" ]
                 ]
 
-        Failure error ->
+        Api.Failure error ->
             text ("Der folgende Fehler ist aufgetreten:\n" ++ Debug.toString error)
 ```
 
@@ -392,7 +393,7 @@ Um die Anfrage zu wiederholen, müssen wir noch den entsprechenden Fall zum Date
 ``` elm
 type Msg
     = Number Change
-    | ReceivedResponse (Result Http.Error ParityInfo)
+    | ReceivedResult (Result Http.Error ParityInfo)
     | RetryRequest
 
 
@@ -407,16 +408,16 @@ update msg model =
         Number change ->
             let newNumber = updateNumber change model.number
             in
-            ( { model | number = newNumber, responseData = Loading }
-            , Api.ParityInfo.get { number = newNumber, onResponse = ReceivedResponse } )
+            ( { model | number = newNumber, apiData = Api.Loading }
+            , Api.ParityInfo.get { number = newNumber, onResponse = ReceivedResult } )
 
-        ReceivedResponse result ->
-            ( { model | responseData = ResponseData.fromResult result }
+        ReceivedResult result ->
+            ( { model | apiData = Api.dataFromResult result }
             , Cmd.none )
 
         RetryRequest ->
-            ( { model | responseData = Loading }
-            , Api.ParityInfo.get { number = model.number, onResponse = ReceivedResponse } )
+            ( { model | apiData = Api.Loading }
+            , Api.ParityInfo.get { number = model.number, onResponse = ReceivedResult } )
 ```
 
 Wenn wir die Nachricht `RetryRequest` erhalten, behalten wir den aktuellen Zahlenwert bei und führen noch einmal die Anfrage mit der aktuellen Zahl durch.
