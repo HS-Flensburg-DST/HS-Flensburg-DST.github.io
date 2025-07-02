@@ -162,7 +162,7 @@ Dieses Modul stellt eine Funktion
 crossOrigin : String -> List String -> List QueryParameter -> String
 ```
 
-zur Verfügung.
+zur Verfügung.[^2]
 Mit dieser Funktion können wir eine URL bauen.
 Das erste Argument der Funktion `crossOrigin` ist die Basis-URL der Anfrage.
 Um solche Informationen zu speichern, legen wir ein Modul `Api.Config` an.
@@ -203,6 +203,11 @@ Ein solches Vorgehen wird auch als **_Dependency Injection_** bezeichnet.
 Bei einer _Dependency Injection_ wird einem Modul von außen eine Abhängigkeit zu einem anderen Modul injiziert.
 In vielen imperativen Programmiersprachen werden aufwendige _Dependency Injection Frameworks_ genutzt, um eine Abhängigkeit auf ein anderes Modul im Nachhinein in ein Modul einzusetzen.
 Ein ganz ähnliches Ergebnis lässt sich aber wie hier durch eine Funktion höherer Ordnung und Polymorphismus erreichen.
+
+Wir nennen die oben definierte Funktion `get`, da sie das Kommando liefert, um eine GET-Anfrage durchzuführen.
+Entsprechend würden wir eine Funktion `post` nennen, wenn sie das entsprechende Kommando für eine POST-Anfrage liefert.
+Für GET-Anfragen, die eine Liste von Daten liefern, nutzen wir einen Namen wie `getAll`.
+Falls die Anfrage nicht alle Daten liefert, sondern nur eine Teilmenge, können wir dies entsprechend in dem Suffix hinter `get` ausdrücken.
 
 Wir nutzen zur Modellierung des internen Zustands unserer Anwendung den folgenden Datentyp.
 
@@ -621,6 +626,8 @@ Das heißt, statt `Random.map2 (\x y -> x + y) pips pips` können wir auch `Rand
 Mittels zwei Anwendungen von Eta-Reduktion können wir diesen Ausdruck dann zu `Random.map2 (+) pips pips` vereinfachen.
 
 [^1]: <https://github.com/public-apis/public-apis#science--math>
+
+[^2]: Das Modul `Url.Builder` stellt auch Funktionen `string : String -> String -> QueryParameter` und `int : String -> Int -> QueryParameter` zur Verfügung, mit denen `QueryParameter` gebaut werden können.
 
 <div class="nav">
     <ul class="nav-row">
