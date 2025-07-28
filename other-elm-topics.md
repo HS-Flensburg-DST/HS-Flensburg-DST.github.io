@@ -5,8 +5,8 @@ title: "Weitere Aspekte einer Elm-Anwendung"
 
 In diesem Kapitel wollen wir uns noch ein paar abschließende Themen anschauen, die bei der Programmierung mit Elm relevant sein können.
 
-Spezielle Typvariablen
-----------------------
+
+### Spezielle Typvariablen
 
 Einige Funktionen wie zum Beispiel die Funktion `(<)` lassen sich auf verschiedene Typen anwenden.
 Wir können zum Beispiel den Aufruf `3 < 4`, aber auch `3.4 < 4.3` sowie `"Schmidt" < "Smith"` auswerten.
@@ -88,8 +88,8 @@ Eine Lösung für dieses Problem stellen zum Beispiel Typklassen dar, die in der
 In diesem Fall kann der Nutzer auch selbst Instanzen für eine Funktion hinzufügen.
 Eine Erweiterung von Elm um Typklassen oder ein vergleichbares Feature[^1] ist geplant, hat aber keine hohe Priorität.
 
-Interop mit JavaScript
-----------------------
+
+### Interop mit JavaScript
 
 Um in Elm mit JavaScript-Code zu kommunizieren, kann man _Ports_ verwenden.
 Ein _Port_ besteht dabei aus zwei Komponenten, einer Komponente, die Informationen an den JavaScript-Code schickt und einer Komponente, die informiert wird, wenn der JavaScript-Code ein Ergebnis produziert hat.
@@ -149,8 +149,23 @@ Wenn im JavaScript-Code diese Zeile aufgerufen wird, wird die Elm-Anwendung übe
 Die Seite [JavaScript Interop](https://guide.elm-lang.org/interop/) gibt noch mal eine etwas ausführlichere Einführung in die Verwendung von Ports.
 
 
-Routing
--------
+### Umsetzung eines Spiels
+
+Bei der Umsetzung eines Spiels sind einige weitere Aspekte zu berücksichtigen, von denen einige hier erwähnt werden sollen.
+Zuerst sollte man sich Gedanken darüber machen, welche Technologie zur Darstellung genutzt wird.
+Im Wesentlichen stehen SVG, Canvas und WebGL zur Verfügung.
+Diese Ansätze haben verschiedene Vor- und Nachteile, die universell, also zum Beispiel auch in JavaScript, gültig sind.
+Unter [elm games](https://github.com/rofrol/elm-games) finden sich einige in Elm implementierte Spiele.
+Dort können Sie sich zum Beispiel anschauen, welche Technologien/Bibliotheken von ähnlichen Spielen verwendet werden.
+
+Für die Implementierung der Snake-Anwendung wurde ein Timer verwendet.
+Dieser eignet sich aber nicht mehr, wenn das Spiel eine höhere Aktualisierungsrate hat.
+In diesen Fällen sollten eher `onAnimationFrame` bzw. `onAnimationFrameDelta` ([Browser.Events](https://package.elm-lang.org/packages/elm/browser/latest/Browser-Events)) genutzt werden.
+Hier wird die Aktualisierung mit dem Neuzeichnen des Browserfensters synchronisiert.
+Weitere Hintergrundinformationen findet man, wenn man nach der entsprechenden JavaScript-Funktion `requestAnimationFrame` sucht.
+
+
+### Routing
 
 Wenn man eine _Single Page Application_ mit Elm umsetzen möchte, also eine Web-Anwendung, bei der HTML-Seiten nicht direkt von einem Backend ausgeliefert werden, sondern im _Frontend_ erzeugt, kann es sinnvoll sein, _Routing_ zu verwenden.
 Das _Routing_ sorgt dafür, dass man über verschiedene URLs verschiedene Ansichten der Anwendung erreicht.
@@ -179,8 +194,7 @@ So gehört zu [Elm Land](https://elm.land) zum Beispiel auch ein Plugin für _VS
 Insgesamt nutzt [Elm Land](https://elm.land) außerdem etwas mehr das Konzept von _Konvention over Konfiguration_ als [elm-spa](https://www.elm-spa.dev).
 
 
-Umsetzung einer größeren Anwendung
-----------------------------------
+### Umsetzung einer größeren Anwendung
 
 Die Seiten [Web Apps - Modules](https://guide.elm-lang.org/webapps/modules) und [Web Apps - Structure](https://guide.elm-lang.org/webapps/structure) des _Elm Guide_ bietet noch einmal ein paar Informationen zur Strukturierung einer Elm-Anwendung.
 

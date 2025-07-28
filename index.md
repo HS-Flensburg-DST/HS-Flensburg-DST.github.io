@@ -154,9 +154,11 @@ custom_css: toc
 
 - 15.2. [Interop mit JavaScript](other-elm-topics.md#interop-mit-javascript)
 
-- 15.3. [Routing](other-elm-topics.md#routing)
+- 15.3. [Umsetzung eines Spiels](other-elm-topics.md#umsetzung-eines-spiels)
 
-- 15.4. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung)
+- 15.4. [Routing](other-elm-topics.md#routing)
+
+- 15.5. [Umsetzung einer größeren Anwendung](other-elm-topics.md#umsetzung-einer-größeren-anwendung)
 
 ### A. [Versionskontrolle](version-control.md)
 
