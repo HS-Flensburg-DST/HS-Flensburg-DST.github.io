@@ -1,146 +1,20 @@
-/* Add subtitle to the header title */
+/* Make arbitrary content float right */
 
-.site-title {
-    line-height: 1.15;
-    letter-spacing: 0;
+.float-right {
+    float: right;
+    padding: 10px 0 10px 10px;
 }
 
-.site-subtitle {
-    display: block;
-    font-size: 16px;
-}
+/* Make arbitrary content small */
 
-header .wrapper {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-/* Fixed position side bar */
-
-.sidebar {
-    position: fixed;
-    top: 100px;
-    right: 0;
-    width: 20%;
-}
-
-.sidebar-content {
+.small {
     width: 200px;
-}
-
-@media screen and (max-width: 1260px) {
-
-    .sidebar {
-        position: static;
-        float: left;
-        width: 100%;
-    }
-
-    .sidebar-content {
-        width: 100%;
-    }
-}
-
-.sidebar h1 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.logo {
-    float: left;
-    width: 200px;
-}
-
-.logo .support {
-    font-size: 12px;
-}
-
-.author-card {
-    float: left;
-    width: 200px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
-    margin-bottom: 50px;
-}
-
-.author-card-text {
-    padding: 10px;
-}
-
-.author-card p.author {
-    font-size: 10px;
-    color: rgb(130, 130, 130);
-    margin-bottom: 0;
-}
-
-.author-card p.title {
-    font-size: 10px;
-    margin-bottom: 0;
-}
-
-@media screen and (max-width: 1260px) {
-
-    .author-card {
-        margin-right: 50px;
-    }
-}
-
-.offer {
-    float: left;
-    width: 200px;
-    margin-bottom: 35px;
-}
-
-@media screen and (max-width: 1260px) {
-
-    .offer {
-        width: 490px;
-    }
 }
 
 /* Make figure captions centered */
 
 figcaption {
     text-align: center;
-}
-
-/* Style navigation at the bottom */
-
-.nav {
-    display: table;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.nav-row {
-    display: table-row;
-    list-style: none;
-}
-
-.nav-item {
-    display: table-cell;
-    width: 33%;
-}
-
-.nav-left {
-    text-align: left;
-}
-
-.nav-center {
-    text-align: center;
-}
-
-.nav-right {
-    text-align: right;
-}
-
-.small {
-    width: 200px;
-}
-
-.float-right {
-    float: right;
-    padding: 10px 0 10px 10px;
 }
 
 /* Make images centered */
@@ -151,28 +25,38 @@ img.centered {
     margin-right: auto;
 }
 
-.callout {
-    padding-left: 15px;
-    margin: 20px 0;
-    border: 0px solid;
-    border-left-width: 5px;
+/* Style navigation at the bottom */
+
+.bottom-nav {
+    display: table;
+    width: 100%;
+    margin-bottom: 15px;
 }
 
-.callout-title {
-    font-weight: bold;
-    float: left;
-    margin-right: 10px;
+.bottom-nav-row {
+    display: table-row;
+    list-style: none;
 }
 
-.important {
-    border-left-color: #e30613;
+.bottom-nav-item {
+    display: table-cell;
+    width: 33%;
 }
 
-.info {
-    border-left-color: #aaddf9;
+.bottom-nav-left {
+    text-align: left;
+}
+
+.bottom-nav-center {
+    text-align: center;
+}
+
+.bottom-nav-right {
+    text-align: right;
 }
 
 /* Colors */
+
 a {
     color: #6b3e91;
 }
@@ -181,19 +65,30 @@ a:visited {
     color: #2c2f88;
 }
 
-/* Colors of code blocks */
+/* Background color of code blocks */
+
+code,
 pre {
     background-color: color-mix(in srgb, #aaddf9 20%, white);
+}
+
+/* Borders of code blocks */
+
+div.highlight,
+figure.highlight {
     border: 1px solid color-mix(in srgb, #aaddf9 60%, white);
+    border-radius: 3px;
 }
 
-code {
+/* Background color and borders of inline code */
+
+code.highlighter-rouge {
     background-color: color-mix(in srgb, #aaddf9 20%, white);
+    border: 1px solid color-mix(in srgb, #aaddf9 60%, white);
+    border-radius: 3px;
 }
 
-.highlighter-rouge .highlight {
-    background-color: color-mix(in srgb, #aaddf9 20%, white);
-}
+/* Colors of syntax highlighting */
 
 .highlight .kt {
     color: #2c2f88;
@@ -229,4 +124,92 @@ code {
 
 .highlight .cm {
     color: color-mix(in srgb, #2c2f88 50%, white);
+}
+
+.highlight .lineno {
+    color: #aaddf9;
+}
+
+
+/* Highlight important content */
+
+.callout {
+    padding-left: 15px;
+    margin: 20px 0;
+    border: 0px solid;
+    border-left-width: 5px;
+}
+
+.callout-title {
+    font-weight: bold;
+    float: left;
+    margin-right: 10px;
+}
+
+.important {
+    border-left-color: #e30613;
+}
+
+.info {
+    border-left-color: #aaddf9;
+}
+
+/* Evaluation environment */
+
+.evaluation figure {
+    margin-bottom: 0;
+}
+
+.evaluation figure {
+    width: fit-content;
+}
+
+.evaluation p {
+    margin-bottom: 0;
+}
+
+.evaluation .expression {
+    margin-bottom: 20px;
+}
+
+.evaluation pre {
+    width: fit-content;
+    padding: 1px 5px;
+}
+
+.evaluation ul {
+    /* setting list-style-type to "≡" does not work in Safari */
+    list-style-type: none;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.evaluation li {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+}
+
+.evaluation .step {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+.evaluation .equivalence {
+    line-height: 25px;
+    padding-right: 10px;
+    flex: 0 0 auto;
+}
+
+.evaluation .step-code {
+    flex: 1 1 0;
+    overflow-x: auto;
+}
+
+.evaluation .explanation {
+    margin-left: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: right;
 }

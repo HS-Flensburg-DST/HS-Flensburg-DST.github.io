@@ -1,0 +1,30 @@
+<div class="evaluation">
+    <div class="expression">
+{% highlight elm %}
+{{ include.config.expression }}
+{% endhighlight %}
+    </div>
+    <ul>
+    {% for step in include.config.steps %}
+        <li>
+            <div class="step">
+                <div class="equivalence">
+                {% if step.inequality %}
+                    ≠
+                {% else %}
+                    =
+                {% endif %}
+                </div>
+                <div class="step-code">
+{% highlight elm %}
+{{ step.code }}
+{% endhighlight %}
+                </div>
+            </div>
+            {% if step.explanation %}
+            <div class="explanation">{{ step.explanation | markdownify }}</div>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
