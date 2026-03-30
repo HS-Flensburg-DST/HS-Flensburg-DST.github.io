@@ -26,7 +26,7 @@ custom_css: toc
 
 - 3.5. [_Print Debugging_](first-application.md#print-debugging)
 
-<!-- ### 4. [Die Elm-Architektur](architecture.md)
+### 4. [Die Elm-Architektur](architecture.md)
 
 - 4.1. [Grundlagen](architecture.md#grundlagen)
 
@@ -34,7 +34,7 @@ custom_css: toc
 
 - 4.3. [Unnötige Abhängigkeiten](architecture.md#unnötige-abhängigkeiten)
 
-### 5. [Design von Datentypen](design.md)
+<!-- ### 5. [Design von Datentypen](design.md)
 
 - 5.1. [_Boolean Blindness_](design.md#boolean-blindness)
 

@@ -359,12 +359,14 @@ import Html exposing (Attribute, Html, button, div, text)
 import Html.Attributes exposing (style)
 ```
 
-Das Modul `Html.Attribute` exportiert einen Typ `Attribute` und die Funktion `style`, die wir wie folgt nutzen können.
+Das Modul `Html.Attribute` exportiert eine Funktion `style`, die wir wie folgt nutzen können.
 
 ```elm
 mainContentStyle : List (Attribute msg)
 mainContentStyle =
-    [ style "background-color" "red", style "height" "90px" ]
+    [ style "background-color" "red"
+    , style "height" "90px"
+    ]
 
 
 main : Html msg
@@ -478,4 +480,4 @@ Wenn wir auf den Knopf für das Verringern des Zählers drücken, erhalten wir k
 
 [^1]: Der News-Artikel [A Farewell to FRP](https://elm-lang.org/news/farewell-to-frp) kündigt den Umstieg von der ursprünglichen Architektur auf die _MVU_-Architektur an.
 
-{% include bottom-nav.html previous="basics.html" %}
+{% include bottom-nav.html previous="basics.html" next="architecture.html" %}
