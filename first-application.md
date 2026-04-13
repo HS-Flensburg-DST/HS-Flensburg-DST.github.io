@@ -403,8 +403,13 @@ Wenn unsere Anwendung zum Beispiel eine _Navigation Bar_ enthält, bei der wir L
 ```elm
 navBarLinkStyle : List (Attribute msg)
 navBarLinkStyle =
-    style "font-weight" "bold" :: linkStyle
+    linkStyle ++ [ style "font-weight" "bold" ]
 ```
+
+Wir müssen bei diesen Ansatz allerdings ein wenig Vorsicht walten lassen.
+CSS-Attribute werden vom Browser in der Reihe abgearbeitet, in der sie in der HTML-Struktur aufgeführt sind.
+Das heißt, wenn ein Attribut weiter hinten steht, überschreibt es ggf. Werte, die für dieses Attribut zuvor gesetzt wurden.
+Wir sollten neue Attribute also am Ende der Liste hinzufügen, damit der Wert des Attributs `font-weight` überschrieben wird, falls er bereits durch `linkStyle` gesetzt wird.
 
 {% include callout-important.html content="Die Verwendung einer eingebetteten domänenspezifischen Sprache (eDSL) zur Definition von HTML-Stilen bietet einige Vorteil im Vergleich zur Verwendung von CSS-Dateien." %}
 
