@@ -5,6 +5,7 @@ title: "Design von Datentypen"
 
 In diesem Kapitel wollen wir uns mit zwei _Best Practices_ beim Entwurf von Datentypen beschäftigen.
 Diese _Best Practices_ lassen sich nicht nur auf Elm anwenden, sondern sind auf andere Programmiersprachen übertragbar.
+Außerdem wollen wir ein tieferes Verständnis dafür entwickeln, wann zwei Datentypen im Grunde die gleichen Möglichkeiten zur Verfügung stellen.
 
 
 ## Boolean Blindness
@@ -23,29 +24,25 @@ Als Beispiel für _Boolean Blindness_ betrachten wir die folgende Funktion in ei
 
 ```elm
 mainButton : String -> Bool -> msg -> Html msg
-mainButton label isDisabled onClick =
-    button
-        (buttonStyle ++ [ disabled isDisabled, Events.onClick onClick ])
-        [ text label ]
+mainButton label isDisabled msg =
+    button [ disabled isDisabled, onClick msg ] [ text label ]
 ```
 
-Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton "+" False IncreaseCounter` schwierig.
+Während wir in der Definition dieser Funktion identifizieren können, welche Bedeutung das Argument `isDisabled` hat, ist dies bei einem Aufruf der Form `mainButton "+" True IncreaseCounter` schwierig.
 Im Abschnitt [Records](data-types.md#records) haben wir bereits einen Ansatz kennengelernt, um dieses Problem zu beheben.
 Wir können einen Record verwenden, um den Argumenten einer Funktion sprechende Namen zuzuordnen.
 Wir können die Funktion `mainButton` zum Beispiel wie folgt definieren.
 
 ```elm
-mainButton : { label : String, isDisabled : Bool, onClick : msg } -> Html msg
-mainButton { label, isDisabled, onClick } =
-    button
-        (buttonStyle ++ [ disabled isDisabled, Events.onClick onClick ])
-        [ text label ]
+mainButton : { label : String, isDisabled : Bool, msg : msg } -> Html msg
+mainButton { label, isDisabled, msg } =
+    button [ disabled isDisabled, onClick msg ] [ text label ]
 ```
 
-Ein Aufruf dieser Funktion hat nun die Form `mainButton { label = "+", isDisabled = False, onClick = IncreaseCounter}` und ist damit sehr viel aussagekräftiger.
+Ein Aufruf dieser Funktion hat nun die Form `mainButton { label = "+", isDisabled = True, msg = IncreaseCounter }` und ist damit sehr viel aussagekräftiger.
 
 Wenn der boolesche Wert aber zum Beispiel nicht direkt im Argument der Funktion `mainButton` bestimmt wird, sondern zum Beispiel aus dem Zustand der Anwendung stammt, müssen an allen Stellen einen Record verwenden und diesen Record durch die Anwendung reichen.
-Wenn der Record wie im Beispiel `mainButton` zwei Felder hat, können wir diesen Record nicht verwenden, um die Daten durch die Anwendung zu reichen, da die beiden Informationen aus unterschiedlichen Quellen stammen können.
+Wenn der Record wie im Beispiel `mainButton` mehrere Felder hat, können wir diesen Record nicht verwenden, um die Daten durch die Anwendung zu reichen, da die verschiedenen Informationen aus unterschiedlichen Quellen stammen können.
 
 Ein alternativer Ansatz, um die Interpretation von `False` und `True` explizit zu machen, ist die Verwendung von benutzerdefinierten Aufzählungstypen.
 Das heißt, statt den Datentyp `Bool` zu verwenden, definieren wir uns einen Datentyp der folgenden Art.
@@ -56,7 +53,7 @@ type Interaction
     | Disabled
 ```
 
-Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton "+" Enabled IncreaseCounter`.
+Wenn wir diesen Datentyp für die Implementierung einer Funktion `mainButton` nutzen, erhalten wir einen Aufruf der Form `mainButton "+" Disabled IncreaseCounter`.
 Bei diesem Aufruf können wir am Aufruf selbst bereits erkennen, dass der _Button_ deaktiviert wird.
 
 In den Elm-Standardbibliotheken werden trotz der _Boolean Blindness_ häufig boolesche Werte verwendet.
@@ -70,7 +67,7 @@ filter : (a -> Bool) -> List a -> List a
 ist nicht klar, ob das Prädikat für diejenigen Elemente `True` liefert, die in der Liste verbleiben sollen, oder für die Elemente, die aus der Liste entfernt werden sollen.
 
 Auch in diesem Beispiel können wir grundsätzlich einen Record verwenden, um dem booleschen Wert eine Semantik zuzuordnen.
-Wir können zum Beispiel die folgenden Definition von `filter` nutzen, um die Bedeutung des Typs `Bool` zu signalisieren.
+Wir können zum Beispiel die folgende Definition von `filter` nutzen, um die Bedeutung des Typs `Bool` zu signalisieren.
 Hier erkennt man aber gut, dass dieser Ansatz seine Grenzen hat.
 
 ```elm
@@ -92,7 +89,7 @@ filter : (a -> Decision) -> List a -> List a
 ```
 
 drückt das Ergebnis der Funktion, die wir an `filter` übergeben, sehr explizit aus, ob wir das Element behalten oder verwerfen möchten.
-Zur Illustration betrachten wir ein Beispiel aus dem Kapitel [Funktionale Abstraktionen](functional-abstractions.md), um die Verwendung dieser Funktion zu illustrieren.
+Zur Illustration betrachten wir das folgende Beispiel, das aus einer Liste von Nutzer\*innen diejenigen übernimmt, deren Vorname mit `"A"` anfängt.
 
 ```elm
 startWithA : List User -> List User
@@ -216,7 +213,7 @@ Wir nehmen an, dass wir eine Art Web-Shop implementieren wollen.
 Im Rahmen der Anwendung muss ein digitaler Einkaufswagen modelliert werden.
 Dieser Einkaufswagen besitzt drei Zustände.
 Der Einkaufswagen kann leer, aktiv und bezahlt sein.
-Im Zustand aktiv ist der Einkaufswagen nicht leer, ist aber auch noch noch bezahlt.
+Im Zustand aktiv ist der Einkaufswagen nicht leer, ist aber auch noch nicht bezahlt.
 Wir modellieren den Zustand eines leeren Einkaufswagens durch einen zusätzlichen Konstruktor `EmptyCart` und nicht durch eine leere Liste, damit Entwickler\*innen gezwungen werden, diesen Fall explizit zu behandeln.
 
 ```elm
@@ -259,50 +256,206 @@ Diese Funktionsweise wird durch die folgende `update`-Funktion modelliert.
 ```elm
 type Msg
     = AddItem Item
-    | Pay Float
+    | PayCart Float
 
 
 update : Model -> Msg -> Model
 update model msg =
-    case msg of
-        AddItem newItem ->
-            case model of
-                EmptyCart ->
+    case model of
+        EmptyCart ->
+            case msg of
+                AddItem newItem ->
                     ActiveCart { item = newItem, items = [] }
 
-                ActiveCart { item, items } ->
+                _ ->
+                    model
+
+        ActiveCart { item, items } ->
+            case msg of
+                AddItem newItem ->
                     ActiveCart { item = newItem, items = item :: items }
 
-                PaidCart _ ->
-                    model
-
-        PayCart payment ->
-            case model of
-                EmptyCart ->
-                    model
-
-                ActiveCart { item, items } ->
+                PayCart payment ->
                     PaidCart { item = item, items = items, payment = payment }
 
-                PaidCart _ ->
-                    model
+        PaidCart _ ->
+            model
 ```
 
 In diesem Beispiel ignorieren wir Kombinationen aus Nachrichten und Modellzuständen, die nicht auftreten sollten.
 Zum Beispiel sollte es nicht möglich sein, den Einkaufswagen zu bezahlen, wenn er noch leer ist.
+Leider ist es in Elm nicht möglich, einen Zusammenhang zwischen Modellzustand und Nachrichten im Typsystem auszudrücken und damit solche illegalen Zustände statisch zu verhindern.
+Daher ignorieren wir hier illegale Kombinationen von Zustand und Nachricht.
+Falls die Nachrichten durch die Interaktion von Nutzer\*innen verursacht wurden, sollten wir den Nutzer\*innen Feedback dazu geben, dass die Aktion aktuell nicht möglich ist.
+Der Einfachheit halber verzichten wir in diesen Beispiel aber darauf.
 
 {% include callout-important.html content="
-In einer realen Anwendung sollten wir diese Zustände an einen Logging-Server melden.
+Unabhängig davon, ob wir den Nutzer\*innen Feedback geben, sollten wir fehlerhafte Zustände aber auf jeden Fall an einen Logging-Server melden.
 " %}
 
 Eine entsprechende Implementierung können wir aber erst umsetzen, wenn wir im Abschnitt [HTTP-Anfragen](commands.md#http-anfragen) gelernt haben, wie man HTTP-Anfragen in Elm durchführt.
-Wenn wir so weit sind, können wir in den Fällen, in denen wir aktuell `model` als Ergebnis zurückliefern, eine Nachricht an den Logging-Server senden, der es uns erlaubt, den Fehler in unserer Anwendung zu beheben.
+Wenn wir so weit sind, können wir in den Fällen, in denen wir aktuell `model` als Ergebnis zurückliefern, eine Nachricht an den Logging-Server senden, der es uns erlaubt, über den fehlerhaften Zustand informiert zu werden.
+Wir haben dann die Möglichkeit, das Problem zu analysieren und zu beheben.
+
+<!-- ## Isomorphe Datentypen
+
+Im Kapitel [Algebraische Datentypen](https://hs-flensburg-gfp.github.io/algebraic-data-types.html) der Vorlesung Grundlagen der funktionalen Programmierung haben wir bereits angedeutet, dass algebraische Datentypen den Namen algebraisch tragen, da sie eine Algebra bilden und man somit mit ihnen Rechnen kann wie in einer Algebra.
+Diesen Aspekt wollen wir an dieser Stelle noch einmal aufnehmen.
+
+Die Algebra der Datentypen besteht aus Summen, Produkten, einer Eins und einer Null.
+Summen werden dadurch gebildet, dass ein Datentyp verschiedene Fälle, also Konstruktoren, haben kann.
+Produkte werden dadurch gebildet, dass ein Konstruktor mehrere Argumente haben kann.
+Die Eins wird durch Datentypen dargestellt, die nur einen Konstruktor haben.
+Die Null wird durch Datentypen dargestellt, die gar keinen Konstruktor haben.
+Im Fall von Elm kann man Datentypen ohne Konstruktoren nicht selbst definieren, stattdessen stellt Elm einen Datentyp [`Never`](https://package.elm-lang.org/packages/elm/core/latest/Basics#Never) zur Verfügung, der keine Konstruktoren hat.
+
+Die einfachste Möglichkeit zu illustrieren, dass algebraische Datentypen eine Algebra bilden, besteht darin, die Kardinalität von Datentypen zu betrachten.
+Mit Kardinalität bezeichnet man die Anzahl der Werte, die ein Typ hat.
+Der Datentyp `Bool` hat zum Beispiel die Kardinalität zwei, da der Typ `Bool` die Werte `True` und `False` hat.
+
+Wir können nun das Produkt aus `()` und `()` bilden.
+Wir bilden ein Produkt, indem wir die Datentypen als Argumente eines Konstruktors nutzen.
+
+```elm
+type Prod1
+    = Prod1 () ()
+```
+
+Die Kardinalität eines Produkttyps ist das Produkt der Kardinalitäten der Komponenten des Produkttyps.
+Das heißt, die Kardinalität von `Prod1` ist die Kardinalität von `()` multipliziert mit der Kardinalität von `()`.
+Die Kardinalität von `()` ist eins, die Kardinalität von `Prod1` sollte also ebenfalls eins sein.
+Tatsächlich hat der Typ `Prod1` nur einen einzigen Wert, nämlich `Prod1 () ()`.
+
+Während das Produkt dadurch modelliert wird, dass ein Konstruktor mehrere Argumente hat, wird die Summe dadurch modelliert, dass es mehrere Konstruktoren gibt.
+
+```elm
+type Sum1
+    = Inl1 ()
+    | Inr1 ()
+```
+
+Die Kardinalität des Datentyps `Sum1` ist die Summe der Kardinalitäten der Typen `()` und `()`.
+Der Datentyp `Sum1` hat also eine Kardinalität von `1 + 1 = 2`.
+Tatsächlich hat der Typ `Sum1` zwei Werte, nämlich `Inl1 ()` und `Inr1 ()`.
+
+Als komplexeres Beispiel betrachten wird den folgenden Datentyp.
+
+```elm
+type Prod2
+    = Prod2 Sum1 Sum1
+```
+
+Da `Prod2` ein Produkt von `Sum1` und `Sum1` ist, sollte seine Kardinalität vier sein, da `2 * 2 = 4` gilt.
+Und tatsächlich gibt es vier Werte vom Typ `Prod2`, nämlich `Prod2 (Inl1 ()) (Inl1 ())`, `Prod2 (Inl1 ()) (Inr1 ())`, `Prod2 (Inr1 ()) (Inl1 ())` und `Prod2 (Inr1 ()) (Inr1 ())`.
+
+Wir können die algebraischen Gesetze aber nicht nur bezüglich der Kardinalität observieren.
+Es gelten auch die typischen algebraischen Gesetze, die wir auch von `+` und `*` auf Zahlen kennen.
+Wenn wir algebraische Gesetze anwenden erhalten wir allerdings nicht identische Datentypen, sondern isomorphe.
+Zwei Datentypen sind dabei isomorph, wenn es eine bijektive Abbildung zwischen ihnen gibt.
+Eine solche bijektive Abbildung ordnet jedem Wert des einen Typs genau einen Wert des anderen Typs zu und umgekehrt.
+Umgangssprachlich haben zwei Typen die isomorph sind die gleichen Fähigkeiten, die einzelnen Werte sehen nur unterschiedlich aus.
+
+Wir starten mit der Tatsache, dass die Eins das neutrale Element der Multiplikation ist.
+Das heißt, wir haben `x * 1 = x` für alle Zahlen `x`.
+Analog gilt, dass wir einen isomorphen Datentyp erhalten, wenn wir einen Datentyp mit einem Datentyp multiplizieren, der nur einen Konstruktor hat.
+So ist der Datentyp `Prod1` zum Beispiel isomorph zum Datentyp `()`.
+Das heißt, der Datentyp `Prod1` enthält genau so viele Informationen wie `()`.
+
+In einer funktionalen Programmiersprache kann man die Tatsache, dass es einen Isomorphismus gibt, auch explizit darstellen.
+Wir definieren zu diesem Zweck einfach zwei Funktionen, um die beiden Datentypen in Verbindung zu setzen.
+Die folgenden beiden Funktionen illustrieren zum Beispiel den Isomorphismus zwischen `Prod1` und `()`.
+
+```elm
+to : Prod1 -> ()
+to prod =
+    case prod of
+        Prod1 () unit ->
+            unit
+```
+
+```elm
+from : () -> Prod1
+from unit =
+    Prod1 () unit
+```
+
+Damit `to` und `from` einen Isomorphismus bilden muss für alle `x : Prod1` die Gleichung `from (to x) = x` gelten.
+Außerdem muss für alle `y : ()` die Gleichung `to (from y) = y` gelten.
+Das heißt, wenn wir die beiden Funktionen nacheinander anwenden, sollten wir wieder das ursprüngliche Argument erhalten.
+
+{% include evaluation.html config=site.data.iso1 %}
+
+Analog können wir auch zeigen, dass für alle `y` vom Typ `()` die Gleichung `to (from y) = y` erfüllt ist.
+
+Als komplexeres Beispiel betrachten wir das Distributivgesetz.
+Das Gesetz besagt, dass `x * (y + z) = x * y + x * z` gilt.
+Wir können dieses Gesetz auf den Datentyp `Prod2` anwenden, da der Konstruktor `Prod2` ein Produkt aus `Sum1` und `Sum1` bildet und `Sum1` eine Summe ist.
+Der Datentyp `Prod2` hat also die Form `x * (y + z)`.
+Wir erhalten den folgenden Datentyp durch Anwendung des Distributivgesetzes.
+
+```elm
+type Sum2
+    = Inl2 Prod3
+    | Inr2 Prod3
+```
+
+```elm
+type Prod3
+    = Prod3 Sum1 ()
+```
+
+Die Typen `Prod2` und `Sum2` sind isomorph.
+Um dies zu ziegen Definieren wir Funktionen `to` und `from`.
+
+```elm
+to : Prod2 -> Sum2
+to prod =
+    case prod of
+        Prod2 sum (Inl1 ()) ->
+            Inl2 (Prod3 sum ())
+
+        Prod2 sum (Inr1 ()) ->
+            Inr2 (Prod3 sum ())
+```
+
+```elm
+from : Sum2 -> Prod2
+from sum =
+    case sum of
+        Inl2 (Prod3 sum ()) ->
+            Prod2 sum (Inl1 ())
+
+        Inr2 (Prod3 sum ()) ->
+            Prod2 sum (Inr1 ())
+```
+
+Wir zeigen nun, dass `to` und `from` einen Isomorphismus bilden.
+
+{% include evaluation.html config=site.data.iso2 %}
+
+Wir können an dieser Stelle mit den Umformungen nicht fortfahren, da wir wissen müssen, welche Form der Wert in Variable `sum2` hat.
+Um fortzufahren, führen wir einfach eine Fallunterscheidung über die möglichen Werte von `sum2` durch.
+
+1. Fall: `sum2 = Inl1 ()`
+
+{% include evaluation.html config=site.data.iso21 %}
+
+2. Fall : `sum2 = Inr1 ()`
+
+Diesen Fall können wir analog zeigen.
+
+Neben den hier vorgestellten Konzepten geht die Analogie zwischen Arithmetik auf Zahlen und der Struktur von algebraischen Datentypen aber noch weiter.
+So stellt der Funktionstyp die Exponentiation im Bereich der Datentypen dar.
+Außerdem kann man nicht nur üblichen Regeln zu `+` und `*` im Bereich der Datentypen anwenden, man kann sogar Ableitungen von algebraischen Datentypen bilden.
+
+Das Konzept, dass Datentypen isomorph sein können, wirkt auf den ersten Blick sehr abstrakt und theoretisch.
+Dieses Konzept hilft aber zum Beispiel dabei, über mögliche Varianten von Datentypimplementierungen zu diskutieren.
 
 
-<div class="nav">
-    <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="architecture.html">zurück</a></li>
-        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="higher-order.html">weiter</a></li>
-    </ul>
-</div>
+So handelt es sich bei der _Boolean Blindness_ zum Beispiel um isomorphe Datentypen.
+Im Gegensatz dazu, gibt es bei _Impossible States_ darum, einen Datentyp so umzuwandeln, dass er nicht isomorph ist.
+Schließlich soll die optimierte Darstellung weniger Fälle aufweisen als die ursprüngliche Variante, schließlich wollen wir Fälle vermeiden.
+
+Grundsätzlich ist es gut, ein Verständnis davon zu haben, dass Datentypen isomorph sind, um alternative Designs zu diskutieren. -->
+
+{% include bottom-nav.html previous="architecture.html" next="json.html" %}

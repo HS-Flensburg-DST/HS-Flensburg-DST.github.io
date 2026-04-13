@@ -280,6 +280,9 @@ viewFooter name =
     div [] [ NameInput.view name ]
 ```
 
+Diese Funktion hängt weder vom Typ `Model` noch vom Typ `Msg` ab.
+Wir werden in einem späteren Kapitel noch einen alternativen Ansatz zur Vermeidung solcher Abhängigkeiten kennenlernen.
+
 Wenn wir nun die Funktion `viewFooter` wie folgt nutzen, erhalten wir allerdings einen Typfehler.
 
 ```elm
@@ -323,4 +326,4 @@ Man sollte die Struktur des Typs für Nachrichten aber nicht ändern, nur um die
 In diesem Fall würde man die Struktur des Datentyps an die Struktur des UI binden.
 Die Tatsache, dass der Name aus dem _Footer_ heraus geändert wird, ist aber vermutlich eine kurzlebige Eigenschaft, die sich ggf. schnell ändert.
 
-{% include bottom-nav.html previous="first-application.html" %}
+{% include bottom-nav.html previous="first-application.html" next="design.html" %}

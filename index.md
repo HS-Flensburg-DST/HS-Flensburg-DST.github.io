@@ -34,13 +34,13 @@ custom_css: toc
 
 - 4.3. [Unnötige Abhängigkeiten](architecture.md#unnötige-abhängigkeiten)
 
-<!-- ### 5. [Design von Datentypen](design.md)
+### 5. [Design von Datentypen](design.md)
 
 - 5.1. [_Boolean Blindness_](design.md#boolean-blindness)
 
 - 5.2. [_Impossible States_](design.md#impossible-states)
 
-- 5.3. [_Isomorphe Datentypen_](design.md#isomorphe-datentypen)
+<!-- - 5.3. [_Isomorphe Datentypen_](design.md#isomorphe-datentypen) -->
 
 ### 6. [JSON-Daten](json.md)
 
@@ -48,9 +48,9 @@ custom_css: toc
 
 - 6.2. [Decoder](json.md#decoder)
 
-- 6.3. [Encode](json.md#encode)
+<!-- - 6.3. [Encode](json.md#encode) -->
 
-### 7. [Kommandos](commands.md)
+<!-- ### 7. [Kommandos](commands.md)
 
 - 7.1. [HTTP-Anfragen](commands.md#http-anfragen)
 
