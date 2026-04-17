@@ -8,7 +8,6 @@ In diesem Kapitel beschäftigen wir uns damit, wie wir Daten im JSON-Format mit 
 Der Abschnitt [Decoder](#decoder) beschreibt, wie wir Daten, die wir im JSON-Format erhalten, in Elm-Datentypen umwandeln können.
 Der Abschnitt [Encode](#encode) beschreibt, wie wir Daten aus unserer Anwendung in das JSON-Format umwandeln.
 
-
 ## Piping
 
 Bevor wir mit der Implementierung eines `Decoder`s starten, führen wir noch eine Funktion höherer Ordnung ein, die bei der Definition von `Decoder`n als Hilfsfunktion zum Einsatz kommt.
@@ -18,7 +17,7 @@ An dieser Stelle wollen wir eine Funktion höherer Ordnung betrachten, deren Anw
 Wir betrachten dazu folgendes Beispiel.
 Nehmen wir an, wir haben eine Liste von Nutzer\*innen in einer Frontendanwendung.
 
-``` elm
+```elm
 type alias User =
     { id : Int
     , firstName : String
@@ -31,7 +30,7 @@ Wir wollen nun das Durchschnittsalter aller volljährigen Nutzer\*innen in der A
 Dazu berechnen wir die Summe der Alter aller Nutzer\*innen über 18.
 Wir nutzen erst `List.map`, um eine Liste von Altersangaben zu erhalten, wir filtern die Altersangaben, die größer gleich `18` sind, und summieren schließlich das Ergebnis.
 
-``` elm
+```elm
 sumOfAdultAges : List User -> Int
 sumOfAdultAges users =
     List.sum (List.filter (\age -> age >= 18) (List.map .age users))
@@ -48,7 +47,7 @@ Elm stellt einen Operator
 zur Verfügung mit dessen Hilfe wir die Reihenfolge der Verarbeitungsschritte umkehren können.
 Wir können die Funktion mithilfe dieses Operators wie folgt definieren.
 
-``` elm
+```elm
 sumOfAdultAges : List User -> Int
 sumOfAdultAges users =
     users
@@ -62,7 +61,7 @@ Man spricht in diesem Zusammenhang auch von _Piping_ in Anlehung an das entsprec
 
 Hinter dem Operator `(|>)` steckt die folgende einfache Definition.
 
-``` elm
+```elm
 (|>) : a -> (a -> b) -> b
 (|>) x f =
   f x
@@ -71,7 +70,7 @@ Hinter dem Operator `(|>)` steckt die folgende einfache Definition.
 Das heißt, `(|>)` nimmt das Argument und eine Funktion und wendet die Funktion auf das Argument an.
 Neben dieser Definition enthält die Elm-Implementierung noch die folgende Angabe.
 
-``` elm
+```elm
 infixl 0 |>
 ```
 
@@ -131,9 +130,8 @@ Leider ist die Verwendung der Operatoren `<|` und `|>` auch in solchen Fällen, 
 Auch in Haskell ist die Verwendung des entsprechenden Operators `$ :: (a -> b) -> a -> b` recht weit verbreitet und führt regelmäßig dazu, dass Anfänger\*innen, einfachen Haskell-Code nicht lesen können.
 " %}
 
-Der Operator `|>` wird häufig mit der funktionalen Sprache [F#](https://en.wikipedia.org/wiki/F_Sharp_(programming_language)) assoziiert.
-Der Operator wurde aber laut der Publikation "The Early History of F#"[^2] im Jahr 2003 zur Standardbibliothek von F# hinzufügt, 1994 aber schon für die Programmiersprache [ML](https://en.wikipedia.org/wiki/ML_(programming_language)) definiert.
-
+Der Operator `|>` wird häufig mit der funktionalen Sprache [F#](<https://en.wikipedia.org/wiki/F_Sharp_(programming_language)>) assoziiert.
+Der Operator wurde aber laut der Publikation "The Early History of F#"[^2] im Jahr 2003 zur Standardbibliothek von F# hinzufügt, 1994 aber schon für die Programmiersprache [ML](<https://en.wikipedia.org/wiki/ML_(programming_language)>) definiert.
 
 ## Decoder
 
@@ -194,7 +192,7 @@ Daher ist der Ergebnistyp der Funktion `decodeString` entsprechend `Result Error
 
 Das Modul `Json.Decode` stellt die folgenden primitiven `Decoder` zur Verfügung.
 
-``` elm
+```elm
 string : Decoder String
 int : Decoder Int
 float : Decoder Float
@@ -236,14 +234,14 @@ map : (a -> b) -> Decoder a -> Decoder b
 Diese Funktion kann zum Beispiel genutzt werden, um das Ergebnis eines `Decoder` in einen Konstruktor einzupacken.
 Wir nehmen einmal an, dass wir den folgenden – zugegebenermaßen etwas artifiziellen – Datentyp in unserer Anwendung nutzen.
 
-``` elm
+```elm
 type alias User =
     { age : Int }
 ```
 
 Wir können nun auf die folgende Weise einen `Decoder` definieren, der eine Zahl parst und als Ergebnis einen Wert vom Typ `User` zurückliefert.
 
-``` elm
+```elm
 userDecoder : Decoder User
 userDecoder =
     Decoder.map User Decoder.int
@@ -268,7 +266,7 @@ field : String -> Decoder a -> Decoder a
 Mit dieser Funktion kann ein `Decoder` auf ein einzelnes Feld einer JSON-Struktur angewendet werden.
 Das heißt, der folgende `Decoder` ist in der Lage die oben gezeigte JSON-Struktur zu verarbeiten.
 
-``` elm
+```elm
 userDecoder : Decoder User
 userDecoder =
     Decoder.map User (Decoder.field "age" Decoder.int)
@@ -302,7 +300,7 @@ zur Verfügung, mit der wir zwei `Decoder` zu einem komplexeren `Decoder` kombin
 
 Um die Verwendung von `Decoder.map2` zu illustrieren, erweitern wir unseren Datentyp `User` wie folgt.
 
-``` elm
+```elm
 type alias User =
     { name : String
     , age : Int
@@ -311,7 +309,7 @@ type alias User =
 
 Nun definieren wir einen `Decoder` mithilfe von `map2` und kombinieren dabei einen `Decoder` für den `Int` mit einem `Decoder` für den `String`.
 
-``` elm
+```elm
 userDecoder : Decoder User
 userDecoder =
     Decoder.map2
@@ -371,7 +369,7 @@ In diesem Fall können wir nämlich dafür sorgen, dass der `Decoder` entweder e
 
 Wir definieren dazu erst einmal einen `Decoder`, der die Version liefert.
 
-``` elm
+```elm
 versionDecoder : Decoder Int
 versionDecoder =
     Decoder.field "version" Decoder.int
@@ -380,7 +378,7 @@ versionDecoder =
 Außerdem haben wir die folgenden beiden `Decoder` für die beiden Varianten der JSON-Struktur.
 Das heißt, in einer Version hieß das Feld `bool` und in einer anderen Version hieß es `boolean`.
 
-``` elm
+```elm
 boolDecoder : Decoder Bool
 boolDecoder =
     Decoder.field "bool" Decoder.bool
@@ -403,14 +401,14 @@ und
 
 ```elm
 (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c
-````
+```
 
 Das heißt, die Funktion, die wir an `map` und `map2` übergeben, können sich als Ergebnis nicht für einen `Decoder` entscheiden.
 Beide Funktionen können nur auf dem Ergebnistyp des `Decoder` arbeiten.
 
 Wir können die gewünschte Funktionalität aber mit der folgenden Funktion implementieren.
 
-``` elm
+```elm
 andThen : (a -> Decoder b) -> Decoder a -> Decoder b
 ```
 
@@ -418,7 +416,7 @@ Hier haben wir statt eines Arguments `a -> b` oder `a -> b -> c` jetzt ein Argum
 Das heißt, wir können abhängig vom konkreten Wert, der vom Typ `a` übergeben wird, den `Decoder` wählen, den wir anschließend verwenden.
 Wir können damit den folgenden `Decoder` definieren.
 
-``` elm
+```elm
 versionedDecoder : Decoder Bool
 versionedDecoder =
     let
@@ -458,7 +456,7 @@ Diese Funktion können wir mithilfe von `|>` auf ihr Argument anwenden.
 Aus didaktischen Gründen haben wir die Definitionen `boolDecoder`, `booleanDecoder` und `versionDecoder` eingeführt, bevor wir die Definition von `versionedDecoder` angegeben haben.
 In einer realen Implementierung würde man für diese `Decoder` keine eigenständigen _Top Level_-Definitionen angeben und den `Decoder` eher wie folgt definieren.
 
-``` elm
+```elm
 versionedDecoder : Decoder Bool
 versionedDecoder =
     let
@@ -485,7 +483,7 @@ Wir können mithilfe von `Decoder.andThen` aber nicht nur auf unterschiedliche F
 Wir nehmen einmal an, dass in Version `1` unserer JSON-Struktur der boolesche Wert durch einen `Int` kodiert wurde.
 Um diesen `Int` zu verarbeiten definieren wir zuerst den folgenden `Decoder`, der den `Int` in einen `Bool` umwandelt.
 
-``` elm
+```elm
 intAsBoolDecoder : Decoder Bool
 intAsBoolDecoder =
     let
@@ -498,7 +496,7 @@ intAsBoolDecoder =
                     Decoder.succeed True
 
                 _ ->
-                    Decoder.fail 
+                    Decoder.fail
                         ("The value "
                             ++ String.fromInt int
                             ++ " should be 0 or 1.")
@@ -533,7 +531,7 @@ versionedDecoder =
 
 Um noch einmal zu illustrieren, dass die Funktion `Decoder.andThen` mächtiger ist als die Funktion `Decoder.map` wollen wir versuchen, die Funktionsweise von `intAsBoolDecoder` mithilfe von `Decoder.map` zu implementieren.
 
-``` elm
+```elm
 badIntAsBoolDecoder : Decoder Bool
 badIntAsBoolDecoder =
     let
@@ -598,7 +596,6 @@ Auch wenn das Konzept einer Monade in anderen Programmiersprachen nicht explizit
 Die JavaScript-Funktion `then` für `Promise` ist etwa ein Beispiel hierfür.
 Diese Funktion erhält nämlich einen `Promise a` und eine Funktion `a -> Promise b`, ist also sehr ähnlich zur Funktion `Decoder.andThen`, nur dass sie für den Datentyp `Promise` genutzt wird und nicht für den Datentyp `Decoder`.
 
-
 <!-- ## Encode
 
 Wenn wir mit einem Server kommunizieren, müssen wir nicht nur in der Lage sein, die JSON-Daten, die wir vom Server erhalten, in Elm-Datentypen umzuwandeln.
@@ -656,11 +653,13 @@ encode { name, age } =
 
 [^2]: [The early history of F#](https://fsharp.org/history/hopl-final/hopl-fsharp.pdf) - Don Syme (2020)
 
-[^3]: Dieses Modul wird hier mittels `import Json.Decode as Decoder exposing (Decoder)` importiert.
-      Wir benennen das Modul in `Decoder` um, da der Name `Decode` unglücklich gewählt ist, da das Modul den Typ `Decoder` exportiert.
+[^3]:
+    Dieses Modul wird hier mittels `import Json.Decode as Decoder exposing (Decoder)` importiert.
+    Wir benennen das Modul in `Decoder` um, da der Name `Decode` unglücklich gewählt ist, da das Modul den Typ `Decoder` exportiert.
 
-[^4]: Dieses Modul wird hier mittels `import Json.Encode as Encode` importiert.
-      Im Gegensatz zum Modul `Json.Decode` stellt das Modul `Json.Encode` eben **keinen** `Encoder` zur Verfügung, sondern Funktionen.
-      Diese Funktionen laufen unter dem Oberbegriff `Encode`.
+[^4]:
+    Dieses Modul wird hier mittels `import Json.Encode as Encode` importiert.
+    Im Gegensatz zum Modul `Json.Decode` stellt das Modul `Json.Encode` eben **keinen** `Encoder` zur Verfügung, sondern Funktionen.
+    Diese Funktionen laufen unter dem Oberbegriff `Encode`.
 
-{% include bottom-nav.html previous="design.html" %}
+{% include bottom-nav.html previous="design.html" next="commands.html" %}

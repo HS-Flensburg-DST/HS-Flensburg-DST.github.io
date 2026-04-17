@@ -50,9 +50,11 @@ custom_css: toc
 
 <!-- - 6.3. [Encode](json.md#encode) -->
 
-<!-- ### 7. [Kommandos](commands.md)
+### 7. [Kommandos](commands.md)
 
 - 7.1. [HTTP-Anfragen](commands.md#http-anfragen)
+
+<!--
 
 - 7.2. [Zufall](commands.md#zufall)
 

@@ -7,18 +7,15 @@ In diesem Kapitel wollen wir uns anschauen, wie man den Datentyp `Cmd` nutzt, de
 Wir haben zuvor bereits gelernt, dass Elm eine rein funktionale Programmiersprache ist und man daher
 keine Seiteneffekte ausführen kann.
 Einige Teile einer Frontend-Anwendung benötigen aber natürlich Seiteneffekte.
-Ein Beispiel für einen Seiteneffekt, der in einer Frontend-Anwendung ist wichtig ist, ist das Durchführen von HTTP-Anfragen.
+Ein Beispiel für einen Seiteneffekt, der in einer Frontend-Anwendung wichtig ist, ist das Durchführen von HTTP-Anfragen.
 Um Seiteneffekte in Elm ausführen zu können und dennoch eine referenziell transparente Anwendung zu behalten, wird die Durchführung von Seiteneffekten von der Elm\-_Runtime_ übernommen.
 Genauer gesagt, teilen wir Elm nur mit, dass wir einen Seiteneffekt durchführen möchten.
 Elm führt dann diesen Seiteneffekt durch und informiert uns über das Ergebnis.
 Auch die Kommandos sind wieder ein Beispiel für den deklarativen Ansatz, da man nur beschreibt, dass ein Seiteneffekt durchgeführt werden soll, man beschreibt aber nicht, wie dieser genau ausgeführt wird.
 
-
-HTTP-Anfragen
--------------
+## HTTP-Anfragen
 
 Um eine HTTP-Anfrage zu stellen, teilen wir dem System mit, welche Anfrage wir stellen möchten und das System ruft die Funktion `update` auf, wenn die Anfrage erfolgreich abgeschlossen ist.
-Im Unterschied zum Erzeugen eines Zufallswertes, kann in diesem Fall aber auch ein Fehler bei der Abarbeitung der Aufgabe auftreten.
 Um eine HTTP-Anfrage zu senden, müssen wir zunächst mit dem folgenden Kommando eine Bibliothek installieren.
 
 ```console
@@ -31,8 +28,8 @@ Für die Zahl `3` erhalten wir als Ergebnis zum Beispiel das folgende JSON-Objek
 
 ```json
 {
-  "ad" : "Buy isEvenCoin, the hottest new cryptocurrency!",
-  "iseven" : false
+  "ad": "Buy isEvenCoin, the hottest new cryptocurrency!",
+  "iseven": false
 }
 ```
 
@@ -43,7 +40,7 @@ Wir legen ein Verzeichnis `Api` an, in dem wir Module speichern, die für die Ko
 Bei der Kommunikation nutzen wir möglichst stark getypte Daten.
 Zum Beispiel könnte es sein, dass eine Schnittstelle Daten in Form eines `String` zur Verfügung stellt, die wir zur Nutzung in unserer Anwendung in einen Aufzählungstyp überführen.
 
-``` elm
+```elm
 module Api.Parity exposing (Parity(..), toString)
 
 
@@ -111,7 +108,7 @@ Wir definieren im Datentyp `Msg` einfach einen Konstruktor, der später als erst
 Neben diesem Konstruktor fügen wir noch Nachrichten hinzu, um einen Zähler hoch- und runterzuzählen.
 Die Anwendung wird später für den aktuellen Wert des Zählers die API anfragen, um zu prüfen, ob die Zahl gerade ist oder nicht.
 
-``` elm
+```elm
 type Msg
     = Number Change
     | ReceivedResult (Result Http.Error ParityInfo)
@@ -139,7 +136,7 @@ decoder =
         Decoder.bool
 ```
 
-``` elm
+```elm
 decoder : Decoder ParityInfo
 decoder =
     Decoder.map2 ParityInfo
@@ -147,7 +144,7 @@ decoder =
         (Decoder.field "ad" Decoder.string)
 ```
 
-Als nächsten wollen wir ein Kommando definieren, das eine Anfrage an die API durchführt.
+Als nächstes wollen wir ein Kommando definieren, das eine Anfrage an die API durchführt.
 Statt die URL string-basiert zusammenzusetzen, nutzen wir die Funktionen aus dem Paket `elm/url`.
 Daher installieren wir dieses Paket zunächst mithilfe des folgenden Kommandos.
 
@@ -187,7 +184,7 @@ Wir möchten an sich auch nicht, dass dieses Modul das Modul importiert, dass de
 Daher übergeben wir an die Funktion `get` eine Funktion als Argument, die später dafür zuständig ist, die Daten in den Nachrichtendatentyp einzupacken.
 Durch die Verwendung einer Funktion höherer Ordnung und von Polymorphismus erreichen wir also, dass das Modul `Api.ParityInfo` keine Abhängigkeit zum Nachrichtendatentyp hat.
 
-``` elm
+```elm
 get : { number : Int, onResponse : Result Http.Error ParityInfo -> msg } -> Cmd msg
 get { number, onResponse } =
     Http.get
@@ -196,8 +193,12 @@ get { number, onResponse } =
         }
 ```
 
+Statt die Funktion `onResponse` an die Funktion `get` zu übergeben, könnten wir an dieser Stelle auch die Funktion `Cmd.map : (a -> b) -> Cmd a -> Cmd b` nutzen.
+Diese Art der Entkopplung haben wir im Abschnitt [Unnötige Abhängigkeiten](architecture.md#unnötige-abhängigkeiten) genutzt, um den Typ der Nachrichten in einer HTML-Struktur umzuwandeln.
+Beide Ansätze verfolgen das Ziel, die Abhängigkeit vom Typ der Nachrichten zu verhindern.
+
 {% include callout-important.html content="
-Ein solches Vorgehen wird auch als **_Dependency Injection_** bezeichnet.
+Man kann diese Ansätze als eine Form von **_Dependency Injection_** bezeichnen.
 " %}
 
 Bei einer _Dependency Injection_ wird einem Modul von außen eine Abhängigkeit zu einem anderen Modul injiziert.
@@ -211,28 +212,28 @@ Falls die Anfrage nicht alle Daten liefert, sondern nur eine Teilmenge, können 
 
 Wir nutzen zur Modellierung des internen Zustands unserer Anwendung den folgenden Datentyp.
 
-``` elm
+```elm
 type alias Model =
     { number : Int
-    , apiData : Api.Data ParityInfo
+    , parityData : RemoteData ParityInfo
     }
 ```
 
-Der Datentyp `Api.Data` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
-Der Datentyp wird hier in ein Modul `Api.Data` geschrieben.
+Der Datentyp `RemoteData` wird dabei genutzt, um die verschiedenen Zustände beim Ausführen einer HTTP-Anfrage zu modellieren.
+Der Datentyp wird hier in ein Modul `RemoteData` geschrieben.
 
 ```elm
-type Data value
+type RemoteData value
     = Loading
     | Failure Http.Error
     | Success value
 ```
 
-Für den Datentyp `Data` nutzen wir außerdem die folgende Funktion.
+Für den Datentyp `RemoteData` nutzen wir außerdem die folgende Funktion.
 
-``` elm
-dataFromResult : Result Http.Error a -> Data a
-dataFromResult result =
+```elm
+fromResult : Result Http.Error a -> RemoteData a
+fromResult result =
     case result of
         Err error ->
             Failure error
@@ -245,18 +246,20 @@ Nun haben wir alle Komponenten zusammen, um die Funktion `update` für unsere An
 Im Fall `Number` führen wir eine Anfrage an die API durch.
 Im Fall `ReceivedResult` aktualisieren wir unser Modell mit den Daten der API.
 
-``` elm
+```elm
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Number change ->
             let newNumber = updateNumber change model.number
             in
-            ( { model | number = newNumber, apiData = Api.Loading }
+            ( { model | number = newNumber
+                      , parityData = RemoteData.Loading
+              }
             , Api.ParityInfo.get { number = newNumber, onResponse = ReceivedResult } )
 
         ReceivedResult result ->
-            ( { model | apiData = Api.dataFromResult result }
+            ( { model | parityData = RemoteData.fromResult result }
             , Cmd.none )
 
 
@@ -273,7 +276,7 @@ updateNumber change number =
 Zu guter Letzt müssen wir nur noch eine Funktion schreiben, die abhängig vom aktuellen Zustand eine entsprechende HTML-Seite erzeugt.
 Außerdem stellen wir Knöpfe für die verschiedenen Aktionen zur Verfügung.
 
-``` elm
+```elm
 view : Model -> Html Msg
 view { number, apiData } =
     div []
@@ -286,23 +289,23 @@ view { number, apiData } =
         ]
 
 
-viewApiData : Api.Data ParityInfo -> Html msg
-viewApiData apiData =
-    case apiData of
-        Api.Loading ->
+viewParityData : RemoteData ParityInfo -> Html msg
+viewParityData data =
+    case data of
+        RemoteData.Loading ->
             text "Lade Daten ..."
 
-        Api.Success info ->
+        RemoteData.Success info ->
             viewParityInfo info
 
-        Api.Failure error ->
+        RemoteData.Failure error ->
             text ("Der folgende Fehler ist aufgetreten:\n" ++ Debug.toString error)
 
 
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \() -> ( { number = 0, apiData = Api.Loading }
+        { init = \() -> ( { number = 0, parityData = RemoteData.Loading }
                        , Api.ParityInfo.get { number = 0, onResponse = ReceivedResult } )
         , subscriptions = \_ -> Sub.none
         , view = view
@@ -319,7 +322,6 @@ Die Funktion `Debug.toString` kann einen beliebigen Elm-Wert in einen `String` u
 Diese Funktion sollte in einer fertigen Anwendung nicht genutzt werden.
 Wir nutzen in dieser Anwendung auch die Möglichkeit, direkt beim Start der Anwendung ein Kommando durchzuführen.
 Zu diesem Zweck liefert die Funktion `init` in der zweiten Komponente des Paares ein Kommando für eine entsprechende HTTP-Anfrage.
-
 
 <!-- ### Weitere Aspekte
 
@@ -437,7 +439,7 @@ Dieser Fall wird verwendet, um zu signalisieren, dass noch keine Anfrage durchge
 Zwei HTTP-Anfragen können dabei entweder sequentiell, also nacheinander, oder parallel ausgeführt werden.
 Zuerst betrachten wir die Möglichkeit, zwei HTTP-Anfragen parallel zu bearbeiten. -->
 
-
+<!--
 Zufall
 ------
 
@@ -625,14 +627,10 @@ Zum Beispiel kann man statt `1 + 2` auch `(+) 1 2` schreiben.
 Das heißt, statt `Random.map2 (\x y -> x + y) pips pips` können wir auch `Random.map2 (\x y -> (+) x y) pips pips` schreiben.
 Mittels zwei Anwendungen von Eta-Reduktion können wir diesen Ausdruck dann zu `Random.map2 (+) pips pips` vereinfachen.
 
+-->
+
 [^1]: <https://github.com/public-apis/public-apis#science--math>
 
 [^2]: Das Modul `Url.Builder` stellt auch Funktionen `string : String -> String -> QueryParameter` und `int : String -> Int -> QueryParameter` zur Verfügung, mit denen `QueryParameter` gebaut werden können.
 
-<div class="nav">
-    <ul class="nav-row">
-        <li class="nav-item nav-left"><a href="json.html">zurück</a></li>
-        <li class="nav-item nav-center"><a href="index.html">Inhaltsverzeichnis</a></li>
-        <li class="nav-item nav-right"><a href="structure.html">weiter</a></li>
-    </ul>
-</div>
+{% include bottom-nav.html previous="json.html" %}
