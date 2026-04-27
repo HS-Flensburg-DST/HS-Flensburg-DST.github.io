@@ -98,7 +98,7 @@ type Parity
 
 
 toString : Parity -> String
-toString : parity =
+toString parity =
     case parity of
         Even ->
             "gerade"
