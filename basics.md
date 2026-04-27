@@ -6,7 +6,6 @@ title: "Grundlagen"
 Für die meisten Grundlagen der Programmiersprache Elm bzw. der funktionalen Programmierung wird auf die Vorlesung [Grundlagen der funktionalen Programmierung](https://hs-flensburg-gfp.github.io) verwiesen.
 In diesem Kapitel führen wir noch ein paar grundlegende Aspekte ein, die in Grundlagen der funktionalen Programmierung nicht zur Sprache kamen.
 
-
 ## Paare
 
 **Paare** sind vordefinierte polymorphe Produktdatentypen.
@@ -17,7 +16,7 @@ Das heißt, der Ausdruck `(1, False)` erzeugt zum Beispiel ein Paar, bei dem die
 Der Typkonstruktor für Paare wird genau so geschrieben wie der Konstruktor für Paare und ist über zwei Typen parametrisiert, nämlich den Typ der ersten Komponente und den Typ der zweiten Komponente.
 Das heißt, der Typ des Wertes `(1, False)` ist zum Beispiel `(Int, Bool)`.
 
-Wie bei jedem anderen algebraischen Datentyp kann man *Pattern Matching* auch für Paare verwenden.
+Wie bei jedem anderen algebraischen Datentyp kann man _Pattern Matching_ auch für Paare verwenden.
 Als Beispiel betrachten wir die Funktion
 
 ```elm
@@ -25,13 +24,13 @@ uncons : String -> Maybe ( Char, String )
 ```
 
 aus dem Modul `String`.
-Mithilfe dieser Funktion kann man einen `String` in das erste Zeichen und den Rest des *Strings* zerlegen.
+Mithilfe dieser Funktion kann man einen `String` in das erste Zeichen und den Rest des _Strings_ zerlegen.
 Die Funktion liefert `Nothing`, falls wir sie auf einen leeren `String` anwenden.
 
 Mithilfe dieser Funktion können wir zum Beispiel wie folgt eine Funktion definieren, die alle Zeichen in einer Zeichenkette in Großbuchstaben verwandelt.
 Die Funktion `String.cons : Char -> String -> String` hängt ein Zeichen vorne an eine Zeichenkette.
 
-``` elm
+```elm
 toUpper : String -> String
 toUpper string =
     case String.uncons string of
@@ -53,7 +52,6 @@ Daher bietet sich als Alternative für ein Tupel fast immer ein algebraischer Da
 Einen Sonderfall eines Tupels stellt das nullstellige Tupel `()` dar, dessen Typ man ebenfalls als `()` schreibt.
 Der Typ `()` hat nur einen einzigen Wert, nämlich `()`.
 Wir werden später Anwendungsfälle für diesen Datentyp kennenlernen.
-
 
 ## Records
 
@@ -156,14 +154,33 @@ Zu diesem Zweck müssen wir die Variablen im _Pattern_ nennen wie die Felder des
 
 ```elm
 fullName : User -> String
-fullName { firstName, lastName } =
-    firstName ++ " " ++ lastName
+fullName user =
+    case user of
+        { firstName, lastName } ->
+            firstName ++ " " ++ lastName
 ```
 
 Wir müssen dabei nicht auf alle Felder des Records _Pattern Matching_ machen, es ist auch möglich, nur einige Felder aufzuführen.
 Das heißt, auch die folgende Definition ist erlaubt.
 
 ```elm
+firstNames : User -> List String
+firstNames user =
+    case user of
+        { firstName } ->
+            List.words firstName
+```
+
+Das _Pattern Matching_ auf einem Record wirkt durch den `case`-Ausdruck recht umständlich.
+Für Datentypen, die nur einen Konstruktor haben (darunter fallen auch Recordtypen) erlaubt Elm, das _Pattern Matching_ direkt in der Funktionsdefinition durchzuführen.
+Das heißt, wir können die beiden Funktionen auch wie folgt definieren und auf dem `case`-Ausdruck verzichten.
+
+```elm
+fullName : User -> String
+fullName { firstName, lastName } =
+    firstName ++ " " ++ lastName
+
+
 firstNames : User -> List String
 firstNames { firstName } =
     List.words firstName
@@ -296,7 +313,7 @@ rotate { angle, origin } =
         ]
 ```
 
-Durch die Verwendung einer Liste könnten wir nun zum Beispiel viel einfacher eine 
+Durch die Verwendung einer Liste könnten wir nun zum Beispiel viel einfacher eine
 
 Wenn wir diese Funktion noch etwas genauer betrachten, stellen wir fest, dass die Wiederholung in der Definition vor allem durch die Trennung der Argumente von `rotate` durch Kommata entsteht.
 Mithilfe der Funktion `String.join : String -> List String -> String` können wir diesen Aspekt noch klarer herausarbeiten.
@@ -314,7 +331,7 @@ rotate { angle, origin } =
         ++ ")"
 ```
 
-Durch die Verwendung einer Liste können wir nun zum Beispiel Transformationen, die auf alle Einträge der Liste angewendet werden sollen durch 
+Durch die Verwendung einer Liste können wir nun zum Beispiel Transformationen, die auf alle Einträge der Liste angewendet werden sollen durch
 
 
 ```elm
@@ -325,7 +342,6 @@ rotate { angle, origin } =
             (List.map String.fromFloat [ angle, origin.x, origin.y ])
         ++ ")"
 ``` -->
-
 
 ## Benennungsstil
 
