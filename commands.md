@@ -3,15 +3,63 @@ layout: post
 title: "Kommandos"
 ---
 
-In diesem Kapitel wollen wir uns anschauen, wie man den Datentyp `Cmd` nutzt, den wir bisher ignoriert haben.
-Wir haben zuvor bereits gelernt, dass Elm eine rein funktionale Programmiersprache ist und man daher
-keine Seiteneffekte ausführen kann.
+Wir haben zu Anfang gelernt, dass Elm eine rein funktionale Programmiersprache ist und man daher keine Seiteneffekte ausführen kann.
+Genauer gesagt sind Programme in Elm referentiell transparent.
+
+{% include callout-important.html content="
+Ein Ausdruck ist referenziell transparent, wenn der Wert des Ausdrucks nur von den Werten seiner Teilausdrücke abhängt.
+" %}
+
+In Programmiersprachen, die uns nicht dazu zwingen, solche Programme zu schreiben, ist es aber auch guter Stil, diese Eigenschaft an möglichst vielen Stellen zu gewährleisten.
+Man kann sich leicht vorstellen, dass es recht schwierig ist, Fehler zu finden, wenn
+wiederholte Aufrufe der gleichen Methode mit identischen Argumenten immer wieder andere Ergebnisse liefern.
+Daher versucht man auch in anderen Programmiersprachen den Teil der Anwendung, der nicht referentiell transparent ist, möglichst von dem Teil zu trennen, der referentiell transparent ist.
+
 Einige Teile einer Frontend-Anwendung benötigen aber natürlich Seiteneffekte.
 Ein Beispiel für einen Seiteneffekt, der in einer Frontend-Anwendung wichtig ist, ist das Durchführen von HTTP-Anfragen.
 Um Seiteneffekte in Elm ausführen zu können und dennoch eine referenziell transparente Anwendung zu behalten, wird die Durchführung von Seiteneffekten von der Elm\-_Runtime_ übernommen.
 Genauer gesagt, teilen wir Elm nur mit, dass wir einen Seiteneffekt durchführen möchten.
 Elm führt dann diesen Seiteneffekt durch und informiert uns über das Ergebnis.
+Dieser Prozess wird durch Kommandos und den zugehörigen Datentyp `Cmd` modelliert.
 Auch die Kommandos sind wieder ein Beispiel für den deklarativen Ansatz, da man nur beschreibt, dass ein Seiteneffekt durchgeführt werden soll, man beschreibt aber nicht, wie dieser genau ausgeführt wird.
+
+## Grundlagen
+
+Als wir die Elm-Architektur besprochen haben, haben wir das Programm mithilfe der Funktion `sandbox` erstellt.
+
+```elm
+sandbox :
+    { init : model
+    , view : model -> Html msg
+    , update : msg -> model -> model
+    }
+    -> Program () model msg
+```
+
+Neben dieser Funktion gibt es auch eine Funktion `element`, die den folgenden Typ hat.
+
+```elm
+element :
+    { init : flags -> ( model, Cmd msg )
+    , view : model -> Html msg
+    , update : msg -> model -> ( model, Cmd msg )
+    , subscriptions : model -> Sub msg
+    }
+    -> Program flags model msg
+```
+
+Diese Funktion nimmt als initialen Wert eine Funktion.
+Die Funktion, die das initiale Modell erzeugt, erhält als Argument einen Wert vom Typ `flags`.
+Es handelt sich dabei um Informationen, die das JavaScript-Programm, das die Elm-Anwendung startet, an die Elm-Anwendung übergeben kann.
+Das initiale Modell besteht im Vergleich zur Sandbox außerdem nicht nur aus einem Modell sondern noch aus einem Kommando in Form eines Wertes vom Typ `Cmd msg`.
+Die Funktion `update` liefert in diesem Fall auch nicht nur ein Modell als Ergebnis, sondern ein Modell und ein Kommando.
+Außerdem ist ein neues Feld hinzugekommen, das `subscriptions` heißt.
+Das heißt, wir können einen Seiteneffekt ausführen, wenn die Anwendung gestartet wird.
+Außerdem können wir einen Seiteneffekt durchführen, wenn eine Nachricht an die Anwendung geschickt wird.
+Das Feld `subscriptions` wird hier nicht näher behandelt.
+Das Konzept der Kommandos wird dafür genutzt, um einmalig eine Aktion durchzuführen.
+Mithilfe von `subscriptions` kann man sich dagegen wiederholt informieren lassen.
+Dieses Konzept wird zum Beispiel genutzt, um Tastendrücke oder Mausbewegungen zu verarbeiten.
 
 ## HTTP-Anfragen
 
@@ -83,7 +131,7 @@ viewParityInfo info =
         ]
 ```
 
-Nachdem wir das Resultat eines Requests modelliert haben, wollen wir einen Request durchführen.
+Nachdem wir das Resultat einer Anfrage modelliert haben, wollen wir die Anfrage durchführen.
 Die Funktion
 
 ```elm
@@ -180,7 +228,7 @@ baseURL =
 
 Wir definieren das Kommando, das genutzt wird, um eine Anfrage durchzuführen in einem Modul `Api.ParityInfo`.
 In diesem Modul kennen wir den Nachrichtendatentyp unserer Anwendung nicht.
-Wir möchten an sich auch nicht, dass dieses Modul das Modul importiert, dass den Nachrichtentyp definiert, da wir dann eine Abhängigkeit zu diesem Modul einführen würden.
+Wir möchten an sich auch nicht, dass dieses Modul das Modul importiert, das den Nachrichtentyp definiert, da wir dann eine Abhängigkeit zu diesem Modul einführen würden.
 Daher übergeben wir an die Funktion `get` eine Funktion als Argument, die später dafür zuständig ist, die Daten in den Nachrichtendatentyp einzupacken.
 Durch die Verwendung einer Funktion höherer Ordnung und von Polymorphismus erreichen wir also, dass das Modul `Api.ParityInfo` keine Abhängigkeit zum Nachrichtendatentyp hat.
 
@@ -245,6 +293,7 @@ fromResult result =
 Nun haben wir alle Komponenten zusammen, um die Funktion `update` für unsere Anwendung zu definieren.
 Im Fall `Number` führen wir eine Anfrage an die API durch.
 Im Fall `ReceivedResult` aktualisieren wir unser Modell mit den Daten der API.
+Die Konstante `none` aus dem Modul `Cmd` hat den Typ `Cmd msg` und kann genutzt werden, wenn kein Kommando durchgeführt werden soll.
 
 ```elm
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -313,6 +362,7 @@ main =
         }
 ```
 
+Da wir in dieser Anwendung nicht über Ereignisse informiert werden möchten, nutzen wir die Konstante `Sub.none`, um zu signalisieren, dass wir keine Abonnements nutzen möchten.
 Die Funktion `viewApiData` nutzt zur Vereinfachung die Funktion `Debug.toString`.
 
 {% include callout-important.html content="
