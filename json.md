@@ -110,7 +110,7 @@ Neben `|>` stellt Elm auch einen Operator
 zur Verfügung.
 Die Operatoren `<|` und `|>` werden gern verwendet, um Klammern zu sparen.
 So kann man durch den Operator `<|` zum Beispiel eine Funktion auf ein Argument angewendet werden, ohne das Argument zu klammern.
-Wir können statt `items (23 + 42)` zum Beispiel `item <| 23 + 42` schreiben.
+Wir können statt `item (23 + 42)` zum Beispiel `item <| 23 + 42` schreiben.
 Wir können die Klammern weglassen, da die Präzedenz von `<|` und von `|>` jeweils `0` ist und damit niedriger als die Präzedenz aller anderer Operatoren.
 Der Operator `+` hat zum Beispiel die Präzedenz `6`.[^1]
 
@@ -383,6 +383,7 @@ boolDecoder : Decoder Bool
 boolDecoder =
     Decoder.field "bool" Decoder.bool
 
+
 booleanDecoder : Decoder Bool
 booleanDecoder =
     Decoder.field "boolean" Decoder.bool
@@ -594,7 +595,7 @@ Die Funktion `andThen` bzw. `>>=` ist Teil des allgemeineren Konzeptes einer Mon
 Man kann eine Funktion wie `andThen` bzw. `>>=` für viele Strukturen definieren, nicht nur für Parser bzw. `Decoder`.
 Auch wenn das Konzept einer Monade in anderen Programmiersprachen nicht explizit genutzt wird, taucht diese Struktur bei der Programmierung häufig auf.
 Die JavaScript-Funktion `then` für `Promise` ist etwa ein Beispiel hierfür.
-Diese Funktion erhält nämlich einen `Promise a` und eine Funktion `a -> Promise b`, ist also sehr ähnlich zur Funktion `Decoder.andThen`, nur dass sie für den Datentyp `Promise` genutzt wird und nicht für den Datentyp `Decoder`.
+Diese Funktion erhält nämlich einen `Promise a` und eine Funktion `a -> Promise b`, ist also sehr ähnlich zur Funktion `Decoder.andThen`, nur dass man mit ihr _Promises_ kombinieren kann und nicht _Decoder_.
 
 <!-- ## Encode
 

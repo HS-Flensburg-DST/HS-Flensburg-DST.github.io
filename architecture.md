@@ -259,7 +259,7 @@ Zuerst können wir observieren, dass die Funktion `view` gar nicht das vollstän
 Wenn eine Funktion nur einen Teil eines Records benötigt, sollten wir darüber nachdenken, ob wir den gesamten Record an die Funktion übergeben müssen.
 "%}
 
-Dies verringert die Kopplung (_Cohesion_) des Codes, also die Abhängigkeiten zwischen Modulen.
+Dies verringert die Kopplung (_Coupling_) des Codes, also die Abhängigkeiten zwischen Modulen.
 Auch bei der Funktion `viewFooter` sollten wir uns überlegen, ob wir überhaupt ein Argument vom Typ `Model` übergeben.
 Bei diesem Argument wird zum Beispiel gar nicht offensichtlich, welche Informationen die Funktion `viewFooter` tatsächlich benötigt.
 

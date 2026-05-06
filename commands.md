@@ -89,7 +89,7 @@ Bei der Kommunikation nutzen wir möglichst stark getypte Daten.
 Zum Beispiel könnte es sein, dass eine Schnittstelle Daten in Form eines `String` zur Verfügung stellt, die wir zur Nutzung in unserer Anwendung in einen Aufzählungstyp überführen.
 
 ```elm
-module Api.Parity exposing (Parity(..), toString)
+module Api.Parity exposing (Parity(..), toText)
 
 
 type Parity
@@ -97,8 +97,8 @@ type Parity
     | Odd
 
 
-toString : Parity -> String
-toString parity =
+toText : Parity -> String
+toText parity =
     case parity of
         Even ->
             "gerade"
@@ -126,7 +126,7 @@ Die folgende Funktion wird im Hauptmodul der Anwendung definiert.
 viewParityInfo : ParityInfo -> Html msg
 viewParityInfo info =
     div []
-        [ p [] [ text ("Die Zahl ist " ++ Api.Parity.toString info.parity ++ ".") ]
+        [ p [] [ text ("Die Zahl ist " ++ Api.Parity.toText info.parity ++ ".") ]
         , p [] [ text info.advertisement ]
         ]
 ```
@@ -545,7 +545,7 @@ view model =
                   text "Please roll the die!"
 
               Just side ->
-                  text (toString side)
+                  text (toText side)
         , button [ onClick RollDie ] [ text "Roll" ]
         ]
 ```
