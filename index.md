@@ -52,21 +52,21 @@ custom_css: toc
 
 ### 7. [Kommandos](commands.md)
 
-- 7.1. [HTTP-Anfragen](commands.md#http-anfragen)
+- 7.1. [Grundlagen](commands.md#grundlagen)
 
-<!--
-
-- 7.2. [Zufall](commands.md#zufall)
+- 7.2. [HTTP-Anfragen](commands.md#http-anfragen)
 
 ### 8. [Abstraktionen](abstractions.md)
 
 - 8.1. [Funktoren](abstractions.md#funktoren)
 
-- 8.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
+<!-- - 8.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
-- 8.3. [Monaden](abstractions.md#monaden)
+- 8.3. [Monaden](abstractions.md#monaden) -->
 
-- 8.4. [Arrows](abstractions.md#arrows)
+<!-- - 8.4. [Arrows](abstractions.md#arrows) -->
+
+<!--
 
 ### 9. [Linsen](lenses.md)
 

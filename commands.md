@@ -683,4 +683,4 @@ Mittels zwei Anwendungen von Eta-Reduktion können wir diesen Ausdruck dann zu `
 
 [^2]: Das Modul `Url.Builder` stellt auch Funktionen `string : String -> String -> QueryParameter` und `int : String -> Int -> QueryParameter` zur Verfügung, mit denen `QueryParameter` gebaut werden können.
 
-{% include bottom-nav.html previous="json.html" %}
+{% include bottom-nav.html previous="json.html" next="abstractions.html" %}
