@@ -1,0 +1,11 @@
+expression: map (\x -> x) fx
+steps:
+  - code: |
+      \c -> (\x -> x) (fx c)
+    explanation: "Definition von `map`"
+  - code: |
+      \c -> fx c
+    explanation: "Anwendung des Lambda-Ausdrucks"
+  - code: |
+      fx
+    explanation: "Eta-Reduktion"

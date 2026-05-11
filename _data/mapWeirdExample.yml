@@ -1,0 +1,14 @@
+expression: mapWeird (\x -> x) fx
+steps:
+  - code: |
+      mapWeird (\x -> x) (Just 42)
+    explanation: "Definition von `fx`"
+  - code: |
+      Nothing
+    explanation: "Definition von `mapWeird`"
+  - code: |
+      Just 42
+    inequality: true
+  - code: |
+      fx
+    explanation: "Definition von `fx`"

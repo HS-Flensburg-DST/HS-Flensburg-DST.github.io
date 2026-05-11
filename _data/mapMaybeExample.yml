@@ -1,0 +1,22 @@
+expression: Maybe.map (\x -> x) fx
+steps:
+  - code: |
+      Maybe.map (\x -> x) (Just 42)
+    explanation: "Definition von `fx`"
+  - code: |
+      case Just 42 of
+          Nothing ->
+              Nothing
+
+          Just value ->
+              Just ((\x -> x) value)
+    explanation: "Definition von `Maybe.map`"
+  - code: |
+      Just ((\x -> x) 42)
+    explanation: "Auswertung des `case`-Ausdrucks"
+  - code: |
+      Just 42
+    explanation: "Anwendung des Lambda-Ausdrucks"
+  - code: |
+      fx
+    explanation: "Definition von `fx`"

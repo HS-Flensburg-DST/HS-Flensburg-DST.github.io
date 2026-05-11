@@ -1,0 +1,17 @@
+expression: map f (map g fx)
+steps:
+  - code: |
+      map f (\c -> g (fx c))
+    explanation: "Definition von `map`"
+  - code: |
+      \d -> f ((\c -> g (fx c)) d))
+    explanation: "Definition von `map`"
+  - code: |
+      \d -> f (g (fx d))
+    explanation: "Anwendung des Lambda-Ausdrucks"
+  - code: |
+      \c -> f (g (fx c))
+    explanation: "Umbenennung des Argumentes"
+  - code: |
+      map (\x -> f (g x)) fx
+    explanation: "Definition von `map`"

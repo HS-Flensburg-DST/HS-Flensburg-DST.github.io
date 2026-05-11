@@ -1,0 +1,15 @@
+expression: Maybe.map (\x -> f (g x)) fx
+steps:
+  - code: |
+      Maybe.map (\x -> f (g x)) Nothing
+    explanation: "Definition von `fx`"
+  - code: |
+      case Nothing of
+          Nothing ->
+              Nothing
+
+          Just value ->
+              Just ((\x -> f (g x)) value))
+    explanation: "Definition von `Maybe.map`"
+  - code: |
+      Nothing

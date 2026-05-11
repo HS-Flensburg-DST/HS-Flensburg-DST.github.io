@@ -1,0 +1,19 @@
+expression: Maybe.map (\x -> x) fx
+steps:
+  - code: |
+      Maybe.map (\x -> x) Nothing
+    explanation: "Definition von `fx`"
+  - code: |
+      case Nothing of
+          Nothing ->
+              Nothing
+
+          Just value ->
+              Just ((\x -> x) value)
+    explanation: "Definition von `Maybe.map`"
+  - code: |
+      Nothing
+    explanation: "Auswertung des `case`-Ausdrucks"
+  - code: |
+      fx
+    explanation: "Definition von `fx`"

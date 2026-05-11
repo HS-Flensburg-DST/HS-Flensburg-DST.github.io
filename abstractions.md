@@ -75,6 +75,8 @@ Die Funktion `map` sollte für alle möglichen Werte für `fx`, `f` und `g` die 
 
 Die Funktion `mapWeird` erfüllt zum Beispiel das erste Gesetz nicht, da für `fx = Just 42` die erste Gleichung nicht erfüllt ist, wie die folgenden Umformungen illustrieren.
 
+{% include evaluation.html config=site.data.mapWeirdExample %}
+
 {% include callout-important.html content="
 Diese Form der Argumentation über das Verhalten von funktionalen Programmen bezeichnet man als **_equational reasoning_**.
 " %}
@@ -104,20 +106,20 @@ Wir führen eine Fallunterscheidung über `fx` durch.
 
 <ol> 
 <li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Nothing</code></p>
-{% include evaluation.html config=site.data.mapMaybeNothing %}
+{% include evaluation.html config=site.data.mapMaybeIdentityNothing %}
 </li>
 <li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Just x</code></p>
-{% include evaluation.html config=site.data.mapMaybeJust %}
+{% include evaluation.html config=site.data.mapMaybeIdentityJust %}
 </li>
 </ol>
 
 Das heißt, dass in allen Fällen `map (\x -> x) fx = fx` gilt.
-Damit haben wir bewiesen, dass die Funktion `Maybe.map` das erste Funktorengesetz erfüllt.
+Damit haben wir bewiesen, dass die Funktion `Maybe.map` das erste Funktorgesetz erfüllt.
 Wir ignorieren an dieser Stelle, dass die Auswertung von `fx` einen Fehler liefern oder nicht terminieren könnte.
 Wenn wir formal korrekt arbeiten möchten, müssten wir diesen Fall ebenfalls berücksichtigen.
 Der Einfachheit halber ignorieren wir hier aber, dass die Auswertung eines Ausdrucks einen Fehler liefern oder nicht terminieren könnte.
 
-Wir betrachten als nächstes das zweite Funktorengesetz.
+Wir betrachten als nächstes das zweite Funktorgesetz.
 Seien `t1`, `t2`, `t3` Typen.
 Sei `f` vom Typ `t2 -> t3`.
 Sei `g` vom Typ `t1 -> t2`
@@ -127,14 +129,14 @@ Wir führen eine Fallunterscheidung über `fx` durch.
 
 <ol> 
 <li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Nothing</code></p>
-{% include evaluation.html config=site.data.mapMaybeNothingLeft %}
+{% include evaluation.html config=site.data.mapMaybeComposeNothingLeft %}
 <p>Für die andere Seite der Gleichung argumentieren wir wie folgt.</p>
-{% include evaluation.html config=site.data.mapMaybeNothingRight %}
+{% include evaluation.html config=site.data.mapMaybeComposeNothingRight %}
 </li>
 <li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Just x</code></p>
-{% include evaluation.html config=site.data.mapMaybeJustLeft %}
+{% include evaluation.html config=site.data.mapMaybeComposeJustLeft %}
 <p>Für die andere Seite der Gleichung argumentieren wir wie folgt.</p>
-{% include evaluation.html config=site.data.mapMaybeJustRight %}
+{% include evaluation.html config=site.data.mapMaybeComposeJustRight %}
 </li>
 </ol>
 
