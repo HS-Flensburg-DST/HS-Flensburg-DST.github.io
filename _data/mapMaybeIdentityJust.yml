@@ -16,7 +16,7 @@ steps:
     explanation: "Auswertung des `case`-Ausdrucks"
   - code: |
       Just x
-    explanation: "Auswertung des `case`-Ausdrucks"
+    explanation: "Anwendung der Funktion"
   - code: |
       fx
     explanation: "Definition von `fx`"

@@ -24,4 +24,4 @@ steps:
     explanation: "Definition von `Maybe.map`"
   - code: |
       Just (f (g x))
-    explanation: "Definition von `fx`"
+    explanation: "Auswertung des `case`-Ausdrucks"

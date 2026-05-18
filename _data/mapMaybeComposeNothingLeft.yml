@@ -24,3 +24,4 @@ steps:
     explanation: "Definition von `Maybe.map`"
   - code: |
       Nothing
+    explanation: "Auswertung des `case`-Ausdrucks"

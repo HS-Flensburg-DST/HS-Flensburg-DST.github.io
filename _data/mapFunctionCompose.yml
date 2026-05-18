@@ -4,14 +4,11 @@ steps:
       map f (\c -> g (fx c))
     explanation: "Definition von `map`"
   - code: |
-      \d -> f ((\c -> g (fx c)) d))
+      \c -> f ((\c -> g (fx c)) c)
     explanation: "Definition von `map`"
   - code: |
-      \d -> f (g (fx d))
-    explanation: "Anwendung des Lambda-Ausdrucks"
-  - code: |
       \c -> f (g (fx c))
-    explanation: "Umbenennung des Argumentes"
+    explanation: "Anwendung der Lambda-Funktion"
   - code: |
       map (\x -> f (g x)) fx
     explanation: "Definition von `map`"

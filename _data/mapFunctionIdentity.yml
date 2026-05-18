@@ -5,7 +5,7 @@ steps:
     explanation: "Definition von `map`"
   - code: |
       \c -> fx c
-    explanation: "Anwendung des Lambda-Ausdrucks"
+    explanation: "Anwendung der Lambda-Funktion"
   - code: |
       fx
     explanation: "Eta-Reduktion"

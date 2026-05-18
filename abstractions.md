@@ -6,7 +6,9 @@ title: "Abstraktionen"
 Wir haben in verschiedenen Kontexten immer wieder die gleichen Funktionen kennengelernt.
 In diesem Kapitel wollen wir uns ein wenig den Hintergrund hinter diesen Funktionen anschauen.
 Die Konzepte, die wir in diesem Kapitel lernen, sind vergleichbar mit _Pattern_ in objektorientierten Sprachen.
-Das heißt, man identifiziert Funktionen, die man für verschiedene Datenstrukturen definieren kann und beschreibt, welche Eigenschaften diese Funktionen haben sollten.
+Bei _Pattern_ in objektorientierten Sprachen identifiziert man wiederkehrende Muster, die man zur Lösung von Problemen nutzen kann.
+Bei den Abstraktionen in der funktionalen Programmierung identifiziert man Funktionen, die man für verschiedene Datenstrukturen definieren kann und die sich ähnlich verhalten.
+Um die Ähnlichkeit zu beschreiben gibt man Eigenschaften an, welche diese Funktionen erfüllen sollten, unabhängig davon, für welche Datenstruktur die Funktion definiert ist.
 
 ![You say "pattern" and nobody panics, you say "monad" and everybody is losing their mind](./assets/images/monads-and-patterns.jpg){: .centered}
 
@@ -21,7 +23,7 @@ map : (a -> b) -> Html    a -> Html    b
 map : (a -> b) -> Decoder a -> Decoder b
 ```
 
-Diese Signaturen unterschieden sich nur in dem Typkonstruktor, für den sie definiert sind.
+Diese Signaturen unterscheiden sich nur in dem Typkonstruktor, für den sie definiert sind.
 Das heißt, es gibt eine Definition von `map` für den Typkonstruktor `List`, eine Definition für den Typkonstruktor `Html` und eine Definition für den Typkonstruktor `Decoder`.
 Das heißt, die Funktion `map` hat immer die Form
 
@@ -71,22 +73,22 @@ Das heißt, die Funktion muss den angegebenen Typ haben und sich auf gewisse Wei
 Die Funktion `map` sollte für alle möglichen Werte für `fx`, `f` und `g` die folgenden beiden Gesetze erfüllen.
 
 | `map (\x -> x) fx` | = | `fx` |
-| `map f (map g fx)` | = | `map (\x -> f (g x)) fx` |
+| `map (\x -> f (g x)) fx` | = | `map f (map g fx)` |
 
 Die Funktion `mapWeird` erfüllt zum Beispiel das erste Gesetz nicht, da für `fx = Just 42` die erste Gleichung nicht erfüllt ist, wie die folgenden Umformungen illustrieren.
 
 {% include evaluation.html config=site.data.mapWeirdExample %}
 
 {% include callout-important.html content="
-Diese Form der Argumentation über das Verhalten von funktionalen Programmen bezeichnet man als **_equational reasoning_**.
+Diese Form der Argumentation über das Verhalten von funktionalen Programmen bezeichnet man als **_Equational Reasoning_**.
 " %}
 
 In einer referenziell transparenten Programmiersprache kann man den Aufruf einer Funktion durch die Definition ersetzen.
 Es handelt sich dabei um eine mathematische Gleichheit.
 Bei Programmiersprachen mit Seiteneffekten ist eine solche gleichheitsbasierte Umformung nur möglich, wenn die Seiteneffekte ebenfalls berücksichtigt werden.
-Dies ist zwar möglich, aber sehr aufwendig.
+Dies ist zwar möglich, aber aufwendig.
 
-Die Gesetze für Abstraktionen wie Funktoren und Monaden sind Allaussagen.
+Die Gesetze für Abstraktionen wie Funktoren sind Allaussagen.
 Daher ist es vergleichsweise einfach zu zeigen, dass eine Implementierung ein Gesetz nicht erfüllt.
 Wir müssen dazu lediglich ein Gegenbeispiel angeben.
 Um zu zeigen, dass eine Funktion ein Gesetz erfüllt, müssen wir eine Allaussage beweisen.
@@ -95,7 +97,7 @@ Bevor wir mit einem solchen Beweis starten, überprüfen wir, ob das Gegenbeispi
 
 {% include evaluation.html config=site.data.mapMaybeExample %}
 
-Diese Umformung zeigt, dass `Just 42` kein Gegenbeispiel die Funktion `Maybe.map` ist.
+Diese Umformung zeigt, dass `Just 42` kein Gegenbeispiel für die Funktion `Maybe.map` ist.
 Wir haben damit nicht gezeigt, dass die Funktion `Maybe.map` das Gesetz erfüllt.
 Um zu zeigen, dass eine Implementierung ein Gesetz erfüllt, müssen wir einen Beweis führen.
 
@@ -105,10 +107,10 @@ Wir betrachten den Ausdruck `Maybe.map (\x -> x) fx`.
 Wir führen eine Fallunterscheidung über `fx` durch.
 
 <ol> 
-<li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Nothing</code></p>
+<li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Nothing</code>.</p>
 {% include evaluation.html config=site.data.mapMaybeIdentityNothing %}
 </li>
-<li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Just x</code></p>
+<li><p>Wir betrachten den Fall <code class="language-plaintext highlighter-rouge">fx</code> = <code class="language-plaintext highlighter-rouge">Just x</code>.</p>
 {% include evaluation.html config=site.data.mapMaybeIdentityJust %}
 </li>
 </ol>
@@ -140,7 +142,7 @@ Wir führen eine Fallunterscheidung über `fx` durch.
 </li>
 </ol>
 
-Zuletzt betrachten wir noch ein weiteres Beispiel für einen Funktor, um zu illustrieren, dass das Konzept der `map`-Funktion weit über Container-Datentypen hinausgeht.
+Zuletzt betrachten wir noch ein weiteres Beispiel für einen Funktor, um zu illustrieren, dass das Konzept der `map`-Funktion weit über Container-Datentypen wie `List` und `Maybe` hinausgeht.
 Zuerst definieren wir das folgende Typsynonym.
 
 ```elm
@@ -170,8 +172,57 @@ Dann gilt das Folgende.
 
 {% include evaluation.html config=site.data.mapFunctionCompose %}
 
+Zu guter Letzt betrachten wir noch den folgenden Baumdatentyp.
 
-<!-- ## Applikative Funktoren
+```elm
+type Tree a
+    = Leaf a 
+    | Node (List (Tree a))
+```
+
+Auch dieser Typkonstruktor ist ein Funktor.
+Wir können wir folgt eine Funktion `map` für den Datentyp `Tree` implementieren.
+
+```elm
+map : (a -> b) -> Tree a -> Tree b
+map func tree =
+    case tree of
+        Leaf value ->
+            Leaf (func value)
+
+        Node children ->
+            Node (List.map (map func) children)
+```
+
+Wenn wir für diese Funktion zeigen wollen, dass sie die beiden Funktorgesetze erfüllt, nutzen wir, dass die Funktion `List.map` ebenfalls die Funktorgesetze erfüllt.
+Das heißt, wir nutzen die Gleichungen der Funktorgesetze für das _Equational Reasoning_ über andere Funktionen.
+
+Zum Abschluss dieses Abschnittes wollen wir noch diskutieren, dass wir die Funktorgesetze auch anders formulieren können.
+Mithilfe der vordefinierten Funktionen `identity` und `(<<)` können wir die beiden Gesetze zum Beispiel wie folgt schreiben.
+
+| `map identity fx` | = | `fx` |
+| `map (f << g) fx` | = | `map f (map g fx)` |
+
+Da die Eta-Reduktion semantikerhaltend ist, können wir die Gesetze aber auch wie folgt ausdrücken.
+
+| `map identity` | = | `identity` |
+| `map (f << g)` | = | `map f << map g` |
+
+Diese Schreibweise stellt eine andere Sichtweise der Funktion `map` zur Verfügung.
+Wir können den Typ der Funktion wie folgt angeben, da der Operator `(->)` rechtsassoziativ ist.
+
+```elm
+(a -> b) -> (f a -> f b)
+```
+
+Das heißt, dass die Funktion `map` eine Funktion von `a -> b` in eine Funktion `f a -> f b` umwandelt.
+Die beiden Funktorgesetze besagen also, dass `map` sich mit `identity` und `(<<)` verträgt.
+Man nennt eine solche Funktion in der Mathematik einen Homomorphismus.
+
+
+## Applikative Funktoren
+
+![Vorsicht Funktor](./assets/images/funktor.jpg){: width="400px" .centered}
 
 Wir haben die folgende Funktion kennengelernt, um aus "einfachen" Decodern einen komplexeren zusammenzubauen.
 
@@ -197,7 +248,7 @@ apply : f a -> f (a -> b) -> f b
 
 geben.
 Damit `f` ein applikativer Funktor ist, muss es neben der Funktion `apply` noch eine Funktion `pure : a -> f a` geben.
-Es gibt eine solche Funktion für alle drei Typkonstruktoren, sie heißt nur immer anders.
+Es gibt eine Funktion `pure` für die Typkonstruktoren `Maybe`, `Result e` und `List`, die Funktion nur immer anders.
 Im Fall von `List` heißt die Funktion `pure` zum Beispiel `singleton`, im Fall von `Decoder` heißt sie `succeed` und im Fall von `Maybe` einfach `Just`.
 
 Um zu illustrieren, wofür die Funktionen `pure` und `apply` genutzt werden, wollen wir die beiden Funktionen für den Typkonstruktor `Maybe` definieren.
@@ -247,7 +298,7 @@ parseAndAdd userInput1 userInput2 =
 Die Implementierung von `parseAndAdd` liefert `Nothing` zurück, sobald einer der Aufrufe von `String.toInt` als Ergebnis `Nothing` liefert.
 Nur falls beide Aufrufe ein Ergebnis der Form `Just value` liefern, wird die Funktion `+` auf diese beiden Ergebnisse angewendet und das Ergebnis der Addition anschließend wieder in den Konstruktor `Just` eingepackt.
 
-Wie können auch für den Typkonstruktor `Function a` die Funktionen `pure` und `apply` implementieren.
+Wie können auch für den Typkonstruktor `Function b` die Funktionen `pure` und `apply` implementieren.
 
 ```elm
 pure : a -> Function b a
@@ -268,27 +319,32 @@ Wir können die Funktion `map` mithilfe von `pure` und `apply` wie folgt definie
 map : (a -> b) -> Maybe a -> Maybe b
 map func maybe =
     pure func |> apply maybe
-``` -->
+```
 
-<!-- Auf diese Weise können wir für jeden applikativen Funktor die Funktion `map` definieren.
-Wir hatten im Abschnitt [Funktoren](#funktoren) gelernt, dass die Funktion `map` Gesetze erfüllen muss, damit es sich um einen Funktor handelt.
-Diese Gesetze lassen sich durch die Definition von `map` auf die Funktionen `pure` und `apply` übertragen.
+Damit ein Typkonstruktor ein applikativer Funktor ist, müssen die Funktionen `pure` und `apply` ebenfalls Gesetze erfüllen.
+Auf diese Gesetze wollen wir hier aber nicht näher eingehen, sondern listen sie nur einmal auf[^2].
+
+| `pure (\x -> x) |> apply fx` | = | `fx` |
+| `pure (<<) |> apply ax |> apply ay |> apply az` | = | `ax |> (apply ay |> apply az)` |
+| `pure f |> apply (pure x)` | = | `pure (f x)` |
+| `ax |> apply (pure y)` | = | `pure (\h -> h y) |> apply ax` |
+
+Das erste Gesetz lässt sich durch die Definition von `map` auf die Funktionen `pure` und `apply` übertragen.
 Für die Funktion `map` hatten wir `map (\x -> x) fx` = `fx` gefordert.
 Aus diesem Gesetz erhalten wir durch einsetzen, das erste Gesetz eines applikativen Funktors.
 
-{% include evaluation.html config=site.data.applicativeLaw1 %}
+{% include evaluation.html config=site.data.applicativeIdentity %}
 
-| `pure (\x -> x) |> apply fx` | = | `fx` |
+Die übrigen drei Gesetze definieren im Grunde, dass die Funktion `pure` auch wirklich ihren Namen verdient.
+Außerdem ist es mithilfe dieser Gesetze möglich, einen applikativen Ausdruck in eine kanonische Form zu bringen.
+Das heißt, wir sind damit in der Lage, einen applikativen Ausdruck in die folgende Form zu bringen.
 
-Als nächstes betrachten 
-
-| `map f (map g fx)` | = | `map (\x -> f (g x)) fx` |
-
-{% include evaluation.html config=site.data.applicativeLaw2 %}
-
-| `pure (<<) |> apply ax |> apply ay |> apply az = ax |> (apply ay |> apply az)` |
-| `pure f |> apply (pure x) = pure (f x)` |
-| `ax |> apply (pure y) = pure (\h -> h y) |> apply ax` |
+```elm
+pure f
+    |> apply ax1
+    |> ...
+    |> apply axn
+```
 
 Die Standardbibliotheken von Elm bieten für Datenstrukturen wie `List` und `Maybe` nicht die Funktion `apply` an, sondern nutzen die folgende Funktion.
 
@@ -296,54 +352,58 @@ Die Standardbibliotheken von Elm bieten für Datenstrukturen wie `List` und `May
 map2 : (a -> b -> c) -> f a -> f b -> f c
 ```
 
-Diese Funktion ist für Einsteiger vermutlich besser zugänglich.
-Elm bietet zum Beispiel die Funktion
+Dadurch, dass der Funktionstyp hier nicht innerhalb des Typkonstruktors `f` auftaucht, ist der Typ `map2` im Vergleich zum Typ von `apply` für Einsteiger vermutlich besser zugänglich.
+Elm bietet zum Beispiel die folgenden Funktionen.
 
 ```elm
-map2 : (a -> b -> c) -> List a -> List b -> List c
+map2 : (a -> b -> c) -> List     a -> List     b -> List     c
+map2 : (a -> b -> c) -> Maybe    a -> Maybe    b -> Maybe    c
+map2 : (a -> b -> c) -> Result x a -> Result x b -> Result x c
+map2 : (a -> b -> c) -> Decoder  a -> Decoder  b -> Decoder  c
 ```
 
-im Modul `List`, die Funktion
+Zusammen mit `pure` ist die Funktion `map2` genau so ausdrucksstark wie die Kombination aus `pure` und `apply`.
+Anhand der Funktion `apply` für den Datentyp `Maybe` wollen wir diesen Zusammenhang illustrieren.
+Wir können die Funktion `apply` wie folgt auf Grundlage von `map2` definieren.
 
 ```elm
-map2 : (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+apply : Maybe a -> Maybe (a -> b) -> Maybe b
+apply =
+    Maybe.map2 (|>)
 ```
 
-im Modul `Maybe` und
-
-```elm
-map2 : (a -> b -> c) -> Decoder a -> Decoder b -> Decoder c
-```
-
-im Modul `Json.Decode`.
-Wie haben die Funktion `apply` für `Decoder` mithilfe von `map2` definiert.
-Falls eine Datenstruktur eine Funktion `map2 : (a -> b -> c) -> f a -> f b -> f c` zur Verfügung stellt, können wir `apply` mittels `map2 (|>)` definieren.
-
-Falls eine Struktur eine Funktion `pure` zur Verfügung stellt, können wir mithilfe von `pure` und `apply` auch die Funktion `map2` definieren.
+Außerdem können wir `map2` wie folgt auf Grundlage von `pure` und `apply` definieren.
 
 ```elm
 map2 (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
-map2 func ma mb =
+map2 func maybeA maybeB =
     pure func
-        |> apply ma
-        |> apply mb
+        |> apply maybeA
+        |> apply maybeB
 ```
 
-Das heißt, statt --- wie in Haskell üblich --- die Funktionen `pure` und `apply` für einen applikativen Funktor zu definieren, könnten wir auch die Funktion `pure` und `map2` definieren.
-Diesen Ansatz wählt die Programmiersprache Elm, um Einsteigern den Zugang zu vereinfachen.
+In der Publikation ["Applicative programming with effects"](https://openaccess.city.ac.uk/id/eprint/13222/1/) wird eine ähnliche Abstraktion eingeführt.
+Dort wird eine Funktion `pair : Maybe a -> Maybe b -> Maybe (a, b)` als Alternative für `apply` vorgestellt.
+Auf Grundlagen von `map : (a -> b) -> Maybe a -> Maybe b` und `pair` kann man die Funktion `map2` implementieren.
 
-Ähnlich wie ein Funktor muss auch ein applikativer Funktor Gesetze erfüllen.
+Wie man sieht, kann man Abstraktionen wie applikative Funktoren durch unterschiedliche _Interfaces_ zur Verfügung stellen.
+Welches _Interface_ sich am besten eignet ist eher von weichen Faktoren abhängig, zum Beispiel von der Vorerfahrung, aber auch davon, wie gut eine Intuition für die Funktionen vermittelt werden kann.
+Beispielsweise spricht für die Funktion `apply`, dass man einen `Decoder` für einen Recordtyp in der Form
 
-| `pure id |> apply ax = ax` |
-| `pure (<<) |> apply ax |> apply ay |> apply az = ax |> (apply ay |> apply az)` |
-| `pure f |> apply (pure x) = pure (f x)` |
-| `ax |> apply (pure y) = pure (\h -> h y) |> apply ax` |
+```elm
+pure constructor
+    |> apply decoder1
+    |> ...
+    |> apply decodern
+```
 
-Damit ein Typkonstruktor ein applikativer Funktor ist, müssen die Funktionen `pure` und `apply` ebenfalls Gesetze erfüllen.
-Auf diese Gesetze wollen wir hier aber nicht eingehen[^2].
-Es sei an dieser Stelle aber noch kurz erwähnt, dass jeder applikative Funktor auch ein Funktor ist. -->
+definieren kann.
+Das heißt, unabhängig von der Stelligkeit von `constructor`, hat der `Decoder` immer die gleiche Form.
+Im Gegensatz dazu spricht für die Funktion `map2`, dass der Typ der Funktion "einfacher" ist als der Typ der Funktion `apply`.
+<!-- In der Programmiersprache Haskell kann man einen applikativen Funktor entweder dadurch definieren, das man Funktionen `pure` und `apply` (dort `(<*>)`) oder dadurch, dass man Funktionen `pure` und `map2` (dort `liftA`) definiert. -->
 
-<!-- ## Monaden
+
+## Monaden
 
 In der funktionalen Programmierung gibt es eine ganze Reihe von Abstraktionen wie Funktor und applikativer Funktor.
 Wir wollen uns an dieser Stelle noch eine dieser Abstraktionen anschauen, die **Monade** heißt und vergleichsweise legendär auch außerhalb der funktionalen Programmierung ist.
@@ -384,6 +444,8 @@ Wir möchten jetzt gern einen `Decoder` definieren, der abhängig von der Versio
 Diese Art von `Decoder` können wir mithilfe von `apply` aber nicht definieren.
 Das Problem besteht darin, dass wir abhängig von einem Wert den `Decoder` bestimmen möchten.
 Das Argument `Decoder (a -> b)` erlaubt es aber nicht, den `Decoder` danach zu wählen, welchen Wert wir als `a` übergeben bekommen.
+Obwohl der Typ von `map2` sich recht stark vom Typ von `apply` unterscheidet, gilt für `map2` identisches.
+Im Fall von `map2` kann die Funktion, die wir übergeben, nur auf dem Ergebnis des `Decoder` arbeiten, aber nicht abhängig vom Ergebnis eines `Decoder` eine Fallunterscheidung darüber treffen, welcher `Decoder` anschließend verwendet wird.
 
 Wir können die gewünschte Funktionalität aber mit der folgenden Funktion implementieren.
 
@@ -411,17 +473,12 @@ decoder =
                 _ ->
                     Decode.fail ("Version " ++ String.fromInt version ++ " not supported")
     in
-    versionDecoder
-        |> Decode.andThen chooseVersion
+    versionDecoder |> Decode.andThen chooseVersion
 ```
-
-Die Funktion `Decode.fail` liefert einen `Decoder`, der immer fehlschlägt.
-Das heißt, wenn wir eine Version parsen und es sich weder um Version `1` noch um Version `2` handelt, liefert `decoder` einen Fehler.
-Dieses Beispiel illustriert, dass wir mithilfe von `andThen` abhängig von einem Wert, den wir zuvor geparset haben, verschiedene `Decoder` ausführen können.
 
 Wir wollen uns noch ein weiteres Beispiel für die Verwendung von `andThen` anschauen.
 Dazu betrachten wir die Funktion `andThen : Maybe a -> (a -> Maybe b) -> Maybe b`.
-Außerdem betrachten wir die folgenden beiden Funktionen, die wir im Kapitel [Polymorphismus](polymorphism.md) definiert haben.
+Außerdem betrachten wir die folgenden beiden Funktionen.
 
 ```elm
 parseMonth : String -> Maybe Int
@@ -452,23 +509,54 @@ parseMonth userInput =
 ```
 
 Neben der Funktion `andThen` muss ein Typkonstruktor `f`, der eine Monade ist, noch eine Funktion `return : a -> f a` zur Verfügung stellen.
-Im Fall von `Decoder` ist `return` wie folgt definiert.
+Im Fall von `Decoder` ist die Funktion `return` auch `Decoder.succeed`.
 
 ```elm
 return : a -> Decoder a
 return =
-    Decode.succeed
+    Decoder.succeed
+```
+
+Elm stellt außerdem noch die folgenden beiden `andThen`-Funktionen zur Verfügung.
+
+```elm
+andThen : (a -> Maybe    b) -> Maybe    a -> Maybe    b
+andThen : (a -> Result x b) -> Result x a -> Result x b
 ```
 
 Wie beim Funktor und beim applikativen Funktor müssen die Funktionen einer Monade auch Gesetze erfüllen.
 Die Funktionen `andThen` und `return` sollten für alle möglichen Werte für `x`, `fx`, `f` und `g` die folgenden drei Gesetze erfüllen.
 
-| `return x |> andThen f = f x` |
-| `fx |> andThen return = fx` |
-| `(fx |> andThen f) |> andThen g = fx |> andThen (\x -> f x |> andThen g)` |
+| `return x |> andThen f` | = | `f x` |
+| `fx |> andThen return` | = | `fx` |
+| `(fx |> andThen f) |> andThen g` | = | `fx |> andThen (\x -> f x |> andThen g)` |
+
+Dabei beschreiben die ersten beiden Gesetze, dass `return` eine Art neutrales Element für `andThen` darstellt.
+Das dritte Gesetz beschreibt, dass die Funktion `andThen` assoziativ ist, das heißt, dass es irrelevant ist, ob eine Folge von `andThen`-Aufrufen links oder rechts geklammert ist, wir erhalten immer das gleiche Resultat.
+
+Wie beim applikativen Funktor gibt es auch bei der Monade verschiedene _Interfaces_, die man nutzen kann.
+Statt der Funktionen `return` und `andThen`, kann man auch die Funktionen `return`, `map : (a -> b) -> f a -> f b` und `join : f (f a) -> f a` zur Verfügung stellen.
+Wir betrachten diese Möglichkeit einmal anhand des Datentyps `Maybe`.
+Wir können wie folgt auf Grundlage von `andThen` die Funktion `join` implementieren.
+
+```elm
+join : Maybe (Maybe a) -> Maybe a
+join maybeMaybe =
+    maybeMaybe |> Maybe.andThen (\maybe -> maybe)
+```
+
+In Kombination mit `map` kann man auf Grundlage von `join` wiederum `andThen` implementieren.
+
+```elm
+andThen : (a -> Maybe b) -> Maybe a -> Maybe b
+andThen func maybeB =
+    join (Maybe.map func maybeB)
+```
+
+Wenn man eine Monade mithilfe der Funktion `join` implementiert, muss diese Funktion wiederum Gesetze erfüllen, damit es sich tatsächlich um eine Monade handelt.
 
 Wenn ein Typkonstruktor eine Monade ist, dann ist er auch ein applikativer Funktor.
-Wir können nämlich wie folgt die Funktionen eines applikativen Funktors definieren, indem wir die Funktionen der Monade verwenden.
+Wir können wie folgt die Funktionen eines applikativen Funktors definieren, indem wir die Funktionen der Monade verwenden.
 
 ```elm
 pure : a -> Decoder a
@@ -481,27 +569,115 @@ apply dx df =
     dx |> Decode.andThen (\x -> df |> Decode.andThen (\f -> return (f x)))
 ```
 
-Die [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia) bietet noch weitere Informationen zu Abstraktionen in der funktionalen Programmierung.
+Es ist auf der anderen Seite aber nicht möglich, die Funktion `andThen` auf Grundlage von `pure`, `apply` und `map` zu definieren, da eine Monade mächtiger ist als ein applikativer Funktor.
 
-<!-- Um komplexere `Decoder` zu definieren benötigen wir noch eine weitere Definition.
-Diese Definition wollen wir bereits auch dieser Stelle einführen, auch wenn sie erst später benötigt wird.
-Die Funktion `succeed : a -> Decoder a` liefert einen `Decoder`, der für alle JSON-Strukturen immer den Wert vom Typ `a` als Ergebnis liefert.
-Das heißt, der Aufruf
+Wenn ein Typkonstruktor eine Monade ist, dann ist er außerdem auch ein Funktor.
+Wir können wie folgt die Funktion `map` eines Funktors implementieren.
 
 ```elm
-decodeString (Decode.succeed 42) "true"
+map : (a -> b) -> Decoder a -> Decoder b
+map func maybe =
+    maybe |> Decoder.andThen (\x -> pure (func x))
 ```
 
-liefert genau so `Ok 42` als Ergebnis, wie der Aufruf
+Wir nehmen einmal an, dass wir den folgenden `Decoder` implementiert haben.
 
 ```elm
-decodeString (Decode.succeed 42) "[1,2,3]"
-``` -->
+decoder : Decoder Parity
+decoder =
+    let
+        toParity b =
+            if b then
+                Even
 
-<!-- ## Arrows -->
+            else
+                Odd
+    in
+    Decoder.bool |> Decoder.andThen (\b -> Decoder.succeed (toParity b))
+```
+
+Aufgrund des Zusammenhangs zwischen Monade und Funktor können wir diesen `Decoder` auch wie folgt implementieren.
+
+```elm
+decoder : Decoder Parity
+decoder =
+    let
+        toParity b =
+            if b then
+                Even
+
+            else
+                Odd
+    in
+    Decoder.map toParity Decoder.bool
+```
+
+
+
+Die [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia) bietet noch weitere Informationen zu Abstraktionen in der funktionalen Programmierung.
+
+
+<!-- ## Arrows
+
+Neben der Definition auf Grundlage von `andThen` oder `join` kann man eine Monade auch als sogenannten Kleisli-Arrow definieren.
+Hierzu definiert man eine Funktion `arrow : (a -> f b) -> (b -> f c) -> a -> f c`, die auch als Kleisli-Komposition bezeichnet wird.
+Zur Illustration definieren wir diese Funktion für den Typkonstruktor `Maybe` auf Grundlage von `andThen`.
+
+```elm
+arrow : (a -> Maybe b) -> (b -> Maybe c) -> a -> Maybe c
+arrow f g a =
+    f a |> Maybe.andThen g
+```
+
+Auf der anderen Seite können wir `andThen` auf Grundlage von `arrow` wie folgt definieren.
+
+```elm
+andThen : (a -> Maybe b) -> Maybe a -> Maybe b
+andThen func maybeB =
+    arrow (\_ > maybeB) func
+```
+
+Die Funktion `arrow` hat aus zwei Gründen eine besondere Bedeutung.
+Wenn wir die Monadengesetze auf Grundlage von `arrow` formulieren, können wir sehr viel klarer erkennen, dass es sich bei einer Monade um ein Monoid handelt.
+
+| `arrow return f` | = | `f` |
+| `arrow f return` | = | `f` |
+| `arrow (arrow f g) h` | = | `arrow f (arrow g h)` |
+
+Der Name Kleisli-Komposition deutet eine Verwandtschaft zur Funktionskomposition an.
+Die Funktionskomposition erfüllt ganz ähnliche Gesetze wie die Monadenkomposition.
+
+| `identity << f` | = | `f` |
+| `f << identity` | = | `f` |
+| `(f << g) << h` | = | `f << (g << h)` |
+
+Außerdem deutet der Name Kleisli-Arrow noch eine Verwandtschaft zu einer weiteren Abstraktion in der funktionalen Programmierung an.
+Neben den Abstraktionen Funktor, applikativer Funktor und Monade, gibt es in der funktionalen Programmierung noch Strukturen, die ein Arrow sind.
+
+Im Gegensatz zu den Abstraktionen, die wir bisher kennengelernt haben, abstrahiert ein Arrow einen zweistelligen Typkonstruktor.
+Ein Arrow stellt die folgenden beiden Funktionen zur Verfügung.
+
+```elm
+arr : (a -> b) -> f a b
+
+first : a b c -> a (b, d) (c, d)
+```
+
+Wir illustrieren diese Funktionen anhand des folgenden Typs.
+
+```elm
+type alias Function a b =
+    a -> b
+```
+
+```elm
+arr : (a -> b) -> Function a b
+arr func =
+    func
+``` -->
 
 [^1]: In Elm wird die Funktion `apply` manchmal auch `andMap` genannt.
 
-[^2]: Mehr Informationen zu applikativen Funktoren finden Sie in der wissenschaftlichen Publikation ["Applicative programming with effects"](https://openaccess.city.ac.uk/id/eprint/13222/1/) oder im [Wiki-Artikel](https://wiki.haskell.org/Typeclassopedia#Applicative) zur entsprechenden Struktur in Haskell.
+[^2]: Mehr Informationen zu applikativen Funktoren finden Sie in der wissenschaftlichen Publikation ["Applicative programming with effects"](https://openaccess.city.ac.uk/id/eprint/13222/1/) oder im [Wiki-Artikel](https://wiki.haskell.org/Typeclassopedia#Laws_2) zur entsprechenden Struktur in Haskell.
 
 {% include bottom-nav.html previous="commands.html" %}

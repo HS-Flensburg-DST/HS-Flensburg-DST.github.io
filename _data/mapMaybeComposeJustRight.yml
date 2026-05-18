@@ -16,4 +16,4 @@ steps:
     explanation: "Auswertung des `case`-Ausdrucks"
   - code: |
       Just (f (g x))
-    explanation: "Auswertung des `lambda`-Ausdrucks"
+    explanation: "Anwendung der Funktion"

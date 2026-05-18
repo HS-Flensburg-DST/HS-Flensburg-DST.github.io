@@ -16,7 +16,7 @@ steps:
     explanation: "Auswertung des `case`-Ausdrucks"
   - code: |
       Just 42
-    explanation: "Anwendung des Lambda-Ausdrucks"
+    explanation: "Anwendung der Funktion"
   - code: |
       fx
     explanation: "Definition von `fx`"

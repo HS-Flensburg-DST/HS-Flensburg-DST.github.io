@@ -60,9 +60,9 @@ custom_css: toc
 
 - 8.1. [Funktoren](abstractions.md#funktoren)
 
-<!-- - 8.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
+- 8.2. [Applikative Funktoren](abstractions.md#applikative-funktoren)
 
-- 8.3. [Monaden](abstractions.md#monaden) -->
+- 8.3. [Monaden](abstractions.md#monaden)
 
 <!-- - 8.4. [Arrows](abstractions.md#arrows) -->
 
