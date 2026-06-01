@@ -1,0 +1,8 @@
+expression: pure (\x -> x) |> apply ax
+steps:
+  - code: |
+      Maybe.map (\x -> x) ax
+    explanation: "Definition von `fx`"
+  - code: |
+      ax
+    explanation: "Definition von `Maybe.map`"

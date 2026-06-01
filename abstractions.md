@@ -324,7 +324,7 @@ map func maybe =
 Damit ein Typkonstruktor ein applikativer Funktor ist, müssen die Funktionen `pure` und `apply` ebenfalls Gesetze erfüllen.
 Auf diese Gesetze wollen wir hier aber nicht näher eingehen, sondern listen sie nur einmal auf[^2].
 
-| `pure (\x -> x) |> apply fx` | = | `fx` |
+| `pure (\x -> x) |> apply ax` | = | `ax` |
 | `pure (<<) |> apply ax |> apply ay |> apply az` | = | `ax |> (apply ay |> apply az)` |
 | `pure f |> apply (pure x)` | = | `pure (f x)` |
 | `ax |> apply (pure y)` | = | `pure (\h -> h y) |> apply ax` |
@@ -417,7 +417,7 @@ Wir betrachten dazu die folgende `apply`-Funktion.
 apply : Decoder a -> Decoder (a -> b) -> Decoder b
 ```
 
-Für unser Beispiel gehen wir davon aus, dass die JSON-Struktur, die wir verarbeiten wollen ein Feld mit der Version der Schnittstelle hat.
+Für unser Beispiel gehen wir davon aus, dass die JSON-Struktur, die wir verarbeiten wollen, ein Feld mit der Version der Schnittstelle hat.
 Abhängig von der Version wollen wir jetzt den einen oder anderen `Decoder` verwenden.
 Wir definieren dazu erst einmal einen `Decoder`, der die Version liefert.
 
